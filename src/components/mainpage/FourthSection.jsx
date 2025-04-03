@@ -9,7 +9,7 @@ const FourthSection = () => {
     return (
         <section 
             className="mt-[100px] relative w-full bg-cover bg-center bg-no-repeat text-white"
-            style={{ backgroundImage: `url(${FourthSectionBackground})` }} // 여기 수정!
+            style={{ backgroundImage: `url(${FourthSectionBackground})` }} 
         >
             {/* 네 번째 섹션 내용 */}
             <div className="w-[60%] mx-auto py-32">
@@ -75,7 +75,7 @@ const FourthSection = () => {
                     </div>
                 </div>
 
-                {/* CTA 영역 */}
+                {/* 3번째 섹션 */}
                 <div className="mt-[200px] text-center">
                     <h2 className="text-3xl font-semibold">
                         <span className="text-[#A476CC]">더욱 최적화된 AI</span>와의 대화가 준비되었습니다.<br />

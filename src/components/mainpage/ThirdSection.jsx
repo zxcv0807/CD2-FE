@@ -40,6 +40,8 @@ const ThirdSection = () => {
 
     return (
         <section className="w-[60%] mx-auto mt-48">
+            {/* 원형 그라데이션 배경 */}
+            <div className="absolute w-[400px] h-[400px] right-[200px] top-[2100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)]"></div>
             {/* POINT 1 */}
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 1</h4>

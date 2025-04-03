@@ -3,7 +3,7 @@ import LogoIcon from "../../assets/LogoIcon.png";
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 w-full flex justify-between items-center px-24 py-4 bg-transparent z-5">
+    <header className="fixed top-0 left-0 w-full flex justify-between items-center px-12 py-4 bg-transparent z-5">
       {/* 좌측 로고 */}
       <div className="bg-white px-4 py-2 rounded-full">
         <Link to="/" className="text-lg font-semibold flex gap-2 items-center">
