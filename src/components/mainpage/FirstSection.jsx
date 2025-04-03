@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import MainPageLaptop from "../../assets/MainPageLaptop.png";
 import QuestionStartIcon from "../../assets/QuestionStartIcon.png";
-import EllipseBackground1 from "../../assets/EllipseBackground1.png";
-import EllipseBackground2 from "../../assets/EllipseBackground2.png";
+
 
 const FirstSection = () => {
     const texts = useMemo(() => ["당신의 질문", "당신의 궁금증", "당신의 생각"], []);
@@ -27,15 +26,9 @@ const FirstSection = () => {
 
     return (
         <section className="flex flex-col items-center text-center mt-16 px-4 pt-20">
-            {/* 블러 원 배경 이미지 */}
-            <img 
-                src={EllipseBackground2} 
-                className="absolute top-0 right-[50px]"
-            />
-            <img
-                src={EllipseBackground1}
-                className="absolute top-[200px] left-[100px]"
-            />
+            {/* 원형 그라데이션션 배경 */}
+            <div className="absolute w-[672px] h-[672px] right-[40px] top-[-100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(82,122,255,0.2)_0%,rgba(82,122,255,0)_100%)]"></div>
+            <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)]"></div>
 
             {/* 제목 */}
             <h2 className="text-4xl font-bold">
@@ -59,7 +52,7 @@ const FirstSection = () => {
             </button>
 
             {/* 노트북 이미지 */}
-            <div className="-mt-[50px] z-3" style={{
+            <div className="-mt-[50px] z-2" style={{
                 maskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%",
                 WebkitMaskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%)"
             }}>

@@ -60,7 +60,7 @@ const LoginPage = () => {
                             <span className="px-4 text-gray-500 text-sm">또는</span>
                             <hr className="flex-1 border-[#DADADA]" />
                         </div>
-                        {/* 구글 로그인인 */}
+                        {/* 구글 로그인 */}
                         <div className="flex justify-center">
                             <img src={GoogleLogin} className="w-[175px] h-auto cursor-pointer"/>
                         </div>
