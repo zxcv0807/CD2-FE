@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 const Footer = () => {
     return (
         <footer className="h-[200px] bg-[#1A1A1A] py-6 text-center flex flex-col justify-center items-center">

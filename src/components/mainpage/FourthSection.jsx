@@ -5,11 +5,12 @@ import FourthSectionPlanet from "../../assets/FourthSectionPlanet.png";
 import QuestionStartIcon2 from "../../assets/QuestionStartIcon2.png";
 import RightArrow from "../../assets/RightArrow.png";
 
-const FourthSection = () => {
+const FourthSection = ( {sectionRef} ) => {
     return (
         <section 
+            ref={sectionRef}
             className="mt-[100px] relative w-full bg-cover bg-center bg-no-repeat text-white"
-            style={{ backgroundImage: `url(${FourthSectionBackground})` }} 
+            style={{ backgroundImage: `url(${FourthSectionBackground})` }}  
         >
             {/* 네 번째 섹션 내용 */}
             <div className="w-[60%] mx-auto py-32">
