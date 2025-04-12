@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import MainPageLaptop from "../../assets/MainPageLaptop.png";
 import QuestionStartIcon from "../../assets/QuestionStartIcon.png";
-
 
 const FirstSection = () => {
     const texts = useMemo(() => ["당신의 질문", "당신의 궁금증", "당신의 생각"], []);
@@ -46,10 +46,10 @@ const FirstSection = () => {
             </p>
 
             {/* 질문 시작하기 버튼 */}
-            <button className="w-[240px] mt-10 px-2 py-1 border border-[#DADADA] text-[#1A1A1A] rounded-full flex justify-between items-center space-x-2 cursor-pointer z-5">
-                <span className="ml-4">질문 시작하기</span>
+            <Link to="/chat-start" className="w-[240px] mt-10 px-2 py-1 border border-[#DADADA] rounded-full flex justify-between items-center space-x-2 cursor-pointer z-5">
+                <span className="text-[#1A1A1A] ml-4">질문 시작하기</span>
                 <img src={QuestionStartIcon} />
-            </button>
+            </Link>
 
             {/* 노트북 이미지 */}
             <div className="-mt-[50px] z-2" style={{

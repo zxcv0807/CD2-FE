@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
 import PrivacyModal from "../components/modal/PrivacyModal";
 import formImage from "../assets/formImage.png";
 
 const SignupPage = () => {
+    const navigate = useNavigate();
     // 입력 데이터
     const [formData, setFormData] = useState({
         email: "",
@@ -37,9 +39,9 @@ const SignupPage = () => {
         }
     
         if (name === "password") {
-            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
             if (!passwordRegex.test(value)) {
-                return "비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.";
+                return "비밀번호는 6~20자이며, 영문과 숫자를 포함해야 합니다.";
             }
             return "";
         }
@@ -81,20 +83,21 @@ const SignupPage = () => {
         const isValid = Object.values(newErrors).every((error) => error === "");
         if (!isValid) return;
 
+        const BASE_URL = import.meta.env.VITE_API_BASE_URL;
         try {
-            const response = await axios.post("http://localhost:5000/api/signup", {
+            const response = await axios.post(`${BASE_URL}/api/v1/user/signup`, {
                 email: formData.email,
                 password: formData.password,
+                confirm_pwd: formData.confirmPassword,
             });
 
             console.log("회원가입 성공:", response.data);
+            navigate("/login");
 
-            // TODO: 회원가입 후 이동할 페이지로 리디렉션
-            // 예: navigate("/login"); 또는 상태 초기화 등
         } catch (error) {
-            console.error("❌ 회원가입 실패:", error);
+            console.error("회원가입 실패:", error);
             if (error.response && error.response.data && error.response.data.message) {
-                setApiError(error.response.data.message); // 백엔드 에러 메시지 출력
+                setApiError(error.response.data.message);
             } else {
                 setApiError("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
             }
@@ -171,11 +174,11 @@ const SignupPage = () => {
                                 
                                 {/* 커스텀 체크박스 UI */}
                                 <div
-                                    className="w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#A476CC] cursor-pointer"
+                                    className="w-4 h-4 flex items-center justify-center rounded-full border-2 border-[#A476CC] cursor-pointer"
                                     onClick={() => setIsPrivacyModalOpen(true)} // 클릭 시 모달 열기
                                 >
                                     {agreedToPrivacy && (
-                                        <div className="w-2.5 h-2.5 bg-[#A476CC] rounded-full" />
+                                        <div className="w-2 h-2 bg-[#A476CC] rounded-full" />
                                     )}
                                 </div>
 

@@ -4,6 +4,7 @@ import FourthSectionDialog from "../../assets/FourthSectionDialog.png";
 import FourthSectionPlanet from "../../assets/FourthSectionPlanet.png";
 import QuestionStartIcon2 from "../../assets/QuestionStartIcon2.png";
 import RightArrow from "../../assets/RightArrow.png";
+import { Link } from "react-router-dom";
 
 const FourthSection = ( {sectionRef} ) => {
     return (
@@ -83,15 +84,14 @@ const FourthSection = ( {sectionRef} ) => {
                         지금 바로 시작해보세요.
                     </h2>
                     <div className="flex justify-center gap-4 mt-6">
-                        <button className="w-[200px] mt-10 px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2 cursor-pointer">
+                        <Link to="/chat-start" className="w-[200px] mt-10 px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2">
                             <span className="ml-2">질문 시작하기</span>
                             <img src={QuestionStartIcon2}/>
-                        </button>
-                        <button className="w-[200px] mt-10 px-2 py-2 bg-[#262626] rounded-full flex justify-between items-center space-x-2 cursor-pointer">
+                        </Link>
+                        <Link to="/guideline" className="w-[200px] mt-10 px-2 py-2 bg-[#262626] rounded-full flex justify-between items-center space-x-2">
                             <span className="ml-2">가이드라인 보기</span>
                             <img src={RightArrow} />
-                        </button>
-                        
+                        </Link>
                     </div>
                 </div>
             </div>
