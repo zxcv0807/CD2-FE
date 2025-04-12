@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import Header from "../components/Header";
+import { useRef } from "react";
+import useIsInView from "../hooks/useIsInView";
+import Header from "../components/header/Header";
 import FirstSection from "../components/mainpage/FirstSection";
 import SecondSection from "../components/mainpage/SecondSection";
 import ThirdSection from "../components/mainpage/ThirdSection";
@@ -8,27 +9,8 @@ import Footer from "../components/Footer";
 
 const HomePage = () => {
   const fourthRef = useRef(null);
-  const [isDarkSection, setIsDarkSection] = useState(false);
+  const isDarkSection = useIsInView(fourthRef, 0.4);
 
-  useEffect(() => {
-    const target = fourthRef.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsDarkSection(entry.isIntersecting);
-      },
-      { threshold: 0.4 }
-    );
-
-    if (target) {
-      observer.observe(target);
-    }
-
-    return () => {
-      if (target) {
-        observer.unobserve(target);
-      }
-    }
-  }, []);
 
   return (
     <>

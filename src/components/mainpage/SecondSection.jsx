@@ -17,7 +17,7 @@ const SecondSection = () => {
             { threshold: 0.8 }
         );
 
-        if (target) observer.observe(target);
+        if (target) observer.observe(target);  
         return () => target && observer.unobserve(target);
     }, []);
 

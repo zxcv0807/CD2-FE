@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { login } from "../REDUX/auth/authSlice"; 
 import axios from "axios";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
 import formImage from "../assets/formImage.png";
 import GoogleLogin from "../assets/web_light_rd_SI@1x.png";
-import { login } from "../redux/auth/authSlice"; 
+
 
 const LoginPage = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     // 입력 데이터
     const [formData, setFormData] = useState({
         email: "",
@@ -48,6 +50,7 @@ const LoginPage = () => {
         setServerError("");
     };
 
+    // 이메일 로그인
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -61,30 +64,33 @@ const LoginPage = () => {
         const isValid = Object.values(newErrors).every((err) => err === "");
         if (!isValid) return;
 
+        const BASE_URL = import.meta.env.VITE_API_BASE_URL;
         try {
-            const response = await axios.post("/api/login", {
+            const response = await axios.post(`${BASE_URL}/api/v1/user/login`, {
                 email: formData.email,
                 password: formData.password,
             });
 
-            const { token } = response.data; // 백엔드에서 받은 토큰
+            const { access_token, user_id } = response.data;
 
-            // 토큰 저장 (localStorage or sessionStorage)
-            localStorage.setItem("token", token);
+            dispatch(login({token: access_token, userId: user_id}));
 
-            // 로그인 상태 Redux에 반영
-            dispatch(login());
-
-            // 리디렉션 등 추가 가능
-            console.log("로그인 성공:", response.data);
+            navigate("/chat-start");
         } catch (error) {
             console.error("로그인 실패:", error);
             setServerError("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
     };
     // 구글 로그인
-    const handleGoogleLogin = () => {
-        console.log("구글 로그인");
+    const handleGoogleLogin = async () => {
+        try{
+            // const response = await axios.get("https://pbl.kro.kr/api/v1/oauth/google/login");
+            // const googleLoginUrl = response.data.url;
+            // window.location.href = googleLoginUrl;
+            window.location.href = "https://pbl.kro.kr/api/v1/oauth/google/login"
+        } catch (error) {
+            console.error("구글 로그인 URL 요청 실패:", error);
+        }
     }
 
     return (
@@ -125,8 +131,11 @@ const LoginPage = () => {
                         </div>
                         {/* 로그인 상태 유지 */}
                         <div className="mb-4 flex items-center justify-between">
-                            <label className="flex items-center text-[#4E4E4E]">
-                                <input type="checkbox" className="mr-2" />
+                            <label className="flex items-center cursor-pointer">
+                                <div className="w-4 h-4 rounded-full border-2 border-[#A476CC] flex items-center justify-center mr-2">
+                                    <input type="checkbox" className="peer hidden" id="keepLoggedIn" />
+                                    <div className="w-2 h-2 rounded-full bg-transparent peer-checked:bg-[#A476CC]" />
+                                </div>
                                 <span className="text-[#4E4E4E]">로그인 상태 유지</span>
                             </label>
                             <Link to="/" className="text-[#999999]">비밀번호 찾기</Link>
