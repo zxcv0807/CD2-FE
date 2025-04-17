@@ -6,7 +6,7 @@ import GoogleCallbackPage from './components/Oauth/GoogleCallbackPage';
 import SignupPage from './pages/SignupPage';
 import GuidelinePage from "./pages/GuidelinePage";
 import ProtectedRoute from './components/ProtectedRoute';
-import ChattingSubjectSelectionPage from "./pages/chattingPage/ChattingSubjectSelectionPage";
+import ChattingTopicSelectionPage from "./pages/chattingPage/ChattingTopicSelectionPage";
 import ChattingPage from './pages/chattingPage/ChattingPage';
 
 function App() {
@@ -18,20 +18,23 @@ function App() {
         <Route path="/auth/callback/google" element={<GoogleCallbackPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/guideline" element={<GuidelinePage />} />
+        {/* <Route path="/chat-start" element={<ChattingTopicSelectionPage />} /> */}
+        <Route path="/chatting" element={<ChattingPage />} />
+        <Route path="/chatting/:session_id" element={<ChattingPage />} />
         <Route 
           path="/chat-start" 
           element={
             <ProtectedRoute>
-              <ChattingSubjectSelectionPage />
+              <ChattingTopicSelectionPage />
             </ProtectedRoute>
           } />
-        <Route 
+        {/* <Route 
           path="/chatting" 
           element={
             <ProtectedRoute>
               <ChattingPage />
             </ProtectedRoute>
-          } />
+          } /> */}
       </Routes>
     </Router>
   )

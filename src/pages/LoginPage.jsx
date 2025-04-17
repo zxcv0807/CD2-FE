@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../REDUX/auth/authSlice"; 
-import axios from "axios";
+import axios from "../api/axiosInstance";
 import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
@@ -64,14 +64,14 @@ const LoginPage = () => {
         const isValid = Object.values(newErrors).every((err) => err === "");
         if (!isValid) return;
 
-        const BASE_URL = import.meta.env.VITE_API_BASE_URL;
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/user/login`, {
+            const response = await axios.post("/api/v1/user/login", {
                 email: formData.email,
                 password: formData.password,
             });
 
             const { access_token, user_id } = response.data;
+            console.log("로그인 성공", response.data);
 
             dispatch(login({token: access_token, userId: user_id}));
 
@@ -84,9 +84,6 @@ const LoginPage = () => {
     // 구글 로그인
     const handleGoogleLogin = async () => {
         try{
-            // const response = await axios.get("https://pbl.kro.kr/api/v1/oauth/google/login");
-            // const googleLoginUrl = response.data.url;
-            // window.location.href = googleLoginUrl;
             window.location.href = "https://pbl.kro.kr/api/v1/oauth/google/login"
         } catch (error) {
             console.error("구글 로그인 URL 요청 실패:", error);

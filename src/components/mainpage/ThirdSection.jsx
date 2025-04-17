@@ -6,6 +6,7 @@ import SpeechBubble from "../../assets/SpeechBubble.png";
 const ThirdSection = () => {
     const [activeIndex, setActiveIndex] = useState(-1);
     const sectionRef = useRef(null);
+    const topics = ["코딩", "여행", "영화", "게임", "교육"];
 
     // 스크롤 감지
     useEffect(() => {
@@ -53,7 +54,7 @@ const ThirdSection = () => {
                     질문에 대한 맥락을 더 명확하게 설정하여 효과적인 지식을 경험하세요.
                 </p>
                 <div ref={sectionRef} className="flex gap-2 text-[#4E4E4E] mb-8">
-                    {["주제 1", "주제 2", "주제 3", "주제 4", "주제 5"].map((text, index) => (
+                    {topics.map((text, index) => (
                         <button
                             key={index}
                             className={`px-6 py-2 rounded-full border border-[#DADADA] transition-all duration-500 ${

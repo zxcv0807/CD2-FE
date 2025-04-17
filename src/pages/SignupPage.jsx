@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axiosInstance";
 import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
@@ -83,9 +83,8 @@ const SignupPage = () => {
         const isValid = Object.values(newErrors).every((error) => error === "");
         if (!isValid) return;
 
-        const BASE_URL = import.meta.env.VITE_API_BASE_URL;
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/user/signup`, {
+            const response = await axios.post("/api/v1/user/signup", {
                 email: formData.email,
                 password: formData.password,
                 confirm_pwd: formData.confirmPassword,

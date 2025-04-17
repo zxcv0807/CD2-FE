@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleChatListVisible } from "../../REDUX/layout/chatListLayoutSlice";
+import axios from "../../api/axiosInstance";
 import MenuPortal from "./MenuPortal";
 import SidebarToolTip from "../modal/SidebarToolTip";
 import LogoIconWhite from "../../assets/LogoIconWhite.png";
@@ -22,7 +23,7 @@ const Sidebar = () => {
   };
 
   //메뉴 열고 닫기
-  const [openMenuId, setOpenMenuId] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null); 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0});
   const toggleMenu = (id, e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -31,38 +32,98 @@ const Sidebar = () => {
   }
   
   // 채팅 목록
-  const [editChatId, setEditChatId] = useState(null);
-  const [chatList, setChatList] = useState([
-    { id: 1, title: "프롬프트 제목", topic: "주제" },
-    { id: 2, title: "프롬프트 제목", topic: "주제" },
-    { id: 3, title: "프롬프트 제목", topic: "주제" },
-    { id: 4, title: "프롬프트 제목", topic: "주제" },
-    { id: 5, title: "프롬프트 제목", topic: "주제" },
-  ]);
+  const [editSessionId, setEditSessionId] = useState(null);
+  const [chatList, setChatList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const token = useSelector((state) => state.auth.token);
+
+  // 채팅 목록 불러오기
+  useEffect(() => {
+    const fetchChatList = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("/api/v1/sessions/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("채팅 목록 불러오기 성공", response.data);
+        const chatData = response.data.map(session => ({
+          session_id: session.session_id,
+          session_title: session.title,
+          topicId: session.topics[0].topic_id,
+          topic: session.topics[0].topic_name,
+        }));
+        setChatList(chatData);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchChatList();
+  }, [token]);
 
   // 채팅 선택
-  const handleChatClick = (chatId) => {
-    console.log(`채팅 ${chatId}이 선택됨`);
+  const handleChatClick = (sessionId) => {
+    console.log(`채팅 ${sessionId}이 선택됨`);
   }
 
   // 채팅 목록 중 선택하기
-  const handleSelectChat = (chatId) => {
-    console.log(`${chatId} 번째 채팅 선택`)
-    setEditChatId(chatId);
+  const handleSelectChat = (sessionId) => {
+    console.log(`${sessionId} 번째 채팅 선택`)
+    setEditSessionId(sessionId);
     setOpenMenuId(null);
   }
   // 제목 바꾸기
-  const handleTitleChange = (chatId, newTitle) => {
-    setChatList(prev =>
-      prev.map(chat =>
-        chat.id === chatId ? { ...chat, title: newTitle } : chat
-      )
-    );
-    setEditChatId(null); // 편집 종료
+  const handleTitleChange = async (sessionId, newTitle) => {
+    // 기존 제목 저장
+    const oldTitle = chatList.find(chat => chat.session_id === sessionId)?.session_title;
+    try {
+      const response = await axios.put(`/api/v1/sessions/${sessionId}`,
+        {title: newTitle},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("제목 변경 성공", response.data);
+      console.log(`채팅 ${sessionId} 제목이 ${newTitle}로 변경됨`);
+      // UI 상으로는 즉시 반영되도록
+      setChatList(prev =>
+        prev.map(chat =>
+          chat.session_id === sessionId ? { ...chat, session_title: newTitle } : chat
+        )
+      );
+    } catch (err) {
+      console.err("제목 수정 실패", err);
+      // 실패 시 이전 제목으로 되돌리는 로직
+      setChatList(prev =>
+        prev.map(chat =>
+          chat.session_id === sessionId ? { ...chat, session_title: oldTitle } : chat
+        )
+      );
+    } finally {
+      setEditSessionId(null); // 편집 종료
+    }
   }
   // 채팅 삭제
-  const handleDeleteChatting = (chatId) => {
-    console.log(`${chatId} 번째 채팅 삭제하기`);
+  const handleDeleteChatting = async (sessionId) => {
+    console.log(`${sessionId} 번째 채팅 삭제하기`);
+    try {
+      await axios.delete(`/api/v1/sessions/${sessionId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // UI 상으로는 즉시 반영되도록
+      setChatList(prev => prev.filter(chat => chat.session_id !== sessionId));
+    } catch (err) {
+      console.error(err);
+    }
   }
   
   // 메뉴 밖을 눌렀을 때 메뉴 창 끄기기
@@ -147,30 +208,33 @@ const Sidebar = () => {
           </header>
 
           {/* 채팅 목록 */}
+          <div>
+            {loading && <span className="text-[#1A1A1A]">로딩 중...</span>}
+          </div>
           <ul className="flex flex-col divide-y divide-[#DADADA]">
             {chatList.map((chat) => (
               <li
-                key={chat.id}
+                key={chat.session_id}
                 className="flex justify-between items-center px-4 py-3 mb-4 hover:bg-[#F5F5F5] relative"
-                onClick={() => handleChatClick(chat.id)}
+                onClick={() => handleChatClick(chat.session_id)}
               >
                 <div>
-                  {editChatId === chat.id ? (
+                  {editSessionId === chat.session_id ? (
                     <input
                       type="text"
                       className="text-[#1A1A1A] font-semibold border-b border-[#999999] bg-transparent outline-none"
                       autoFocus
-                      defaultValue={chat.title}
-                      onBlur={(e) => handleTitleChange(chat.id, e.target.value)}
+                      defaultValue={chat.session_title}
+                      onBlur={(e) => handleTitleChange(chat.session_id, e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          handleTitleChange(chat.id, e.target.value);
+                          handleTitleChange(chat.session_id, e.target.value);
                         }
                       }}
                     />
                   ) : (
                     <p className="text-[#1A1A1A] font-semibold max-w-[240px] truncate">
-                      {chat.title}
+                      {chat.session_title}
                     </p>
                   )}
                   
@@ -183,14 +247,14 @@ const Sidebar = () => {
                     className="text-[#C3C3C3] text-xl cursor-pointer px-2"
                     onClick={(e) => {
                       e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                      toggleMenu(chat.id, e)}
+                      toggleMenu(chat.session_id, e)}
                     }
                   >
                     ⋯
                   </div>
               
                   {/* 제목 바꾸기, 채팅 삭제 */}
-                  {openMenuId === chat.id && (
+                  {openMenuId === chat.session_id && (
                     <MenuPortal>
                       <div 
                         className="menu-portal absolute z-50 bg-[#F5F5F5] rounded-md shadow-md w-[140px]"
@@ -204,7 +268,7 @@ const Sidebar = () => {
                           className="w-full px-4 py-2 flex items-center gap-2" 
                           onClick={(e) => {
                             e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                            handleSelectChat(chat.id);
+                            handleSelectChat(chat.session_id);
                           }}
                         >
                           <img src={PencilIcon} className="cursor-pointer"/>
@@ -214,7 +278,7 @@ const Sidebar = () => {
                           className="w-full px-4 py-2  flex items-center gap-3" 
                           onClick={(e) => {
                             e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                            handleDeleteChatting(chat.id);
+                            handleDeleteChatting(chat.session_id);
                           }}
                         >
                           <img src={TrashCanIcon} className="cursor-pointer"/>
