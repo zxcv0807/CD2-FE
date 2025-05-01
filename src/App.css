@@ -1,1 +1,79 @@
 @import "tailwindcss";
+
+/* AI 답변 마크다운에만 적용되는 스타일 */
+.ai-markdown {
+  @apply text-base leading-relaxed break-words;
+}
+
+.ai-markdown h1 {
+  @apply text-2xl font-bold mt-6 mb-3;
+}
+.ai-markdown h2 {
+  @apply text-xl font-semibold mt-5 mb-2;
+}
+.ai-markdown h3 {
+  @apply text-lg font-semibold mt-4 mb-2;
+}
+
+.ai-markdown p {
+  @apply mb-4;
+}
+
+.ai-markdown ul {
+  @apply list-disc pl-6 mb-4;
+}
+.ai-markdown ol {
+  @apply list-decimal pl-6 mb-4;
+}
+.ai-markdown li {
+  @apply mb-1;
+}
+
+.ai-markdown a {
+  @apply text-blue-600 underline hover:text-blue-800 transition;
+}
+
+.ai-markdown blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic text-gray-700 bg-gray-50 py-2 my-4;
+}
+
+.ai-markdown pre {
+  @apply bg-gray-900 text-gray-100 rounded p-4 overflow-x-auto my-4;
+}
+
+.ai-markdown code {
+  @apply bg-gray-100 text-pink-600 rounded px-1 py-0.5 text-sm font-mono;
+}
+
+.ai-markdown hr {
+  @apply border-t border-gray-300 my-6;
+}
+
+.ai-markdown img {
+  @apply max-w-full rounded my-4;
+}
+
+.ai-markdown table {
+@apply w-full border-collapse my-4;
+}
+.ai-markdown th, .ai-markdown td {
+@apply border border-gray-300 px-3 py-2;
+}
+.ai-markdown th {
+@apply bg-gray-100 font-semibold text-left;
+}
+
+.ai-markdown strong {
+@apply font-bold text-gray-900;
+}
+.ai-markdown em {
+@apply italic text-gray-800;
+}
+.ai-markdown del {
+@apply line-through text-gray-500;
+}
+
+.ai-markdown ul ul, .ai-markdown ol ul,
+.ai-markdown ul ol, .ai-markdown ol ol {
+@apply mt-1 mb-1 ml-4;
+}

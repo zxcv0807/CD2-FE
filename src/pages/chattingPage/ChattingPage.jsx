@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/chatting/Sidebar";
 import ChatHeader from "../../components/header/ChatHeader";
 import ChatBubble from "../../components/chatting/ChatBubble";
@@ -8,33 +9,93 @@ const ChattingPage = () => {
     const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
     const sidebarWidth = isChatListVisible ? 500 : 80;
 
+    // 채팅 메시지들
+    const [messages, setMessages] = useState([
+        { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
+        { id: 2, type: "feedback", text: "Window, Mac 등 어떤 운영체제를 사용중이신가요?" },
+        { id: 3, type: "user", text: "Window 운영체제 사용중이야" },
+        { id: 4, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
+        { id: 5, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
+        { id: 6, type: "feedback", text: "Window 운영체제 사용중이야" },
+        { id: 7, type: "user", text: "Window 운영체제 사용중이야" },
+        { id: 8, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
+        { id: 9, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
+        { id: 10, type: "feedback", text: "Window 운영체제 사용중이야" },
+        { id: 11, type: "user", text: "Window 운영체제 사용중이야" },
+        { id: 12, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
+    ]);
+
+    // 웹 소켓 연결
+    // const ws = useRef(null);
+    // const aiMessageRef = useRef(null);
+    // useEffect(() => {
+    //     ws.current = new WebSocket(`ws:${import.meta.env.VITE_API_BASE_URL}`);
+
+    //     ws.current.onopen = () => {
+    //         console.log("WebSocket 연결됨");
+    //     };
+
+    //     ws.current.onmessage = (event) => {
+    //         const token = event.data;
+
+    //         if (token === "[END]") {
+    //             aiMessageRef.current = null;
+    //             return;
+    //         }
+
+    //         setMessages((prev) => {
+    //             if (aiMessageRef.current !== null) {
+    //                 const updated = [...prev];
+    //                 updated[updated.length - 1].text += token;
+    //                 return updated;
+    //             } else {
+    //                 const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
+    //                 aiMessageRef.current = newId;
+    //                 return [...prev, { id: newId, type: "ai", text: token }];
+    //             }
+    //         });
+    //     };
+
+    //     ws.current.onclose = () => {
+    //         console.log("WebSocket 종료");
+    //     };
+
+    //     return () => {
+    //         ws.current?.close();
+    //     };
+    // }, []);
+
+    // 메시지 전송(질문하기)
+    const handleSendMessage = (newMessage) => {
+        const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
+        const userMsg = { id: newId, type: "user", text: newMessage };
+        setMessages((prev) => [...prev, userMsg]);
+
+        // 웹소켓으로 사용자 질문 전송
+        // if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        //     ws.current.send(newMessage);
+        // }
+    };
+    
     return (
-        <div className="relative flex h-screen">
+        <div className="relative flex h-screen overflow-hidden">
             <Sidebar />
             <ChatHeader />
             <div
-                className="transition-all duration-300 relative flex-1"
-                style={{ width: `calc(100% - ${sidebarWidth}px)`}}
+                className="transition-all duration-300 relative"
+                style={{
+                    width: `calc(100% - ${sidebarWidth}px)`,
+                }}
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
-                <div className="h-full flex flex-col bg-[#FAFAFA] items-center px-4 relative">
-                    <div className="w-full max-w-[1400px] h-[600px] overflow-y-auto px-10 py-6 mt-8">
-                        {/* 채팅 말풍선들 */}
-                        <ChatBubble type="answer" text="visual studio code 편집기를 이용해 docker 설치방법을 알려줘" />
-                        <ChatBubble type="question" text="Window, Mac 등 어떤 운영체제를 사용중이신가요?" />
-                        <ChatBubble type="answer" text="Window 운영체제 사용중이야" />
-                        <ChatBubble type="answer" text="Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다."/>
-                        <ChatBubble type="answer" text="visual studio code 편집기를 이용해 docker 설치방법을 알려줘" />
-                        <ChatBubble type="question" text="Window, Mac 등 어떤 운영체제를 사용중이신가요?" />
-                        <ChatBubble type="answer" text="Window 운영체제 사용중이야" />
-                        <ChatBubble type="answer" text="Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다."/>
-                        <ChatBubble type="answer" text="visual studio code 편집기를 이용해 docker 설치방법을 알려줘" />
-                        <ChatBubble type="question" text="Window, Mac 등 어떤 운영체제를 사용중이신가요?" />
-                        <ChatBubble type="answer" text="Window 운영체제 사용중이야" />
-                        <ChatBubble type="answer" text="Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다."/>
+                <div className="h-full flex flex-col bg-[#FAFAFA] items-center px-2 relative">
+                    <div className="w-full max-w-[900px]  h-[600px] overflow-y-auto px-10 py-6 mt-8">
+                        {messages.map((msg) => (
+                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} />
+                        ))}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center bg-gradient-to-t from-[#FAFAFA] to-transparent">
-                        <ChatInput />
+                        <ChatInput onSendMessage={handleSendMessage} />
                     </div>
                 </div>
             </div>
