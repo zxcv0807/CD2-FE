@@ -1,0 +1,72 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SearchIconGray from "../../assets/SearchIconGray.png";
+import XIcon from "../../assets/XIcon.png";
+
+const ChatSearch = ( {onClose} ) => {
+    const navigate = useNavigate();
+    // 검색어 상태
+    const [search, setSearch] = useState("");
+    // 채팅 검색 결과
+    const results = [
+        { id: 1, title: "프롬프트 제목1", topic: "주제1" },
+        { id: 2, title: "프롬프트 제목2", topic: "주제2" },
+    ];
+    const handleSearch = () => {
+        console.log("채팅 검색입니다.");
+    };
+    // 대화 세션 클릭
+    const handleSessionClick = (session_id) => {
+        console.log(`${session_id}번째 대화 세션 선택`);
+    }
+    // 새 채팅 시작하기
+    const handleNewChatStart = () => {
+        onClose();
+        navigate("/chat-start");
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
+            <div className="bg-white w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
+                {/* 닫기 버튼 */}
+                <button onClick={onClose} className="absolute top-4 right-4 cursor-pointer">
+                    <img src={XIcon} />
+                </button>
+                {/* 제목 */}
+                <h2 className="text-2xl font-semibold my-10 text-center">채팅 검색</h2>
+                {/* 검색창 */}
+                <div className="relative mb-4">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        placeholder="검색어를 입력해 주세요."
+                        className="w-full border-b border-[#DADADA] px-4 py-2 pr-10 focus:outline-none focus:border-[#DADADA]"
+                    />
+                    <img
+                        src={SearchIconGray}
+                        alt="search"
+                        className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 opacity-50"
+                        onClick={handleSearch}
+                    />
+                </div>
+                {/* 검색 결과 */}
+                <div className="flex flex-col gap-3 overflow-auto">
+                    {results.map((item, idx) => (
+                        <div key={idx} className="bg-[#F5F5F5] p-3 rounded-lg cursor-pointer hover:bg-[#eaeaea]" onClick={()=>handleSessionClick(item.id)}>
+                            <div className="font-semibold">{item.title}</div>
+                            <div className="text-sm text-[#4E4E4E]">{item.topic}</div>
+                        </div>
+                    ))}
+                </div>
+                {/* 새 채팅 시작하기 */}
+                <button className="mt-auto pt-4 text-center text-sm text-[#999999] cursor-pointer" onClick={handleNewChatStart}>
+                    새 채팅 시작하기
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default ChatSearch

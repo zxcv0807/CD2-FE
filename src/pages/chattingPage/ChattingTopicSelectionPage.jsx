@@ -3,18 +3,19 @@ import { useSelector } from "react-redux";
 import axios from "../../api/axiosInstance";
 import Sidebar from "../../components/chatting/Sidebar";
 import ChatHeader from "../../components/header/ChatHeader";
+import { useNavigate } from "react-router-dom";
 
 const ChattingTopicSelectionPage = () => {
   const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
   const sidebarWidth = isChatListVisible ? 500 : 80;
   const token = useSelector((state) => state.auth.token);
 
-  // 주제 선택 (임시 데이터)
+  // 주제 선택
   const [topics, setTopics] = useState([]);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
 
-
   // 주제를 선택하여 새로운 대화 세션 생성
+  const navigate = useNavigate();
   const handleClick = async (topic) => {
     setSelectedTopicId(topic.topic_id);
     console.log("선택한 주제", topic);
@@ -31,7 +32,8 @@ const ChattingTopicSelectionPage = () => {
       console.log("세션 생성 성공", response.data);
       const newSessionId = response.data.session_id;
       console.log("생성된 세션 ID", newSessionId);
-      // 여기서 세션 ID로 추가 작업 수행 가능 (예: 페이지 리디렉션)
+      // 생성된 대화 세션으로 이동
+      navigate(`/chatting/${newSessionId}`)
     } catch (err) {
       console.error("대화 세션 생성 실패: ", err);
     }

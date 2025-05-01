@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleChatListVisible } from "../../REDUX/layout/chatListLayoutSlice";
 import axios from "../../api/axiosInstance";
@@ -13,8 +13,14 @@ import SettingsIcon from "../../assets/SettingsIcon.png";
 import PlusIcon from "../../assets/PlusIcon.png";
 import PencilIcon from "../../assets/PencilIcon.png";
 import TrashCanIcon from "../../assets/TrashCanIcon.png";
+import ChatSearch from "../modal/ChatSearch";
+import Setting from "../modal/Setting";
 
 const Sidebar = () => {
+  // 선택된 세션
+  const location = useLocation();
+  const currentSessionId = location.pathname.split("/chatting/")[1];
+
   // 사이드바 열고 닫기
   const dispatch = useDispatch();
   const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
@@ -67,8 +73,9 @@ const Sidebar = () => {
   }, [token]);
 
   // 채팅 선택
+  const navigate = useNavigate();
   const handleChatClick = (sessionId) => {
-    console.log(`채팅 ${sessionId}이 선택됨`);
+    navigate(`/chatting/${sessionId}`)
   }
 
   // 채팅 목록 중 선택하기
@@ -121,6 +128,10 @@ const Sidebar = () => {
       });
       // UI 상으로는 즉시 반영되도록
       setChatList(prev => prev.filter(chat => chat.session_id !== sessionId));
+      // 현재 보고 있는 대화 세션을 삭제하면 새 채팅 페이지로 이동동
+      if (sessionId.toString() === currentSessionId) {
+        navigate("/chat-start");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -139,161 +150,187 @@ const Sidebar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // 채팅 검색 모달
+  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
+  const handleOpenChatSearch = () => {
+    setIsChatSearchOpen(true);
+  }
+  const handleCloseChatSearch = () => {
+    setIsChatSearchOpen(false);
+  }
+
+  // 설정 모달
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const handleOpenSetting = () => {
+    setIsSettingOpen(true);
+  }
+  const handleCloseSetting = () => {
+    setIsSettingOpen(false);
+  }
   
   return (
-    <aside className="h-screen flex">
-      {/* 👉 왼쪽 네비게이션 영역 (고정 80px) */}
-      <div className="w-[80px] bg-[#A476CC] flex flex-col items-center pt-8 text-white rounded-2xl">
-        {/* 로고 */}
-        <Link to="/" className="mb-8 text-lg font-semibold flex flex-col items-center justify-center">
-          <img src={LogoIconWhite} alt="logo" className="w-[24px] h-[24px]" />
-          <span className="mt-1 text-sm">우문현답</span>
-        </Link>
+    <>
+      <aside className="h-screen flex">
+        {/* 👉 왼쪽 네비게이션 영역 (고정 80px) */}
+        <div className="w-[80px] bg-[#A476CC] flex flex-col items-center pt-8 text-white rounded-2xl">
+          {/* 로고 */}
+          <Link to="/" className="mb-8 text-lg font-semibold flex flex-col items-center justify-center">
+            <img src={LogoIconWhite} alt="logo" className="w-[24px] h-[24px]" />
+            <span className="mt-1 text-sm">우문현답</span>
+          </Link>
 
-        {/* 구분선 */}
-        <div className="w-3/5 h-px bg-white mb-6" />
+          {/* 구분선 */}
+          <div className="w-3/5 h-px bg-white mb-6" />
 
-        {/* 네비게이션 아이콘 리스트 */}
-        <div className="flex flex-col justify-between h-full items-center py-8">
-          <nav className="flex flex-col items-center gap-12">
-            {/* 사이드바 열고 닫기 */}
+          {/* 네비게이션 아이콘 리스트 */}
+          <div className="flex flex-col justify-between h-full items-center py-8">
+            <nav className="flex flex-col items-center gap-12">
+              {/* 사이드바 열고 닫기 */}
+              <div className="relative group">
+                <img src={NaviIcon} onClick={handleToggleChatList} className="cursor-pointer" />
+                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
+                  <SidebarToolTip text={isChatListVisible ? "사이드바 닫기" : "사이드바 열기"} />
+                </div>
+              </div>
+              {/* 새 채팅 */}
+              <Link to="/chat-start" className="relative group">
+                <img src={PenIcon} className="cursor-pointer" />
+                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
+                  <SidebarToolTip text="새 채팅" />
+                </div>
+              </Link>
+              {/* 채팅 검색 */}
+              <div className="relative group">
+                <img src={SearchIcon} onClick={handleOpenChatSearch} className="cursor-pointer"/>
+                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
+                  <SidebarToolTip text="채팅 검색" />
+                </div>
+              </div>
+            </nav>
+            {/* 설정 아이콘 */}
             <div className="relative group">
-              <img src={NaviIcon} onClick={handleToggleChatList} className="cursor-pointer" />
+              <img src={SettingsIcon} onClick={handleOpenSetting} className="cursor-pointer"/>
               <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                <SidebarToolTip text={isChatListVisible ? "사이드바 닫기" : "사이드바 열기"} />
+                <SidebarToolTip text="설정" />
               </div>
-            </div>
-            {/* 새 채팅 */}
-            <Link to="/chat-start" className="relative group">
-              <img src={PenIcon} className="cursor-pointer" />
-              <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                <SidebarToolTip text="새 채팅" />
-              </div>
-            </Link>
-            {/* 채팅 검색 */}
-            <div className="relative group">
-              <img src={SearchIcon}/>
-              <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                <SidebarToolTip text="채팅 검색" />
-              </div>
-            </div>
-          </nav>
-          {/* 설정 아이콘 */}
-          <div className="relative group">
-            <img src={SettingsIcon} />
-            <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-              <SidebarToolTip text="설정" />
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 👉 오른쪽 채팅리스트 영역 */}
-      <div
-        className={`
-          transition-all duration-300 overflow-hidden
-          ${isChatListVisible ? "w-[400px]" : "w-0"}
-        `}
-      >
-        <div className="w-[400px] h-full px-6 py-4">
-          {/* 상단 헤더 */}
-          <header className="flex justify-between items-center my-8">
-            <h2 className="text-[#1A1A1A] text-3xl font-semibold">Message</h2>
-            {/* 새 채팅 */}
-            <Link to="/chat-start" className="relative group">
-              <button className="w-[50px] h-[50px] bg-[#A476CC] rounded-full flex justify-center items-center cursor-pointer">
-                <img src={PlusIcon} />
-              </button>
-            </Link>
-          </header>
+        {/* 오른쪽 채팅리스트 영역 */}
+        <div
+          className={`
+            transition-all duration-300 overflow-hidden
+            ${isChatListVisible ? "w-[400px]" : "w-0"}
+          `}
+        >
+          <div className="w-[400px] h-full px-6 py-4">
+            {/* 상단 헤더 */}
+            <header className="flex justify-between items-center my-8">
+              <h2 className="text-[#1A1A1A] text-3xl font-semibold">Message</h2>
+              {/* 새 채팅 */}
+              <Link to="/chat-start" className="relative group">
+                <button className="w-[50px] h-[50px] bg-[#A476CC] rounded-full flex justify-center items-center cursor-pointer">
+                  <img src={PlusIcon} />
+                </button>
+              </Link>
+            </header>
 
-          {/* 채팅 목록 */}
-          <div>
-            {loading && <span className="text-[#1A1A1A]">로딩 중...</span>}
-          </div>
-          <ul className="flex flex-col divide-y divide-[#DADADA]">
-            {chatList.map((chat) => (
-              <li
-                key={chat.session_id}
-                className="flex justify-between items-center px-4 py-3 mb-4 hover:bg-[#F5F5F5] relative"
-                onClick={() => handleChatClick(chat.session_id)}
-              >
-                <div>
-                  {editSessionId === chat.session_id ? (
-                    <input
-                      type="text"
-                      className="text-[#1A1A1A] font-semibold border-b border-[#999999] bg-transparent outline-none"
-                      autoFocus
-                      defaultValue={chat.session_title}
-                      onBlur={(e) => handleTitleChange(chat.session_id, e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleTitleChange(chat.session_id, e.target.value);
-                        }
-                      }}
-                    />
-                  ) : (
-                    <p className="text-[#1A1A1A] font-semibold max-w-[240px] truncate">
-                      {chat.session_title}
-                    </p>
-                  )}
-                  
-                  <p className="mt-1 text-[#4E4E4E] text-sm">{chat.topic}</p>
-                </div>
-              
-                {/* ⋯ 버튼과 메뉴를 감싸는 박스 */}
-                <div className="relative">
-                  <div
-                    className="text-[#C3C3C3] text-xl cursor-pointer px-2"
-                    onClick={(e) => {
-                      e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                      toggleMenu(chat.session_id, e)}
-                    }
-                  >
-                    ⋯
-                  </div>
-              
-                  {/* 제목 바꾸기, 채팅 삭제 */}
-                  {openMenuId === chat.session_id && (
-                    <MenuPortal>
-                      <div 
-                        className="menu-portal absolute z-50 bg-[#F5F5F5] rounded-md shadow-md w-[140px]"
-                        style={{
-                          position: 'absolute',
-                          top: `${menuPosition.y}px`,
-                          left: `${menuPosition.x}px`,
+            {/* 채팅 목록 */}
+            <div>
+              {loading && <span className="text-[#1A1A1A]">로딩 중...</span>}
+            </div>
+            <ul className="flex flex-col divide-y divide-[#DADADA]">
+              {chatList.map((chat) => (
+                <li
+                  key={chat.session_id}
+                  className={`flex justify-between items-center px-4 py-3 mb-4 relative hover:bg-[#F5F5F5] ${currentSessionId === chat.session_id.toString() ? "bg-[#F3E8FF]" : "hover:bg-[#F5F5F5]"}`}
+                  onClick={() => handleChatClick(chat.session_id)}
+                >
+                  <div>
+                    {editSessionId === chat.session_id ? (
+                      <input
+                        type="text"
+                        className="text-[#1A1A1A] font-semibold border-b border-[#999999] bg-transparent outline-none"
+                        autoFocus
+                        defaultValue={chat.session_title}
+                        onBlur={(e) => handleTitleChange(chat.session_id, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleTitleChange(chat.session_id, e.target.value);
+                          }
                         }}
-                      >
-                        <button 
-                          className="w-full px-4 py-2 flex items-center gap-2" 
-                          onClick={(e) => {
-                            e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                            handleSelectChat(chat.session_id);
+                      />
+                    ) : (
+                      <p className="text-[#1A1A1A] font-semibold max-w-[240px] truncate">
+                        {chat.session_title}
+                      </p>
+                    )}
+                    
+                    <p className="mt-1 text-[#4E4E4E] text-sm">{chat.topic}</p>
+                  </div>
+                
+                  {/* ⋯ 버튼과 메뉴를 감싸는 박스 */}
+                  <div className="relative">
+                    <div
+                      className="text-[#C3C3C3] text-xl cursor-pointer px-2"
+                      onClick={(e) => {
+                        e.stopPropagation(); // 클릭 이벤트 버블링 막기
+                        toggleMenu(chat.session_id, e)}
+                      }
+                    >
+                      ⋯
+                    </div>
+                
+                    {/* 제목 바꾸기, 채팅 삭제 */}
+                    {openMenuId === chat.session_id && (
+                      <MenuPortal>
+                        <div 
+                          className="menu-portal absolute z-50 bg-[#F5F5F5] rounded-md shadow-md w-[140px]"
+                          style={{
+                            position: 'absolute',
+                            top: `${menuPosition.y}px`,
+                            left: `${menuPosition.x}px`,
                           }}
                         >
-                          <img src={PencilIcon} className="cursor-pointer"/>
-                          <span className="text-[#4E4E4E] text-sm hover:underline cursor-pointer">이름 바꾸기</span>
-                        </button>
-                        <button 
-                          className="w-full px-4 py-2  flex items-center gap-3" 
-                          onClick={(e) => {
-                            e.stopPropagation(); // 클릭 이벤트 버블링 막기
-                            handleDeleteChatting(chat.session_id);
-                          }}
-                        >
-                          <img src={TrashCanIcon} className="cursor-pointer"/>
-                          <span className="text-[#ED4545] text-sm hover:underline cursor-pointer">채팅 삭제</span>
-                        </button>
-                      </div>
-                    </MenuPortal>
-                  )}
-                </div>
-              </li>            
-            ))}
-          </ul>
+                          <button 
+                            className="w-full px-4 py-2 flex items-center gap-2" 
+                            onClick={(e) => {
+                              e.stopPropagation(); // 클릭 이벤트 버블링 막기
+                              handleSelectChat(chat.session_id);
+                            }}
+                          >
+                            <img src={PencilIcon} className="cursor-pointer"/>
+                            <span className="text-[#4E4E4E] text-sm hover:underline cursor-pointer">이름 바꾸기</span>
+                          </button>
+                          <button 
+                            className="w-full px-4 py-2  flex items-center gap-3" 
+                            onClick={(e) => {
+                              e.stopPropagation(); // 클릭 이벤트 버블링 막기
+                              handleDeleteChatting(chat.session_id);
+                            }}
+                          >
+                            <img src={TrashCanIcon} className="cursor-pointer"/>
+                            <span className="text-[#ED4545] text-sm hover:underline cursor-pointer">채팅 삭제</span>
+                          </button>
+                        </div>
+                      </MenuPortal>
+                    )}
+                  </div>
+                </li>            
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+      {isChatSearchOpen && (
+        <ChatSearch onClose={handleCloseChatSearch} />
+      )}
+      {isSettingOpen && (
+        <Setting onClose={handleCloseSetting} />
+      )}
+    </>
   );
 };
 
