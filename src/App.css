@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* 다크 모드 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* AI 답변 마크다운에만 적용되는 스타일 */
 .ai-markdown {
   @apply text-base leading-relaxed break-words;

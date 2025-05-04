@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown";
 import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
 
-const ChatBubble = ({ id, type, text }) => {
+const ChatBubble = ({ id, type, text, isCOT = false }) => {
   // ai 채팅
   const handleThumbsUp = () => {
     console.log(`좋아요 ${id}번째 채팅`);
@@ -10,7 +10,18 @@ const ChatBubble = ({ id, type, text }) => {
   const handleThumbsDown = () => {
     console.log(`싫어요 ${id}번째 채팅`);
   }
+
   if (type === "ai") {
+    if (isCOT) {
+      return (
+        <div className="flex flex-col items-start w-full my-4">
+          <div className="w-full text-sm italic bg-yellow-50 rounded-xl px-4 py-2 animate-pulse">
+            <ReactMarkdown>{text}</ReactMarkdown>
+          </div>
+        </div>
+      );
+    };
+    
     return (
       <div className="flex flex-col items-start w-full my-6">
         {/* 텍스트 내용 */}
@@ -38,7 +49,7 @@ const ChatBubble = ({ id, type, text }) => {
     <div className={`flex ${isFeedback ? "justify-start" : "justify-end"} mb-4`}>
       <div
         className={`px-4 py-2 rounded-xl max-w-[60%] text-sm whitespace-pre-wrap
-          ${isFeedback ? "bg-[#A476CC] text-white" : "bg-[#F5F5F5] text-[#1A1A1A]"}`}
+          ${isFeedback ? "bg-[#A476CC] text-white" : "bg-[#E7E7E7] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white"}`}
       >
         {text}
       </div>

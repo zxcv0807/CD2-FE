@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ChatInputTooltip from "../modal/ChatInputToolTip";
 import SpeechBubbleIcon from "../../assets/SpeechBubble.png";
 import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
@@ -91,7 +92,7 @@ const ChatInput = ({ onSendMessage }) => {
   };
 
   return (
-    <div className="w-full max-w-[700px] bg-white border border-[#1A1A1A] rounded-2xl px-4 py-2 shadow-sm">
+    <div className="w-full max-w-[700px] bg-white dark:bg-[#2E2C36] border border-[#4E4E4E] rounded-2xl px-4 py-2">
       {/* 첨부파일 미리보기 */}
       {attachedFiles.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-3">
@@ -127,7 +128,7 @@ const ChatInput = ({ onSendMessage }) => {
         placeholder="무엇이든 물어보세요"
         rows={1}
         onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
-        className="w-full resize-none overflow-y-auto max-h-[200px] text-sm bg-transparent focus:outline-none"
+        className="w-full dark:text-white resize-none overflow-y-auto max-h-[200px] text-sm bg-transparent focus:outline-none"
       />
 
       <div className="flex justify-between items-center mt-2">
@@ -143,27 +144,35 @@ const ChatInput = ({ onSendMessage }) => {
 
         <div className="flex items-center space-x-3">
           {/* 웹서치 아이콘 */}
-          <img
-            src={isWebSearchActive ? WebSearchIconPurple : WebSearchIcon}
-            onClick={toggleWebSearch}
-            className="w-[24px] h-[24px] cursor-pointer"
-          />
-          {/* 첨부파일 업로드 아이콘 */}
-          <div className="relative cursor-pointer" onClick={triggerFileSelect}>
-            <img src={ClipIcon} />
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              multiple
-              accept=".jpg,.jpeg,.png,.pdf,.csv,.txt"
-              className="hidden"
+          <ChatInputTooltip text="웹 검색">
+            <img
+              src={isWebSearchActive ? WebSearchIconPurple : WebSearchIcon}
+              onClick={toggleWebSearch}
+              className="w-[24px] h-[24px] cursor-pointer"
             />
-          </div>
+          </ChatInputTooltip>
 
-          <button onClick={handleSend}>
-            <img src={RightArrowWhiteIcon} className="cursor-pointer"/>
-          </button>
+          {/* 첨부파일 업로드 아이콘 */}
+          <ChatInputTooltip text="파일 첨부">
+            <div className="relative cursor-pointer" onClick={triggerFileSelect}>
+              <img src={ClipIcon} />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                multiple
+                accept=".jpg,.jpeg,.png,.pdf,.csv,.txt"
+                className="hidden"
+              />
+            </div>
+          </ChatInputTooltip>
+
+          {/* 전송 버튼 */}
+          <ChatInputTooltip text="메시지 전송">
+            <button onClick={handleSend}>
+              <img src={RightArrowWhiteIcon} className="cursor-pointer" />
+            </button>
+          </ChatInputTooltip>
         </div>
       </div>
     </div>

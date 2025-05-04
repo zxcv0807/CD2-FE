@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { logout } from "../../REDUX/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { setTheme } from "../../REDUX/theme/themeSlice";
 import XIcon from "../../assets/XIcon.png";
 import { useState } from "react";
 
@@ -28,6 +29,13 @@ const Setting = ( {onClose} ) => {
     // 설정 저장
     const handleSaveSetting = () => {
         console.log("설정 저장하기", settings);
+        // 테마 설정
+        if(settings.theme === "화이트") {
+            dispatch(setTheme("light"));
+        } else {
+            dispatch(setTheme("dark"));
+        }
+        onClose();
     }
     // 로그아웃
     const handleLogout = () => {
@@ -40,13 +48,13 @@ const Setting = ( {onClose} ) => {
     }
     return (
         <div className="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-            <div className="bg-white w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
+            <div className="bg-white dark:bg-[#232129] w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
                 {/* 닫기 버튼 */}
                 <button onClick={onClose} className="absolute top-4 right-4 cursor-pointer">
                     <img src={XIcon} />
                 </button>
                 {/* 제목 */}
-                <h2 className="text-2xl font-semibold my-10 text-center">설정</h2>
+                <h2 className="dark:text-white text-2xl font-semibold my-10 text-center">설정</h2>
                 {/* 설정 박스 */}
                 <div className="border border-[#DADADA] rounded-xl px-6 py-4 space-y-6 text-sm">
                     {[
@@ -56,7 +64,7 @@ const Setting = ( {onClose} ) => {
                     ].map(({ label, options, key }, idx) => (
                         <div key={idx} className="flex items-center space-x-4">
                             {/* 왼쪽 라벨 */}
-                            <div className="w-12 font-medium">{label}</div>
+                            <div className="w-12 dark:text-white font-medium">{label}</div>
                             {/* 세로 구분선 */}
                             <div className="border-l border-[#DADADA] h-5" />
                             {/* 오른쪽 옵션들 */}
@@ -65,7 +73,7 @@ const Setting = ( {onClose} ) => {
                                 <span 
                                     key={i} 
                                     onClick={() => handleOptionClick(key, opt)} 
-                                    className={`cursor-pointer ${settings[key] === opt ? "text-[#1A1A1A] font-semibold" : ""}`}
+                                    className={`cursor-pointer ${settings[key] === opt ? "text-[#1A1A1A] dark:text-white font-semibold" : ""}`}
                                 >
                                     {opt}
                                 </span>
@@ -74,18 +82,18 @@ const Setting = ( {onClose} ) => {
                         </div>
                     ))}
                     {/* 모든 채팅 삭제 */}
-                    <div className="text-right text-sm text-[#999999] cursor-pointer hover:text-black transition">
+                    <div className="text-right text-sm text-[#999999] cursor-pointer hover:text-black dark:hover:text-white transition">
                         <button className="cursor-pointer" onClick={handleDeleteAllChatSession}>모든 채팅 삭제</button>
                     </div>
                 </div>
                 {/* 설정 저장하기 */}
-                <button className="bg-[#A476CC] hover:bg-[#8e68ce] transition text-white text-sm py-3 rounded-xl mt-6 cursor-pointer" onClick={handleSaveSetting}>
+                <button className="bg-[#A476CC] hover:bg-[#6A4B85] dark:hover:bg-[#C0A3E6] transition text-white text-sm py-3 rounded-xl mt-6 cursor-pointer" onClick={handleSaveSetting}>
                     설정 저장하기
                 </button>
                 {/* 로그아웃, 회원 탈퇴 */}
                 <div className="flex justify-center gap-6 text-[#999999] text-sm mt-4">
-                    <button className="hover:text-black transition cursor-pointer" onClick={handleLogout}>로그아웃</button>
-                    <button className="hover:text-black transition cursor-pointer" onClick={handleDeleteAccount}>회원 탈퇴</button>
+                    <button className="hover:text-black dark:hover:text-white transition cursor-pointer" onClick={handleLogout}>로그아웃</button>
+                    <button className="hover:text-black dark:hover:text-white transition cursor-pointer" onClick={handleDeleteAccount}>회원 탈퇴</button>
                 </div>
             </div>
         </div>

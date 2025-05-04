@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 
 const ChattingTopicSelectionPage = () => {
   const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
-  const sidebarWidth = isChatListVisible ? 500 : 80;
-  const token = useSelector((state) => state.auth.token);
+  const sidebarWidth = isChatListVisible ? 430 : 80;
+  const token = useSelector((state) => state.auth.token); 
 
   // 주제 선택
   const [topics, setTopics] = useState([]);
@@ -65,14 +65,14 @@ const ChattingTopicSelectionPage = () => {
         className="transition-all duration-300"
         style={{ width: `calc(100% - ${sidebarWidth}px)` }}
       >
-        <div className="flex justify-center items-center bg-[#FAFAFA] px-4 h-full">
-          <div className="text-center w-full max-w-[1400px] h-[600px] p-10 bg-white rounded-2xl shadow-sm flex flex-col justify-center items-center">
+        <div className="flex justify-center items-center bg-[#FAFAFA] dark:bg-[#18171C] px-4 h-full">
+          <div className="text-center w-full max-w-[1400px] h-[600px] p-10 bg-white dark:bg-[#232129] rounded-2xl shadow-sm flex flex-col justify-center items-center">
             {/* 상단 텍스트 */}
             <h3 className="text-[#A476CC] text-xl font-semibold mb-4">새 채팅 시작</h3>
-            <h2 className="text-[#1A1A1A] text-2xl font-bold mb-6">
+            <h2 className="text-[#1A1A1A] dark:text-white text-2xl font-bold mb-6">
               주제를 선택하고 더 정확한 답변을 받아보세요!
             </h2>
-            <p className="text-[#4E4E4E] leading-relaxed mb-6">
+            <p className="text-[#4E4E4E] dark:text-[#BBBBBB] leading-relaxed mb-6">
               궁금한 내용을 더 빠르고 정확하게 해결할 수 있도록, 먼저 주제를 선택해주세요. <br />
               원하는 주제를 선택하면 맞춤형 답변을 제공해 드립니다!
             </p>
@@ -87,7 +87,7 @@ const ChattingTopicSelectionPage = () => {
                     ${
                       selectedTopicId === topic.topic_id
                         ? "bg-[#A476CC] text-white border-[#A476CC]"
-                        : "text-[#4E4E4E] border-[#DADADA] hover:bg-[#DADADA]"
+                        : "text-[#4E4E4E] dark:text-[#FAFAFA] border-[#DADADA] dark:border-[#888888] hover:bg-[#DADADA] dark:hover:bg-[#888888]"
                     }
                   `}
                 >

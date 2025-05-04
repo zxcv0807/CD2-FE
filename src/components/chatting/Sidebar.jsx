@@ -44,7 +44,7 @@ const Sidebar = () => {
 
   const token = useSelector((state) => state.auth.token);
 
-  // 채팅 목록 불러오기
+  // 대화 세션 전체 목록 불러오기
   useEffect(() => {
     const fetchChatList = async () => {
       setLoading(true);
@@ -55,7 +55,9 @@ const Sidebar = () => {
           },
         });
         console.log("채팅 목록 불러오기 성공", response.data);
-        const chatData = response.data.map(session => ({
+        const chatData = response.data
+          .sort((a, b) => new Date(b.modify_at) - new Date(a.modify_at))
+          .map(session => ({
           session_id: session.session_id,
           session_title: session.title,
           topicId: session.topics[0].topic_id,
@@ -219,16 +221,11 @@ const Sidebar = () => {
         </div>
 
         {/* 오른쪽 채팅리스트 영역 */}
-        <div
-          className={`
-            transition-all duration-300 overflow-hidden
-            ${isChatListVisible ? "w-[400px]" : "w-0"}
-          `}
-        >
-          <div className="w-[400px] h-full px-6 py-4">
+        <div className={`transition-all duration-300 overflow-hidden ${isChatListVisible ? "w-[350px]" : "w-0"}`}>
+          <div className="w-[350px] h-full px-6 py-4 bg-white dark:bg-[#232129]">
             {/* 상단 헤더 */}
             <header className="flex justify-between items-center my-8">
-              <h2 className="text-[#1A1A1A] text-3xl font-semibold">Message</h2>
+              <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold">Message</h2>
               {/* 새 채팅 */}
               <Link to="/chat-start" className="relative group">
                 <button className="w-[50px] h-[50px] bg-[#A476CC] rounded-full flex justify-center items-center cursor-pointer">
@@ -239,20 +236,20 @@ const Sidebar = () => {
 
             {/* 채팅 목록 */}
             <div>
-              {loading && <span className="text-[#1A1A1A]">로딩 중...</span>}
+              {loading && <span className="text-[#1A1A1A] dark:text-white">로딩 중...</span>}
             </div>
-            <ul className="flex flex-col divide-y divide-[#DADADA]">
+            <ul className="flex flex-col divide-y divide-[#999999] dark:divide-[#BBBBBB]">
               {chatList.map((chat) => (
                 <li
                   key={chat.session_id}
-                  className={`flex justify-between items-center px-4 py-3 mb-4 relative hover:bg-[#F5F5F5] ${currentSessionId === chat.session_id.toString() ? "bg-[#F3E8FF]" : "hover:bg-[#F5F5F5]"}`}
+                  className={`flex justify-between items-center px-4 py-3 mb-4 rounded-xl hover:bg-[#E7E7E7] dark:hover:bg-[#4E4E4E] relative ${currentSessionId === chat.session_id.toString() ? "bg-[#DADADA] dark:bg-[#393646]" : ""}`}
                   onClick={() => handleChatClick(chat.session_id)}
                 >
                   <div>
                     {editSessionId === chat.session_id ? (
                       <input
                         type="text"
-                        className="text-[#1A1A1A] font-semibold border-b border-[#999999] bg-transparent outline-none"
+                        className="text-[#1A1A1A] dark:text-white font-semibold border-b border-[#999999] dark:border-[#FAFAFA] bg-transparent outline-none"
                         autoFocus
                         defaultValue={chat.session_title}
                         onBlur={(e) => handleTitleChange(chat.session_id, e.target.value)}
@@ -263,18 +260,19 @@ const Sidebar = () => {
                         }}
                       />
                     ) : (
-                      <p className="text-[#1A1A1A] font-semibold max-w-[240px] truncate">
+                      // 대화 세션 제목
+                      <p className="text-[#1A1A1A] dark:text-white font-semibold max-w-[200px] truncate">
                         {chat.session_title}
                       </p>
                     )}
                     
-                    <p className="mt-1 text-[#4E4E4E] text-sm">{chat.topic}</p>
+                    <p className="mt-1 text-[#4E4E4E] dark:text-[#BBBBBB] text-sm">{chat.topic}</p>
                   </div>
                 
                   {/* ⋯ 버튼과 메뉴를 감싸는 박스 */}
                   <div className="relative">
                     <div
-                      className="text-[#C3C3C3] text-xl cursor-pointer px-2"
+                      className="text-[#C3C3C3] dark:text-[#888888] text-xl cursor-pointer px-2"
                       onClick={(e) => {
                         e.stopPropagation(); // 클릭 이벤트 버블링 막기
                         toggleMenu(chat.session_id, e)}
@@ -291,7 +289,7 @@ const Sidebar = () => {
                           style={{
                             position: 'absolute',
                             top: `${menuPosition.y}px`,
-                            left: `${menuPosition.x}px`,
+                            left: `${menuPosition.x}px`,  
                           }}
                         >
                           <button 
@@ -305,7 +303,7 @@ const Sidebar = () => {
                             <span className="text-[#4E4E4E] text-sm hover:underline cursor-pointer">이름 바꾸기</span>
                           </button>
                           <button 
-                            className="w-full px-4 py-2  flex items-center gap-3" 
+                            className="w-full px-4 py-2 flex items-center gap-3" 
                             onClick={(e) => {
                               e.stopPropagation(); // 클릭 이벤트 버블링 막기
                               handleDeleteChatting(chat.session_id);

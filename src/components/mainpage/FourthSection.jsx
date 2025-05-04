@@ -6,10 +6,9 @@ import QuestionStartIcon2 from "../../assets/QuestionStartIcon2.png";
 import RightArrow from "../../assets/RightArrow.png";
 import { Link } from "react-router-dom";
 
-const FourthSection = ( {sectionRef} ) => {
+const FourthSection = () => {
     return (
         <section 
-            ref={sectionRef}
             className="mt-[100px] relative w-full bg-cover bg-center bg-no-repeat text-white"
             style={{ backgroundImage: `url(${FourthSectionBackground})` }}  
         >
@@ -65,7 +64,7 @@ const FourthSection = ( {sectionRef} ) => {
                     {/* 세 번째 카드 섹션 */}
                     <div className="bg-white/20 px-6 py-[50px] rounded-lg text-left flex flex-col items-center">
                         <div className="mb-8 w-full flex justify-center">
-                            <img src={FourthSectionDialog} className="block" />
+                            <img src={FourthSectionEncrypted} className="block" />
                         </div>
                         <div className="w-full">
                             <h3 className="mb-4 text-lg font-semibold">안전한 개인정보</h3>
