@@ -9,7 +9,6 @@ import Button from "../components/form/Button";
 import formImage from "../assets/formImage.png";
 import GoogleLogin from "../assets/web_light_rd_SI@1x.png";
 
-
 const LoginPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();

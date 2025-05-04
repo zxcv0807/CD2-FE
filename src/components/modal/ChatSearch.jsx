@@ -11,6 +11,10 @@ const ChatSearch = ( {onClose} ) => {
     const results = [
         { id: 1, title: "프롬프트 제목1", topic: "주제1" },
         { id: 2, title: "프롬프트 제목2", topic: "주제2" },
+        { id: 3, title: "프롬프트 제목1", topic: "주제3" },
+        { id: 4, title: "프롬프트 제목2", topic: "주제4" },
+        { id: 5, title: "프롬프트 제목1", topic: "주제5" },
+        { id: 6, title: "프롬프트 제목2", topic: "주제6" },
     ];
     const handleSearch = () => {
         console.log("채팅 검색입니다.");
@@ -27,13 +31,13 @@ const ChatSearch = ( {onClose} ) => {
 
     return (
         <div className="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-            <div className="bg-white w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
+            <div className="bg-white dark:bg-[#232129] w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
                 {/* 닫기 버튼 */}
                 <button onClick={onClose} className="absolute top-4 right-4 cursor-pointer">
                     <img src={XIcon} />
                 </button>
                 {/* 제목 */}
-                <h2 className="text-2xl font-semibold my-10 text-center">채팅 검색</h2>
+                <h2 className="text-2xl dark:text-white font-semibold my-10 text-center">채팅 검색</h2>
                 {/* 검색창 */}
                 <div className="relative mb-4">
                     <input
@@ -42,21 +46,21 @@ const ChatSearch = ( {onClose} ) => {
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                         placeholder="검색어를 입력해 주세요."
-                        className="w-full border-b border-[#DADADA] px-4 py-2 pr-10 focus:outline-none focus:border-[#DADADA]"
+                        className="w-full dark:text-white border-b border-[#DADADA] px-4 py-2 pr-10 focus:outline-none focus:border-[#DADADA]"
                     />
                     <img
                         src={SearchIconGray}
                         alt="search"
-                        className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 opacity-50"
+                        className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2"
                         onClick={handleSearch}
                     />
                 </div>
                 {/* 검색 결과 */}
                 <div className="flex flex-col gap-3 overflow-auto">
                     {results.map((item, idx) => (
-                        <div key={idx} className="bg-[#F5F5F5] p-3 rounded-lg cursor-pointer hover:bg-[#eaeaea]" onClick={()=>handleSessionClick(item.id)}>
-                            <div className="font-semibold">{item.title}</div>
-                            <div className="text-sm text-[#4E4E4E]">{item.topic}</div>
+                        <div key={idx} className="bg-[#F5F5F5] dark:bg-[#393646] p-3 mr-1 rounded-lg cursor-pointer hover:bg-[#eaeaea] dark:hover:bg-[#4E4E4E]" onClick={()=>handleSessionClick(item.id)}>
+                            <div className="dark:text-white font-semibold truncate">{item.title}</div>
+                            <div className="dark:text-[#BBBBBB] text-sm text-[#4E4E4E]">{item.topic}</div>
                         </div>
                     ))}
                 </div>

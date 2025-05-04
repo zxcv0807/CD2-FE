@@ -1,5 +1,7 @@
 import './App.css'
+import useDarkMode from './hooks/useDarkMode';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import GoogleCallbackPage from './components/Oauth/GoogleCallbackPage';
@@ -11,6 +13,10 @@ import ChattingPage from './pages/chattingPage/ChattingPage';
 import PrivacyPage from './pages/PrivacyPage';
 
 function App() {
+  // 다크 모드
+  const theme = useSelector((state) => state.theme.mode);
+  useDarkMode(theme);
+
   return (
     <Router>
       <Routes>

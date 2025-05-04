@@ -7,7 +7,7 @@ import ChatInput from "../../components/chatting/ChatInput";
 
 const ChattingPage = () => {
     const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
-    const sidebarWidth = isChatListVisible ? 500 : 80;
+    const sidebarWidth = isChatListVisible ? 430 : 80;
 
     // 채팅 메시지들
     const [messages, setMessages] = useState([
@@ -24,10 +24,12 @@ const ChattingPage = () => {
         { id: 11, type: "user", text: "Window 운영체제 사용중이야" },
         { id: 12, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
     ]);
+    // COT 메시지
+    const [cotMessage, setCotMessage] = useState("");
 
     // 웹 소켓 연결
-    // const ws = useRef(null);
-    // const aiMessageRef = useRef(null);
+    const ws = useRef(null);
+    const aiMessageRef = useRef(null);
     // useEffect(() => {
     //     ws.current = new WebSocket(`ws:${import.meta.env.VITE_API_BASE_URL}`);
 
@@ -38,8 +40,14 @@ const ChattingPage = () => {
     //     ws.current.onmessage = (event) => {
     //         const token = event.data;
 
+    //         if (token.startsWith("cot")) {
+    //             setCotMessage((prev) => prev + token.slice(4));
+    //             return;
+    //         }
+
     //         if (token === "[END]") {
     //             aiMessageRef.current = null;
+    //             setCotMessage("");
     //             return;
     //         }
 
@@ -56,6 +64,10 @@ const ChattingPage = () => {
     //         });
     //     };
 
+    //     ws.current.onerror = (error) => {
+    //         console.error("WebSocket 에러", error);
+    //     };
+
     //     ws.current.onclose = () => {
     //         console.log("WebSocket 종료");
     //     };
@@ -66,14 +78,21 @@ const ChattingPage = () => {
     // }, []);
 
     // 메시지 전송(질문하기)
-    const handleSendMessage = (newMessage) => {
+    const handleSendMessage = (message, attachedFiles) => {
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
-        const userMsg = { id: newId, type: "user", text: newMessage };
+
+        const userMsg = { id: newId, type: "user", text: message };
         setMessages((prev) => [...prev, userMsg]);
 
         // 웹소켓으로 사용자 질문 전송
-        // if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        //     ws.current.send(newMessage);
+        // if (ws.current?.readyState === WebSocket.OPEN) {
+        //     ws.current.send(message);
+        // } else {
+        //     console.warn("WebSocket이 아직 연결되지 않았습니다.");
+        // }
+        // // 첨부파일 처리 (추후 서버 연동 시 구현)
+        // if (attachedFiles.length > 0) {
+        //     console.log("첨부파일 처리 필요", attachedFiles);
         // }
     };
     
@@ -88,13 +107,17 @@ const ChattingPage = () => {
                 }}
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
-                <div className="h-full flex flex-col bg-[#FAFAFA] items-center px-2 relative">
-                    <div className="w-full max-w-[900px]  h-[600px] overflow-y-auto px-10 py-6 mt-8">
+                <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
+                    <div className="w-full max-w-[900px] h-[600px] overflow-y-auto px-10 py-6 mt-8">
+                        {/* Chain Of Thought UI 표시 */}
+                        {cotMessage && (
+                            <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />
+                        )}
                         {messages.map((msg) => (
                             <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} />
                         ))}
                     </div>
-                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center bg-gradient-to-t from-[#FAFAFA] to-transparent">
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">
                         <ChatInput onSendMessage={handleSendMessage} />
                     </div>
                 </div>
