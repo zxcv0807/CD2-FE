@@ -46,19 +46,19 @@ const ThirdSection = () => {
             {/* POINT 1 */}
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 1</h4>
-                <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">
+                <h2 className="text-xl font-semibold text-[#1A1A1A] dark:text-white mb-4">
                     대화의 방향을 설정하고, 더 최적화된 답변을 받아보세요.
                 </h2>
-                <p className="text-sm text-[#4E4E4E] mb-8">
+                <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
                     원하는 주제를 선택하면 AI가 대화를 더욱 정확하게 이해하고 향상된 답변을 제공합니다. <br/>
                     질문에 대한 맥락을 더 명확하게 설정하여 효과적인 지식을 경험하세요.
                 </p>
-                <div ref={sectionRef} className="flex gap-2 text-[#4E4E4E] mb-8">
+                <div ref={sectionRef} className="flex gap-2 text-[#4E4E4E] dark:text-[#FAFAFA] mb-8">
                     {topics.map((text, index) => (
                         <button
                             key={index}
-                            className={`px-6 py-2 rounded-full border border-[#DADADA] transition-all duration-500 ${
-                                index === activeIndex ? "bg-[#A476CC] text-white border-[#A476CC]" : "bg-white"
+                            className={`px-6 py-2 rounded-full border border-[#DADADA] dark:border-[#888888] transition-all duration-500 ${
+                                index === activeIndex ? "bg-[#A476CC] text-white border-[#A476CC]" : ""
                             }`}
                         >
                             {text}
@@ -70,10 +70,10 @@ const ThirdSection = () => {
             {/* 구분선 (가로 점선 + 중앙 점 + 세로 점선) */}
             <div className="relative flex justify-center my-12">
                 {/* 가로 점선 */}
-                <div className="w-full border-t border-dashed border-gray-300"></div>
+                <div className="w-full border-t border-dashed border-[#C3C3C3]"></div>
 
                 {/* 세로 점선 */}
-                <div className="absolute top-0 left-1/2 h-[320px] border-l border-dashed border-gray-300"></div>
+                <div className="absolute top-0 left-1/2 h-[320px] border-l border-dashed border-[#C3C3C3]"></div>
             </div>
 
             {/* POINT 2 & POINT 3 */}
@@ -81,17 +81,17 @@ const ThirdSection = () => {
                 {/* POINT 2 */}
                 <div>
                     <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 2</h4>
-                    <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">
+                    <h2 className="text-xl font-semibold text-[#1A1A1A] dark:text-white mb-4">
                         필요한 때만 최적화,<br /> 원하는 방식으로 대화하세요.
                     </h2>
-                    <p className="text-sm text-[#4E4E4E] mb-8">
+                    <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
                         최적화 기능을 켜면 AI가 역역질문을 통해 <br />
                         답변을 더욱 정교하게 다듬어 줍니다.<br />
                         상황에 따라 자유롭게 ON/OFF를 조절하며<br />
                         원하는 방식으로 소통해보세요.
                     </p>
                     <div className="flex gap-2">
-                        <button className="flex gap-2 px-4 py-2 bg-[#C3C3C3] text-white rounded-md items-center">
+                        <button className="flex gap-2 px-4 py-2 bg-[#C3C3C3] dark:bg-[#888888] text-white rounded-md items-center">
                             <img src={SpeechBubble} className="h-[18px]"/>
                             최적화하기
                         </button>
@@ -105,16 +105,16 @@ const ThirdSection = () => {
                 {/* POINT 3 */}
                 <div className="ml-4">
                     <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 3</h4>
-                    <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">
+                    <h2 className="text-xl font-semibold text-[#1A1A1A] dark:text-white mb-4">
                         더 나은 대화를 위한 피드백,<br /> 당신의 의견을 들려주세요.
                     </h2>
-                    <p className="text-sm text-[#4E4E4E] mb-8">
+                    <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
                         최적화된 대화가 만족스러우셨나요?<br />
                         "좋았다"또는 "별로였다"를 선택하여 의견을 남겨주세요. <br />
                         여러분의 피드백을 반영해해<br />
                         더욱 정교한 AI 대화를 만들어 갑니다.
                     </p>
-                    <div className="flex items-center gap-2 text-[#999999] text-sm">
+                    <div className="flex items-center gap-2 text-[#999999] dark:text-[#888888] text-sm">
                         해당 내용의 최적화 답변이 어떠셨나요?
                         <img src={ThumbsUp} />
                         <img src={ThumbsDown} />

@@ -26,7 +26,7 @@ const FirstSection = () => {
 
     return (
         <section className="flex flex-col items-center text-center mt-16 px-4 pt-20">
-            {/* 원형 그라데이션션 배경 */}
+            {/* 원형 그라데이션 배경 */}
             <div className="absolute w-[672px] h-[672px] right-[40px] top-[-100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(82,122,255,0.2)_0%,rgba(82,122,255,0)_100%)]"></div>
             <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)]"></div>
 
@@ -36,18 +36,18 @@ const FirstSection = () => {
                     {currentText},
                 </span>
                 <br />
-                <span className="text-[#1A1A1A]">더 정교하게 다듬어 드립니다.</span>
+                <span className="text-[#1A1A1A] dark:text-white">더 정교하게 다듬어 드립니다.</span>
             </h2>
 
             {/* 내용 */}
-            <p className="text-sm text-[#4E4E4E] mt-4">
+            <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mt-4">
                 AI가 더 정확하고 유용한 답변을 제공할 수 있도록, 질문을 최적화해드립니다.<br />
                 프롬프트를 다듬으면 원하는 정보를 더욱 빠르고 정확하게 얻을 수 있습니다. 지금 최적의 질문을 만들어보세요!
             </p>
 
             {/* 질문 시작하기 버튼 */}
             <Link to="/chat-start" className="w-[240px] mt-10 px-2 py-1 border border-[#DADADA] rounded-full flex justify-between items-center space-x-2 cursor-pointer z-5">
-                <span className="text-[#1A1A1A] ml-4">질문 시작하기</span>
+                <span className="text-[#1A1A1A] dark:text-white ml-4">질문 시작하기</span>
                 <img src={QuestionStartIcon} />
             </Link>
 

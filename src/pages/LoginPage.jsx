@@ -94,12 +94,12 @@ const LoginPage = () => {
             <Header />
             <div className="flex flex-1">
                 {/* 왼쪽 영역 */}
-                <div className="w-[600px] bg-white flex flex-col justify-center px-16">
-                    <h2 className="text-[#1A1A1A] text-3xl font-semibold mb-8">Login</h2>
+                <div className="w-[600px] bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
+                    <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold mb-8">Login</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col">
                         {/* 이메일 입력 */}
                         <div className="mb-4">
-                            <label className="text-[#1A1A1A] font-semibold">Email</label>
+                            <label className="text-[#1A1A1A] dark:text-white font-semibold">Email</label>
                             <Input
                                 type="text"
                                 name="email"
@@ -113,7 +113,7 @@ const LoginPage = () => {
                         </div>
                         {/* 비밀번호 입력 */}
                         <div className="mb-4">
-                            <label className="text-[#1A1A1A] font-semibold">Password</label>
+                            <label className="text-[#1A1A1A] dark:text-white font-semibold">Password</label>
                             <Input
                                 type="password"
                                 name="password"
@@ -132,9 +132,9 @@ const LoginPage = () => {
                                     <input type="checkbox" className="peer hidden" id="keepLoggedIn" />
                                     <div className="w-2 h-2 rounded-full bg-transparent peer-checked:bg-[#A476CC]" />
                                 </div>
-                                <span className="text-[#4E4E4E]">로그인 상태 유지</span>
+                                <span className="text-[#4E4E4E] dark:text-[#BBBBBB]">로그인 상태 유지</span>
                             </label>
-                            <Link to="/" className="text-[#999999]">비밀번호 찾기</Link>
+                            <Link to="/" className="text-[#999999] dark:text-[#888888]">비밀번호 찾기</Link>
                         </div>
                         {serverError && (
                             <p className="text-[#ED4545] text-sm">{serverError}</p>
@@ -144,7 +144,7 @@ const LoginPage = () => {
                     {/* 또는 */}
                     <div className="flex items-center my-4">
                         <hr className="flex-1 border-[#DADADA]" />
-                        <span className="px-4 text-[#4E4E4E] text-sm">또는</span>
+                        <span className="px-4 text-[#4E4E4E] dark:text-[#BBBBBB] text-sm">또는</span>
                         <hr className="flex-1 border-[#DADADA]" />
                     </div>
                     {/* 구글 로그인 */}
@@ -152,8 +152,8 @@ const LoginPage = () => {
                         <img src={GoogleLogin} className="w-[175px] h-auto cursor-pointer"/>
                     </button>
                     {/* 회원가입 이동 */}
-                    <p className="text-center text-[#999999] mt-8">
-                        우문현답은 처음이신가요? <Link to="/signup" className="text-[#A476CC]">회원가입</Link>
+                    <p className="text-center text-[#999999] dark:text-[#888888] mt-8">
+                        우문현답은 처음이신가요? <Link to="/signup" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">회원가입</Link>
                     </p>
                 </div>
 

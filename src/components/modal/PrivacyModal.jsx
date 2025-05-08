@@ -1,9 +1,9 @@
 const PrivacyModal = ({ onClose, onAgree }) => {
     return (
         <div className="fixed inset-0 backdrop-blur-sm backdrop-brightness-75 flex justify-center items-center z-50 transition-all duration-300">
-            <div className="bg-white p-6 rounded-lg max-h-[600px] w-[600px] shadow-lg overflow-auto ">
-                <h3 className="text-lg font-bold mb-4">개인정보 이용 동의</h3>
-                <p className="text-sm mb-4">
+            <div className="bg-white dark:bg-[#18171C] p-6 rounded-lg max-h-[600px] w-[600px] shadow-lg overflow-auto ">
+                <h3 className="dark:text-white text-lg font-bold mb-4">개인정보 이용 동의</h3>
+                <p className="dark:text-white text-sm mb-4">
                     우문현답(이하 "회사"라 한다)은 서비스 기획부터 종료까지 개인정보보호법 등 국내의 개인정보 보호 법령을 철저히 준수합니다.<br/>
                     <br/>
                     제 1 조. 개인정보의 수집 및 이용 목적<br/>
@@ -73,13 +73,13 @@ const PrivacyModal = ({ onClose, onAgree }) => {
                 <div className="flex justify-end gap-4">
                     <button
                         onClick={onClose}
-                        className="text-[#4E4E4E] hover:underline cursor-pointer"
+                        className="text-[#4E4E4E] dark:text-[#BBBBBB] hover:underline cursor-pointer"
                     >
                         닫기
                     </button>
                     <button
                         onClick={onAgree}
-                        className="bg-blue-500 text-white px-4 py-1 rounded cursor-pointer"
+                        className="bg-blue-500 text-white px-4 py-1 rounded cursor-pointer hover:bg-blue-600"
                     >
                         동의하기
                     </button>
