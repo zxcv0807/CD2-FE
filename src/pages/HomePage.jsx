@@ -11,7 +11,7 @@ const HomePage = () => {
       {/* 헤더 */}
       <Header/>
       {/* 메인 */}
-      <main className="min-h-screen flex flex-col items-center bg-white">
+      <main className="min-h-screen flex flex-col items-center bg-white dark:bg-[#18171C]">
           {/* 첫 번째 섹션 */}
           <FirstSection />
           {/* 두 번째 섹션 */}

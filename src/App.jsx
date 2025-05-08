@@ -11,6 +11,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ChattingTopicSelectionPage from "./pages/chattingPage/ChattingTopicSelectionPage";
 import ChattingPage from './pages/chattingPage/ChattingPage';
 import PrivacyPage from './pages/PrivacyPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminTopicManagement from './pages/admin/AdminTopicManagement';
+import AdminLanguageManagement from './pages/admin/AdminLanguageManagement';
 
 function App() {
   // 다크 모드
@@ -26,9 +29,11 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/guideline" element={<GuidelinePage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
-        {/* <Route path="/chat-start" element={<ChattingTopicSelectionPage />} /> */}
         <Route path="/chatting" element={<ChattingPage />} />
         <Route path="/chatting/:session_id" element={<ChattingPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/topic" element={<AdminTopicManagement/>} />
+        <Route path="/admin/language" element={<AdminLanguageManagement />} />
         <Route 
           path="/chat-start" 
           element={

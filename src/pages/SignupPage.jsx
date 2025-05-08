@@ -118,12 +118,12 @@ const SignupPage = () => {
         <div className="flex flex-col h-screen">
             <Header />
             <div className="flex flex-1">
-                <div className="w-[600px] bg-white flex flex-col justify-center px-16">
-                    <h2 className="text-3xl font-semibold mb-8">Sign Up</h2>
+                <div className="w-[600px] bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
+                    <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold mb-8">Sign Up</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         {/* 이메일 입력 */}
                         <div>
-                            <label className="text-[#1A1A1A] font-semibold">Email</label>
+                            <label className="text-[#1A1A1A] dark:text-white font-semibold">Email</label>
                             <Input
                                 type="text"
                                 name="email"
@@ -135,7 +135,7 @@ const SignupPage = () => {
                         </div>
                         {/* 비밀번호 입력 */}
                         <div>
-                            <label className="text-[#1A1A1A] font-semibold">Password</label>
+                            <label className="text-[#1A1A1A] dark:text-white font-semibold">Password</label>
                             <Input
                                 type="password"
                                 name="password"
@@ -147,7 +147,7 @@ const SignupPage = () => {
                         </div>
                         {/* 비밀번호 확인 */}
                         <div>
-                            <label className="text-[#1A1A1A] font-semibold">Verify Password</label>
+                            <label className="text-[#1A1A1A] dark:text-white font-semibold">Verify Password</label>
                             <Input
                                 type="password"
                                 name="confirmPassword"
@@ -164,11 +164,11 @@ const SignupPage = () => {
                             <div className="flex items-center gap-2">
                                 {/* 숨겨진 체크박스 */}
                                 <input
-                                type="checkbox"
-                                id="privacy"
-                                checked={agreedToPrivacy}
-                                readOnly // 직접 바꾸지 못하게 막음
-                                className="hidden"
+                                    type="checkbox"
+                                    id="privacy"
+                                    checked={agreedToPrivacy}
+                                    readOnly // 직접 바꾸지 못하게 막음
+                                    className="hidden"
                                 />
                                 
                                 {/* 커스텀 체크박스 UI */}
@@ -184,7 +184,7 @@ const SignupPage = () => {
                                 {/* 텍스트 클릭해도 모달 열기 */}
                                 <label
                                     htmlFor="privacy"
-                                    className="text-sm text-[#1A1A1A] cursor-pointer underline"
+                                    className="text-sm text-[#1A1A1A] dark:text-white cursor-pointer underline"
                                     onClick={() => setIsPrivacyModalOpen(true)}
                                 >
                                     개인정보 이용 동의

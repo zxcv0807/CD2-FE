@@ -1,15 +1,19 @@
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
+import axios from "../../api/axiosInstance";
 import Sidebar from "../../components/chatting/Sidebar";
 import ChatHeader from "../../components/header/ChatHeader";
 import ChatBubble from "../../components/chatting/ChatBubble";
 import ChatInput from "../../components/chatting/ChatInput";
+import { useParams } from "react-router-dom";
 
 const ChattingPage = () => {
     const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
     const sidebarWidth = isChatListVisible ? 430 : 80;
+    const token = useSelector((state) => state.auth.token);
+    const { session_id } = useParams();
 
-    // 채팅 메시지들
+    // 채팅 메시지
     const [messages, setMessages] = useState([
         { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
         { id: 2, type: "feedback", text: "Window, Mac 등 어떤 운영체제를 사용중이신가요?" },
@@ -26,74 +30,107 @@ const ChattingPage = () => {
     ]);
     // COT 메시지
     const [cotMessage, setCotMessage] = useState("");
-
     // 웹 소켓 연결
     const ws = useRef(null);
     const aiMessageRef = useRef(null);
-    // useEffect(() => {
-    //     ws.current = new WebSocket(`ws:${import.meta.env.VITE_API_BASE_URL}`);
+    useEffect(() => {
+        ws.current = new WebSocket(`ws:${import.meta.env.VITE_API_BASE_URL}`);
 
-    //     ws.current.onopen = () => {
-    //         console.log("WebSocket 연결됨");
-    //     };
+        ws.current.onopen = () => {
+            console.log("WebSocket 연결됨");
+        };
 
-    //     ws.current.onmessage = (event) => {
-    //         const token = event.data;
+        ws.current.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                const { type, text } = data;
 
-    //         if (token.startsWith("cot")) {
-    //             setCotMessage((prev) => prev + token.slice(4));
-    //             return;
-    //         }
+                let messageType = null;
+                if (type === "cot") messageType = "cot";
+                else if (type === "hil") messageType = "feedback";
+                else if (type === "result") messageType = "ai";
+                
+                if(messageType === "cot") {
+                    setCotMessage((prev) => prev + text);
+                    return;
+                }
 
-    //         if (token === "[END]") {
-    //             aiMessageRef.current = null;
-    //             setCotMessage("");
-    //             return;
-    //         }
+                if (messageType === "ai"){
+                    if(text === "[END]") {
+                        aiMessageRef.current = null;
+                        setCotMessage("");
+                        return;
+                    }
+                    
+                    setMessages((prev) => {
+                        if (aiMessageRef.current !== null) {
+                            const updated = [...prev];
+                            updated[updated.length - 1].text += text;
+                            return updated;
+                        } else {
+                            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
+                            aiMessageRef.current = newId;
+                            return [...prev, { id: newId, type: "ai", text}];
+                        }
+                    });
+                    return;
+                }
+                if (messageType === "feedback") {
+                    const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
+                    setMessages((prev) => [...prev, { id: newId, type: "feedback", text}]);
+                }
 
-    //         setMessages((prev) => {
-    //             if (aiMessageRef.current !== null) {
-    //                 const updated = [...prev];
-    //                 updated[updated.length - 1].text += token;
-    //                 return updated;
-    //             } else {
-    //                 const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
-    //                 aiMessageRef.current = newId;
-    //                 return [...prev, { id: newId, type: "ai", text: token }];
-    //             }
-    //         });
-    //     };
+            } catch (err) {
+                console.error("메시지 파싱 실패", err);
+            }
+        };
+        ws.current.onerror = (error) => {
+            console.error("WebSocket 에러", error);
+        };
+        ws.current.onclose = () => {
+            console.log("WebSocket 종료");
+        };
 
-    //     ws.current.onerror = (error) => {
-    //         console.error("WebSocket 에러", error);
-    //     };
-
-    //     ws.current.onclose = () => {
-    //         console.log("WebSocket 종료");
-    //     };
-
-    //     return () => {
-    //         ws.current?.close();
-    //     };
-    // }, []);
+        return () => {
+            ws.current?.close();
+        };
+        // eslint-disable-next-line
+    }, []);
 
     // 메시지 전송(질문하기)
-    const handleSendMessage = (message, attachedFiles) => {
+    const handleSendMessage = async (message, attachedFiles) => {
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
 
         const userMsg = { id: newId, type: "user", text: message };
         setMessages((prev) => [...prev, userMsg]);
 
+        // 첨부파일 전송
+        if (attachedFiles.length > 0) {
+            try{
+                const formData = new FormData();
+                attachedFiles.forEach((file) => {
+                    formData.append("files", file);
+                });
+
+                const response = await axios.post(`/api/v1/files/${session_id}/files`,
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+                console.log("파일 업로드 성공", response.data);
+            } catch (err) {
+                console.error(err);
+            };
+        };
         // 웹소켓으로 사용자 질문 전송
-        // if (ws.current?.readyState === WebSocket.OPEN) {
-        //     ws.current.send(message);
-        // } else {
-        //     console.warn("WebSocket이 아직 연결되지 않았습니다.");
-        // }
-        // // 첨부파일 처리 (추후 서버 연동 시 구현)
-        // if (attachedFiles.length > 0) {
-        //     console.log("첨부파일 처리 필요", attachedFiles);
-        // }
+        if (ws.current?.readyState === WebSocket.OPEN) {
+            ws.current.send(message);
+        } else {
+            console.warn("WebSocket이 아직 연결되지 않았습니다.");
+        }
     };
     
     return (
