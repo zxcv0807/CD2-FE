@@ -32,7 +32,7 @@ const GoogleCallbackPage = () => {
     handleGoogleCallback();
   }, [code, dispatch, navigate]);
 
-  return <div>로그인 처리 중입니다...</div>;
+  return <div>구글 로그인 처리 중입니다...</div>;
 };
 
 export default GoogleCallbackPage;
