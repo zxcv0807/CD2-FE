@@ -8,12 +8,11 @@ import SidebarToolTip from "../modal/SidebarToolTip";
 import LogoIconWhite from "../../assets/LogoIconWhite.png";
 import PenIcon from "../../assets/PenIcon.png";
 import NaviIcon from "../../assets/NaviIcon.png";
-import NaviIcon2 from "../../assets/NaviIcon2.png";
 import SearchIcon from "../../assets/SearchIcon.png";
 import SettingsIcon from "../../assets/SettingsIcon.png";
 import PlusIcon from "../../assets/PlusIcon.png";
 import PencilIcon from "../../assets/PencilIcon.png";
-import TrashCanIcon from "../../assets/TrashCanIcon.png";
+import TrashCanIcon from "../../assets/TrashcanIcon.png";
 import ChatSearch from "../modal/ChatSearch";
 import Setting from "../modal/Setting";
 

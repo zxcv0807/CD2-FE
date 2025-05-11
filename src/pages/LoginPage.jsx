@@ -6,7 +6,7 @@ import axios from "../api/axiosInstance";
 import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
-import formImage from "../assets/formImage.png";
+import formImage from "../assets/FormImage.png";
 import GoogleLogin from "../assets/web_light_rd_SI@1x.png";
 
 const LoginPage = () => {
@@ -158,7 +158,7 @@ const LoginPage = () => {
                 </div>
 
                 {/* 오른쪽 영역 */}
-                <div className="flex-1 flex flex-col relative hidden md:flex">
+                <div className="flex-1 flex-col relative hidden md:flex">
                     <div className="flex flex-1">
                         <img src={formImage} alt="Form Image" />
                     </div>

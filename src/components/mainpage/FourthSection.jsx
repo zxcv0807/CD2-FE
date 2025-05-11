@@ -13,7 +13,7 @@ const FourthSection = () => {
             style={{ backgroundImage: `url(${FourthSectionBackground})` }}  
         >
             {/* 네 번째 섹션 내용 */}
-            <div className="w-[60%] mx-auto py-32">
+            <div className="md:w-[60%] w-[80%] mx-auto py-32">
                 {/* 제목 및 설명 */}
                 <div className="text-left mb-20">
                     <h4 className="text-xl font-semibold text-[#A476CC] mb-8">
@@ -77,17 +77,17 @@ const FourthSection = () => {
                 </div>
 
                 {/* 3번째 섹션 */}
-                <div className="mt-[200px] text-center">
+                <div className="mt-40 text-center">
                     <h2 className="text-3xl font-semibold">
                         <span className="text-[#A476CC]">더욱 최적화된 AI</span>와의 대화가 준비되었습니다.<br />
                         지금 바로 시작해보세요.
                     </h2>
-                    <div className="flex justify-center gap-4 mt-6">
-                        <Link to="/chat-start" className="w-[200px] mt-10 px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2">
-                            <span className="ml-2">질문 시작하기</span>
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 mt-10">
+                        <Link to="/chat-start" className="px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2 w-fit">
+                            <span className="mx-4">질문 시작하기</span>
                             <img src={QuestionStartIcon2}/>
                         </Link>
-                        <Link to="/guideline" className="w-[200px] mt-10 px-2 py-2 bg-[#262626] rounded-full flex justify-between items-center space-x-2">
+                        <Link to="/guideline" className="px-2 py-2 bg-[#262626] rounded-full flex justify-between items-center space-x-2 w-fit">
                             <span className="ml-2">가이드라인 보기</span>
                             <img src={RightArrow} />
                         </Link>

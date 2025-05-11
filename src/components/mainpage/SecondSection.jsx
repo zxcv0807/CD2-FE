@@ -22,7 +22,7 @@ const SecondSection = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} className="w-[60%] flex flex-col items-center text-center mt-32">
+        <section ref={sectionRef} className="md:w-[60%] w-[80%] flex flex-col items-center text-center mt-32">
             <h4 className="text-2xl text-[#A476CC] font-semibold mb-4">개인 맞춤형 최적화</h4>
             <h2 className="text-3xl text-[#1A1A1A] dark:text-white font-semibold mb-6">
                 더 스마트한 대화로 이끄는 AI,<br />
