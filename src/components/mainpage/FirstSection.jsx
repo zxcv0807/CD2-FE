@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import MainPageLaptop from "../../assets/MainPageLaptop.png";
+import MainPageLaptop from "../../assets/MainPageLapTop.png";
 import QuestionStartIcon from "../../assets/QuestionStartIcon.png";
 
 const FirstSection = () => {
@@ -26,10 +26,10 @@ const FirstSection = () => {
     }, [texts]);
 
     return (
-        <section className="flex flex-col items-center text-center mt-16 px-4 pt-20">
+        <section className="w-[80%] flex flex-col items-center text-center mt-16 px-4 pt-20">
             {/* 원형 그라데이션 배경 */}
             <div className="absolute w-[672px] h-[672px] right-[40px] top-[-100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(82,122,255,0.2)_0%,rgba(82,122,255,0)_100%)] md:block hidden"></div>
-            <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)] md:block"></div>
+            <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)] md:block hidden"></div>
 
             {/* 제목 */}
             <h2 className="text-4xl font-bold">
@@ -53,7 +53,7 @@ const FirstSection = () => {
             </Link>
 
             {/* 노트북 이미지 */}
-            <div className="-mt-[50px] z-2" style={{
+            <div className="md:-mt-[50px] z-2" style={{
                 maskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%",
                 WebkitMaskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%)"
             }}>

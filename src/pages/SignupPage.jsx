@@ -5,7 +5,7 @@ import Header from "../components/header/Header";
 import Input from "../components/form/Input";
 import Button from "../components/form/Button";
 import PrivacyModal from "../components/modal/PrivacyModal";
-import formImage from "../assets/formImage.png";
+import formImage from "../assets/FormImage.png";
 
 const SignupPage = () => {
     const navigate = useNavigate();

@@ -40,9 +40,9 @@ const ThirdSection = () => {
     }, [activeIndex]);
 
     return (
-        <section className="w-[60%] mx-auto mt-48">
+        <section className="md:w-[60%] w-[80%] mx-auto mt-48">
             {/* 원형 그라데이션 배경 */}
-            <div className="absolute w-[400px] h-[400px] right-[200px] top-[2100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)]"></div>
+            <div className="absolute w-[400px] h-[400px] right-[200px] top-[2100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)] md:block hidden"></div>
             {/* POINT 1 */}
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 1</h4>
@@ -58,18 +58,18 @@ const ThirdSection = () => {
                     {topics.map((text, index) => (
                         <button
                             key={index}
-                            className={`px-6 py-2 rounded-full border border-[#DADADA] dark:border-[#888888] transition-all duration-500 ${
+                            className={`px-3 md:px-4 py-2 rounded-full border border-[#DADADA] dark:border-[#888888] transition-all duration-500 ${
                                 index === activeIndex ? "bg-[#A476CC] text-white border-[#A476CC]" : ""
                             }`}
                         >
                             {text}
                         </button>
                     ))}
-                </div>
+                </div>  
             </div>
 
             {/* 구분선 (가로 점선 + 중앙 점 + 세로 점선) */}
-            <div className="relative flex justify-center my-12 md:block hidden">
+            <div className="relative justify-center my-12 md:flex hidden">
                 {/* 가로 점선 */}
                 <div className="w-full border-t border-dashed border-[#C3C3C3]"></div>
 
@@ -92,12 +92,12 @@ const ThirdSection = () => {
                         원하는 방식으로 소통해보세요.
                     </p>
                     <div className="flex gap-2">
-                        <button className="flex gap-2 px-4 py-2 bg-[#C3C3C3] dark:bg-[#888888] text-white rounded-md items-center">
-                            <img src={SpeechBubble} className="h-[18px]"/>
+                        <button className="flex gap-2 px-4 py-2 bg-[#C3C3C3] dark:bg-[#888888] text-white rounded-md items-center w-fit">
+                            <img src={SpeechBubble} />
                             최적화하기
                         </button>
-                        <button className="flex gap-2 px-4 py-2 bg-[#A476CC] text-white rounded-md items-center">
-                            <img src={SpeechBubble} className="h-[18px]"/>
+                        <button className="flex gap-2 px-4 py-2 bg-[#A476CC] text-white rounded-md items-center w-fit">
+                            <img src={SpeechBubble}/>
                             최적화하기
                         </button>
                     </div>
