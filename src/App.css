@@ -80,3 +80,45 @@
 .ai-markdown ul ol, .ai-markdown ol ol {
 @apply mt-1 mb-1 ml-4;
 }
+
+/* 다크 모드에서 마크다운 텍스트 색상 */
+.dark .ai-markdown {
+  @apply text-white;
+}
+
+/* 필요한 경우 다른 요소들도 다크 모드에 맞게 조정 */
+.dark .ai-markdown blockquote {
+  @apply border-gray-600 text-gray-300 bg-gray-800;
+}
+
+.dark .ai-markdown pre {
+  @apply bg-gray-800 text-gray-100;
+}
+
+.dark .ai-markdown code {
+  @apply bg-gray-700 text-pink-400;
+}
+
+.dark .ai-markdown hr {
+  @apply border-gray-600;
+}
+
+.dark .ai-markdown th {
+  @apply bg-gray-700 text-gray-100;
+}
+
+.dark .ai-markdown td {
+  @apply text-gray-100;
+}
+
+.dark .ai-markdown strong {
+  @apply text-white;
+}
+
+.dark .ai-markdown em {
+  @apply text-gray-300;
+}
+
+.dark .ai-markdown del {
+  @apply text-gray-500;
+}

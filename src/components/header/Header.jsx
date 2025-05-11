@@ -4,7 +4,7 @@ import LogoIconWhite from "../../assets/LogoIconWhite.png";
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 w-full flex justify-between items-center px-16 py-4 bg-transparent z-5">
+    <header className="fixed top-0 left-0 w-full flex justify-between items-center md:px-16 px-10 py-4 bg-transparent z-5">
       {/* 좌측 로고 */}
       <div className="bg-white dark:bg-[#18171C] rounded-full py-2 px-4">
         <Link to="/" className="text-lg font-semibold flex gap-2 items-center">

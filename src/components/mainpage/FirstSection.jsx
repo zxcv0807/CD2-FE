@@ -8,6 +8,7 @@ const FirstSection = () => {
     const [currentText, setCurrentText] = useState(texts[0]);
     const [fade, setFade] = useState(true); // 페이드 애니메이션 상태
 
+    // 제목 텍스트 변경경
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false); // 먼저 투명하게 만들기
@@ -27,8 +28,8 @@ const FirstSection = () => {
     return (
         <section className="flex flex-col items-center text-center mt-16 px-4 pt-20">
             {/* 원형 그라데이션 배경 */}
-            <div className="absolute w-[672px] h-[672px] right-[40px] top-[-100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(82,122,255,0.2)_0%,rgba(82,122,255,0)_100%)]"></div>
-            <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)]"></div>
+            <div className="absolute w-[672px] h-[672px] right-[40px] top-[-100px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(82,122,255,0.2)_0%,rgba(82,122,255,0)_100%)] md:block hidden"></div>
+            <div className="absolute w-[672px] h-[672px] left-[120px] top-[150px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(164,118,204,0.2)_0%,rgba(164,118,204,0)_100%)] md:block"></div>
 
             {/* 제목 */}
             <h2 className="text-4xl font-bold">

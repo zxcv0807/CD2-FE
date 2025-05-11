@@ -8,11 +8,15 @@ import ChatInput from "../../components/chatting/ChatInput";
 import { useParams } from "react-router-dom";
 
 const ChattingPage = () => {
-    const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
-    const sidebarWidth = isChatListVisible ? 430 : 80;
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false); 
+    const handleToggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
     const token = useSelector((state) => state.auth.token);
     const { session_id } = useParams();
 
+    // cot 메시지
+    const [cotMessage, setCotMessage] = useState("");
     // 채팅 메시지
     const [messages, setMessages] = useState([
         { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
@@ -28,19 +32,19 @@ const ChattingPage = () => {
         { id: 11, type: "user", text: "Window 운영체제 사용중이야" },
         { id: 12, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
     ]);
-    // COT 메시지
-    const [cotMessage, setCotMessage] = useState("");
+
     // 웹 소켓 연결
     const ws = useRef(null);
     const aiMessageRef = useRef(null);
     useEffect(() => {
-        ws.current = new WebSocket(`ws:${import.meta.env.VITE_API_BASE_URL}`);
+        ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`?token=${token}`);
 
         ws.current.onopen = () => {
             console.log("WebSocket 연결됨");
         };
 
         ws.current.onmessage = (event) => {
+            console.log("서버로부터 메시지 도착:", event.data);
             try {
                 const data = JSON.parse(event.data);
                 const { type, text } = data;
@@ -59,6 +63,7 @@ const ChattingPage = () => {
                     if(text === "[END]") {
                         aiMessageRef.current = null;
                         setCotMessage("");
+                        console.log("답변 끝")
                         return;
                     }
                     
@@ -127,21 +132,23 @@ const ChattingPage = () => {
         };
         // 웹소켓으로 사용자 질문 전송
         if (ws.current?.readyState === WebSocket.OPEN) {
-            ws.current.send(message);
+            const payload = JSON.stringify({
+                prompt: message,
+                topic: "코딩",
+            });
+            ws.current.send(payload);
         } else {
             console.warn("WebSocket이 아직 연결되지 않았습니다.");
         }
     };
     
     return (
-        <div className="relative flex h-screen overflow-hidden">
-            <Sidebar />
-            <ChatHeader />
+        <div className="flex h-screen">
+            <Sidebar isSidebarVisible={isSidebarVisible}/>
+            <ChatHeader onToggleSidebar={handleToggleSidebar}/>
             <div
-                className="transition-all duration-300 relative"
-                style={{
-                    width: `calc(100% - ${sidebarWidth}px)`,
-                }}
+                className="transition-all duration-300 mt-16 md:mt-0 w-full md:w-auto"
+                style={{ width: `100%`, marginLeft: 0, flexGrow: 1, marginRight: 0 }}
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">

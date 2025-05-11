@@ -12,7 +12,7 @@ const AdminTopicManagement = () => {
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await axios.get("/api/v1/topics/api/v1/topics/", {
+                const response = await axios.get("/api/v1/topics/", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

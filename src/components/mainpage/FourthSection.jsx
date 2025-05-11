@@ -32,13 +32,13 @@ const FourthSection = () => {
                 </div>
 
                 {/* 카드 섹션 */}
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 grid-cols-1 gap-6">
                     {/* 첫 번째 카드 섹션 */}
                     <div className="bg-white/20 px-6 py-[50px] rounded-lg text-left flex flex-col items-center">
                         <div className="mb-8 w-full flex justify-center">
                             <img src={FourthSectionDialog} className="block" />
                         </div>
-                        <div className="w-full">
+                        <div className="w-full md:text-left text-center">
                             <h3 className="mb-4 text-lg font-semibold">지루하지 않은 대화</h3>
                             <p className="text-sm text-[#DADADA] mt-2">
                                 프롬프트 최적화로 대화 횟수를 줄여<br />
@@ -52,7 +52,7 @@ const FourthSection = () => {
                         <div className="mb-8 w-full flex justify-center">
                             <img src={FourthSectionPlanet} className="block" />
                         </div>
-                        <div className="w-full">
+                        <div className="w-full md:text-left text-center">
                             <h3 className="mb-4 text-lg font-semibold">환경 오염 최소화</h3>
                             <p className="text-sm text-[#DADADA] mt-2">
                                 최적화된 AI 대화로 전력 소비와<br />
@@ -66,7 +66,7 @@ const FourthSection = () => {
                         <div className="mb-8 w-full flex justify-center">
                             <img src={FourthSectionEncrypted} className="block" />
                         </div>
-                        <div className="w-full">
+                        <div className="w-full md:text-left text-center">
                             <h3 className="mb-4 text-lg font-semibold">안전한 개인정보</h3>
                             <p className="text-sm text-[#DADADA] mt-2">
                                 대화 로그는 철저히 보호되며,<br />
