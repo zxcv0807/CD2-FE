@@ -92,89 +92,94 @@ const ChatInput = ({ onSendMessage }) => {
   };
 
   return (
-    <div className="w-full max-w-[700px] bg-white dark:bg-[#2E2C36] border border-[#4E4E4E] rounded-2xl px-4 py-2">
-      {/* 첨부파일 미리보기 */}
-      {attachedFiles.length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-3">
-          {attachedFiles.map((file, index) => (
-            <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg shadow-sm">
-              {file.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="첨부 이미지"
-                  className="w-16 h-16 object-cover rounded-md"
-                />
-              ) : (
-                <div className="p-2 bg-white border rounded text-sm">
-                  {file.name}
-                </div>
-              )}
-              <button
-                onClick={() => handleRemoveFile(index)}
-                className="text-sm text-red-500 hover:underline cursor-pointer"
-              >
-                삭제
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="w-full max-w-[700px] flex flex-col">
+      <div className="w-full bg-white dark:bg-[#2E2C36] border border-[#4E4E4E] rounded-2xl px-4 py-2">
+        {/* 첨부파일 미리보기 */}
+        {attachedFiles.length > 0 && (
+          <div className="mb-2 flex flex-wrap gap-3">
+            {attachedFiles.map((file, index) => (
+              <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg shadow-sm">
+                {file.type.startsWith("image/") ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt="첨부 이미지"
+                    className="w-16 h-16 object-cover rounded-md"
+                  />
+                ) : (
+                  <div className="p-2 bg-white border rounded text-sm">
+                    {file.name}
+                  </div>
+                )}
+                <button
+                  onClick={() => handleRemoveFile(index)}
+                  className="text-sm text-red-500 hover:underline cursor-pointer"
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
-      {/* 입력창 */}
-      <textarea
-        ref={textareaRef}
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="무엇이든 물어보세요"
-        rows={1}
-        onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
-        className="w-full dark:text-white resize-none overflow-y-auto max-h-[200px] text-sm bg-transparent focus:outline-none"
-      />
+        {/* 입력창 */}
+        <textarea
+          ref={textareaRef}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="무엇이든 물어보세요"
+          rows={1}
+          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
+          className="w-full dark:text-white resize-none overflow-y-auto max-h-[200px] text-sm bg-transparent focus:outline-none"
+        />
 
-      <div className="flex justify-between items-center mt-2">
-        {/* 최적화하기 버튼 */}
-        <button
-          className="flex gap-2 px-4 py-2 rounded-lg cursor-pointer"
-          style={{ backgroundColor: isOptimized ? "#C3C3C3" : "#A476CC" }}
-          onClick={toggleOptimization}
-        >
-          <img src={SpeechBubbleIcon} className="h-[18px]" />
-          <span className="text-white text-sm">최적화하기</span>
-        </button>
+        <div className="flex justify-between items-center mt-2">
+          {/* 최적화하기 버튼 */}
+          <button
+            className="flex gap-2 px-4 py-2 rounded-lg cursor-pointer"
+            style={{ backgroundColor: isOptimized ? "#C3C3C3" : "#A476CC" }}
+            onClick={toggleOptimization}
+          >
+            <img src={SpeechBubbleIcon} className="h-[18px]" />
+            <span className="text-white text-sm">최적화하기</span>
+          </button>
 
-        <div className="flex items-center space-x-3">
-          {/* 웹서치 아이콘 */}
-          <ChatInputTooltip text="웹 검색">
-            <img
-              src={isWebSearchActive ? WebSearchIconPurple : WebSearchIcon}
-              onClick={toggleWebSearch}
-              className="w-[24px] h-[24px] cursor-pointer"
-            />
-          </ChatInputTooltip>
-
-          {/* 첨부파일 업로드 아이콘 */}
-          <ChatInputTooltip text="파일 첨부">
-            <div className="relative cursor-pointer" onClick={triggerFileSelect}>
-              <img src={ClipIcon} />
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                multiple
-                accept=".jpg,.jpeg,.png,.pdf,.csv,.txt"
-                className="hidden"
+          <div className="flex items-center space-x-3">
+            {/* 웹서치 아이콘 */}
+            <ChatInputTooltip text="웹 검색">
+              <img
+                src={isWebSearchActive ? WebSearchIconPurple : WebSearchIcon}
+                onClick={toggleWebSearch}
+                className="w-[24px] h-[24px] cursor-pointer"
               />
-            </div>
-          </ChatInputTooltip>
+            </ChatInputTooltip>
 
-          {/* 전송 버튼 */}
-          <ChatInputTooltip text="메시지 전송">
-            <button onClick={handleSend}>
-              <img src={RightArrowWhiteIcon} className="cursor-pointer" />
-            </button>
-          </ChatInputTooltip>
+            {/* 첨부파일 업로드 아이콘 */}
+            <ChatInputTooltip text="파일 첨부">
+              <div className="relative cursor-pointer" onClick={triggerFileSelect}>
+                <img src={ClipIcon} />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  multiple
+                  accept=".jpg,.jpeg,.png,.pdf,.csv,.txt"
+                  className="hidden"
+                />
+              </div>
+            </ChatInputTooltip>
+
+            {/* 전송 버튼 */}
+            <ChatInputTooltip text="메시지 전송">
+              <button onClick={handleSend}>
+                <img src={RightArrowWhiteIcon} className="cursor-pointer" />
+              </button>
+            </ChatInputTooltip>
+          </div>
         </div>
       </div>
+      <p className="mt-2 text-center text-xs text-[#4E4E4E] dark:text-[#BBBBBB]">
+          우문현답은 실수할 수 있습니다.
+      </p>
     </div>
   );
 };

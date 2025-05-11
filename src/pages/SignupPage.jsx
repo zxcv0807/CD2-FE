@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axiosInstance";
 import Header from "../components/header/Header";
 import Input from "../components/form/Input";
@@ -118,7 +118,7 @@ const SignupPage = () => {
         <div className="flex flex-col h-screen">
             <Header />
             <div className="flex flex-1">
-                <div className="w-[600px] bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
+                <div className="md:w-[600px] w-full bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
                     <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold mb-8">Sign Up</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         {/* 이메일 입력 */}
@@ -203,10 +203,14 @@ const SignupPage = () => {
                         )}
 
                         <Button type="submit" text="회원가입" />
+                        <div className="flex gap-2 justify-center">
+                            <p className="text-[#999999] dark:text-[#888888]">이미 계정이 있으신가요?</p>
+                            <Link to="/login" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">로그인</Link>
+                        </div>
                     </form>
                 </div>
                 {/* 오른쪽 이미지 */}
-                <div className="flex-1 flex flex-col relative">
+                <div className="flex-1 flex-col relative hidden md:flex">
                     <div className="flex flex-1">
                         <img src={formImage} alt="Form Image" />
                     </div>

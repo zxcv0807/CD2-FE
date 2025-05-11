@@ -6,8 +6,7 @@ import ChatHeader from "../../components/header/ChatHeader";
 import { useNavigate } from "react-router-dom";
 
 const ChattingTopicSelectionPage = () => {
-  const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
-  const sidebarWidth = isChatListVisible ? 430 : 80;
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const token = useSelector((state) => state.auth.token); 
 
   // 주제 선택
@@ -43,7 +42,7 @@ const ChattingTopicSelectionPage = () => {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await axios.get("/api/v1/topics//api/v1/topics/", {
+        const response = await axios.get("/api/v1/topics/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -57,16 +56,21 @@ const ChattingTopicSelectionPage = () => {
     fetchTopics();  
   }, [token]);
 
+  // 사이드바 토글 함수
+  const handleToggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
+
   return (
     <div className="flex h-screen">
-      <Sidebar />
-      <ChatHeader />
+      <Sidebar isSidebarVisible={isSidebarVisible} />
+      <ChatHeader onToggleSidebar={handleToggleSidebar} />
       <div
-        className="transition-all duration-300"
-        style={{ width: `calc(100% - ${sidebarWidth}px)` }}
+        className="transition-all duration-300 mt-16 md:mt-0 w-full md:w-auto"
+        style={{ width: `100%`, marginLeft: 0, flexGrow: 1, marginRight: 0 }}
       >
         <div className="flex justify-center items-center bg-[#FAFAFA] dark:bg-[#18171C] px-4 h-full">
-          <div className="text-center w-full max-w-[1400px] h-[600px] p-10 bg-white dark:bg-[#232129] rounded-2xl shadow-sm flex flex-col justify-center items-center">
+          <div className="text-center w-full max-w-[1400px] h-[80%] p-10 bg-white dark:bg-[#232129] rounded-2xl shadow-sm flex flex-col justify-center items-center">
             {/* 상단 텍스트 */}
             <h3 className="text-[#A476CC] text-xl font-semibold mb-4">새 채팅 시작</h3>
             <h2 className="text-[#1A1A1A] dark:text-white text-2xl font-bold mb-6">

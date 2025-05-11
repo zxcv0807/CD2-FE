@@ -47,10 +47,11 @@ const ThirdSection = () => {
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 1</h4>
                 <h2 className="text-xl font-semibold text-[#1A1A1A] dark:text-white mb-4">
-                    대화의 방향을 설정하고, 더 최적화된 답변을 받아보세요.
+                    대화의 방향을 설정하고, <br/>더 최적화된 답변을 받아보세요.
                 </h2>
                 <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
-                    원하는 주제를 선택하면 AI가 대화를 더욱 정확하게 이해하고 향상된 답변을 제공합니다. <br/>
+                    원하는 주제를 선택하면, <br/>
+                    AI가 대화를 더욱 정확하게 이해하고 향상된 답변을 제공합니다. <br/>
                     질문에 대한 맥락을 더 명확하게 설정하여 효과적인 지식을 경험하세요.
                 </p>
                 <div ref={sectionRef} className="flex gap-2 text-[#4E4E4E] dark:text-[#FAFAFA] mb-8">
@@ -68,7 +69,7 @@ const ThirdSection = () => {
             </div>
 
             {/* 구분선 (가로 점선 + 중앙 점 + 세로 점선) */}
-            <div className="relative flex justify-center my-12">
+            <div className="relative flex justify-center my-12 md:block hidden">
                 {/* 가로 점선 */}
                 <div className="w-full border-t border-dashed border-[#C3C3C3]"></div>
 
@@ -77,7 +78,7 @@ const ThirdSection = () => {
             </div>
 
             {/* POINT 2 & POINT 3 */}
-            <div className="grid grid-cols-2 gap-12">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-12">
                 {/* POINT 2 */}
                 <div>
                     <h4 className="text-lg font-semibold text-[#A476CC] mb-6">POINT 2</h4>
@@ -85,9 +86,9 @@ const ThirdSection = () => {
                         필요한 때만 최적화,<br /> 원하는 방식으로 대화하세요.
                     </h2>
                     <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
-                        최적화 기능을 켜면 AI가 역역질문을 통해 <br />
-                        답변을 더욱 정교하게 다듬어 줍니다.<br />
-                        상황에 따라 자유롭게 ON/OFF를 조절하며<br />
+                        최적화 기능을 켜면 AI가 역질문을 통해
+                        답변을 더욱 정교하게 다듬어 줍니다.<br/>
+                        상황에 따라 자유롭게 ON/OFF를 조절하며
                         원하는 방식으로 소통해보세요.
                     </p>
                     <div className="flex gap-2">
@@ -109,9 +110,9 @@ const ThirdSection = () => {
                         더 나은 대화를 위한 피드백,<br /> 당신의 의견을 들려주세요.
                     </h2>
                     <p className="text-sm text-[#4E4E4E] dark:text-[#BBBBBB] mb-8">
-                        최적화된 대화가 만족스러우셨나요?<br />
-                        "좋았다"또는 "별로였다"를 선택하여 의견을 남겨주세요. <br />
-                        여러분의 피드백을 반영해해<br />
+                        최적화된 대화가 만족스러우셨나요?
+                        "좋았다"또는 "별로였다"를 선택하여 의견을 남겨주세요.<br/>
+                        여러분의 피드백을 반영해
                         더욱 정교한 AI 대화를 만들어 갑니다.
                     </p>
                     <div className="flex items-center gap-2 text-[#999999] dark:text-[#888888] text-sm">

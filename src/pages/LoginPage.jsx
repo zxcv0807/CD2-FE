@@ -94,7 +94,7 @@ const LoginPage = () => {
             <Header />
             <div className="flex flex-1">
                 {/* 왼쪽 영역 */}
-                <div className="w-[600px] bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
+                <div className="md:w-[600px] w-full bg-white dark:bg-[#18171C] flex flex-col justify-center px-16">
                     <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold mb-8">Login</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col">
                         {/* 이메일 입력 */}
@@ -158,7 +158,7 @@ const LoginPage = () => {
                 </div>
 
                 {/* 오른쪽 영역 */}
-                <div className="flex-1 flex flex-col relative">
+                <div className="flex-1 flex flex-col relative hidden md:flex">
                     <div className="flex flex-1">
                         <img src={formImage} alt="Form Image" />
                     </div>

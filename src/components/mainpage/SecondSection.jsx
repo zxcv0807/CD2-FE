@@ -45,30 +45,24 @@ const SecondSection = () => {
 
             {/* 채팅 UI */}
             <div className="flex flex-col gap-4 w-full">
-
                 {/* 사용자 질문 */}
-                <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-4 w-fit max-w-[70%] transform transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
+                <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
                     visual studio code 편집기를 이용해 docker 설치방법을 알려줘
                 </div>
-
                 {/* AI 질문 */}
-                <div className={`self-start bg-[#A476CC] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl p-4 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-200 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
+                <div className={`self-start bg-[#A476CC] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-200 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
                     Window, Mac 중 어떤 운영체제를 사용하고 계신가요?
                 </div>
-
                 {/* 사용자 답변 */}
-                <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-4 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-400 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
+                <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-400 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
                     Window 운영체제 사용중이야
                 </div>
-
                 {/* 최적화된 질문 */}
-                <div className={`self-start text-[#1A1A1A] dark:text-white bg-white dark:bg-[#18171C] rounded-xl p-4 transform transition-all duration-700 ease-out delay-600 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
+                <div className={`self-start text-[#1A1A1A] dark:text-white bg-white dark:bg-[#18171C] rounded-xl p-3 transform transition-all duration-700 ease-out delay-600 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
                     Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치하는 방법
                 </div>
-
                 {/* 구분선 */}
                 <hr className={`flex-1 border-[#DADADA] transition-opacity duration-700 delay-800 ${isVisible ? 'opacity-100' : 'opacity-0'}`} />
-
                 {/* 피드백 */}
                 <div className={`flex items-center gap-2 text-[#999999] dark:text-[#888888] text-sm transition-all duration-700 ease-out delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
                     해당 내용이 최적화된 답변이었나요?

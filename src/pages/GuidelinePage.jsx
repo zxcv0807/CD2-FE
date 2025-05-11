@@ -9,7 +9,7 @@ const GuidelinePage = () => {
       {/* 메인 컨텐츠 */}
       <main className="relative px-6 lg:px-16 py-10 mt-24">
         {/* 본문 내용 */}
-        <div className="w-full lg:w-2/3 mx-auto">
+        <div className="md:w-[60%] w-[80%] mx-auto">
           <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-bold">우문현답 이용 가이드라인</h2>
           <p className="text-[#1A1A1A] dark:text-white mt-8">최종 수정일 <span className="text-[#4E4E4E] dark:text-[#BBBBBB]">2025-05-01</span></p>
 
@@ -200,7 +200,7 @@ const GuidelinePage = () => {
             </div>
           </section>
           {/* 템플릿 */}
-          <section className="mt-16">
+          {/* <section className="mt-16">
             <h2 className="text-[#1A1A1A] dark:text-white text-2xl font-semibold">제목</h2>
             <p className="text-[#4E4E4E] dark:text-[#BBBBBB] mt-4">
               내용
@@ -216,12 +216,12 @@ const GuidelinePage = () => {
               height: auto<br />
               border-radius: 8px
             </div>
-          </section>
+          </section> */}
         </div>
 
         {/* 오른쪽 목차 */}
-        <aside className="hidden lg:block absolute top-20 right-16 w-52">
-          <div className="fixed top-64 bg-[#F5F5F5] dark:bg-[#2E2C36] p-6 rounded-lg text-sm w-[250px]">
+        <aside className="hidden lg:block absolute top-20 right-12 w-52">
+          <div className="fixed top-64 bg-[#F5F5F5] dark:bg-[#2E2C36] p-6 rounded-lg text-sm w-[200px]">
             <h3 className="text-[#1A1A1A] dark:text-white text-base font-semibold">가이드라인 목차</h3>
             <ul className="mt-4 space-y-2 text-[#4E4E4E] dark:text-[#BBBBBB]">
               <li><a href="#7-instructions" className="hover:text-[#1A1A1A] hover:underline dark:hover:text-white">7개의 작성 지침</a></li>

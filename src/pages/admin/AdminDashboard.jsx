@@ -1,40 +1,41 @@
-import React from "react";
+import { useEffect, useState } from "react"; 
+import axios from "../../api/axiosInstance";
 import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer} from "recharts";
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import { useSelector } from "react-redux";
 
 const AdminDashboard = () => {
-  const dailyVisitors = [
+  const token = useSelector((state) => state.auth.token);
+
+  const [dailyVisitors, setDailyVisitors] = useState([
     { time: "00:00", count: 120 },
     { time: "06:00", count: 240 },
     { time: "12:00", count: 520 },
     { time: "18:00", count: 680 },
     { time: "21:00", count: 300 },
-  ];
+  ]);
 
-  const weeklyVisitors = [
-    { day: "월", count: 1800 },
-    { day: "화", count: 2100 },
-    { day: "수", count: 1950 },
-    { day: "목", count: 2200 },
-    { day: "금", count: 2500 },
-    { day: "토", count: 2700 },
-    { day: "일", count: 2300 },
-  ];
+  useEffect(() => {
+    const fetchVisitorStats = async () => {
+      try {
+        const response = await axios.get("/api/v1/admin/stats/visits", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("방문자 통계 불러오기 성공", response.data);
+        const data = response.data.map(item => ({
+          time: `${item.hour.toString().padStart(2, "0")}:00`,
+          count: item.count,
+        }));
+        setDailyVisitors(data);
+      } catch (err) {
+        console.error("방문자 통계 불러오기 실패", err);
+      }
+    };
 
-  const monthlyVisitors = [
-    { month: "1월", count: 15000 },
-    { month: "2월", count: 16500 },
-    { month: "3월", count: 18200 },
-    { month: "4월", count: 20000 },
-    { month: "5월", count: 21000 },
-    { month: "6월", count: 15000 },
-    { month: "7월", count: 16500 },
-    { month: "8월", count: 18200 },
-    { month: "9월", count: 20000 },
-    { month: "10월", count: 21000 },
-    { month: "11월", count: 15000 },
-    { month: "12월", count: 16500 },
-  ];
+    fetchVisitorStats();
+  }, []);
 
   return (
     <div className="flex h-screen bg-[#F5F5F5]">
