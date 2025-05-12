@@ -1,12 +1,19 @@
 const PrivacyModal = ({ onClose, onAgree }) => {
+    // 모달창 닫기
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="fixed inset-0 backdrop-blur-sm backdrop-brightness-75 flex justify-center items-center z-50 transition-all duration-300">
-            <div className="bg-white dark:bg-[#18171C] p-6 rounded-lg max-h-[600px] w-[600px] shadow-lg overflow-auto ">
+        <div className="fixed inset-0 backdrop-blur-sm backdrop-brightness-75 flex justify-center items-center z-50 transition-all duration-300" onClick={handleOverlayClick}>
+            <div className="bg-white dark:bg-[#18171C] p-6 rounded-lg max-h-[600px] md:w-[600px] w-100 shadow-lg overflow-auto ">
                 <h3 className="dark:text-white text-lg font-bold mb-4">개인정보 이용 동의</h3>
                 <p className="dark:text-white text-sm mb-4">
-                    우문현답(이하 "회사"라 한다)은 서비스 기획부터 종료까지 개인정보보호법 등 국내의 개인정보 보호 법령을 철저히 준수합니다.<br/>
+                    <h2 className="font-semibold">우문현답(이하 "회사"라 한다)은 서비스 기획부터 종료까지 개인정보보호법 등 국내의 개인정보 보호 법령을 철저히 준수합니다.</h2><br/>
                     <br/>
-                    제 1 조. 개인정보의 수집 및 이용 목적<br/>
+                    <h3 className="font-semibold">제 1 조. 개인정보의 수집 및 이용 목적</h3>
                     회사는 홈페이지에서 이용자의 상담 신청 시, 원할한 상담을 위해 필요한 최소한의 정보를 필수 사항으로 수집하고 있습니다.<br/>
                     <br/>
                     ① 회사는 이용자의 개인정보를 다음과 같이 수집합니다.<br/>
@@ -18,7 +25,7 @@ const PrivacyModal = ({ onClose, onAgree }) => {
                     - 서비스 이용 기록 : 맞춤형 서비스<br/>
                     <br/>
                     <br/>   
-                    제 2 조. 개인정보의 보유 및 이용기간<br/>
+                    <h3 className="font-semibold">제 2 조. 개인정보의 보유 및 이용기간</h3>
                     회사는 인종 및 민족, 사상 및 신조, 출신지 및 본적지, 정치적 성향 및 범죄기록, 건강상태 등의 이용자의 기본적 인권을 현저하게 침해할 우려가 있는 개인정보를 수집하지 않습니다.<br/>
                     <br/>
                     ① 내부 방침(부정이용기록)<br/>
@@ -28,7 +35,7 @@ const PrivacyModal = ({ onClose, onAgree }) => {
                     ② 기타 이용자의 개별정인 동의가 있는 경우에는 개별 동의에 따른 기간까지 보관합니다.<br/>
                     <br/>
                     <br/>
-                    제 3 조. 개인정보의 파기절차 및 방법<br/>
+                    <h3 className="font-semibold">제 3 조. 개인정보의 파기절차 및 방법</h3>
                     이용자의 개인정보는 원칙적으로 개인정보의 수집 및 이용목적이 달성되면 지체 없이 파기합니다.<br/>
                     <br/>
                     ① 파기절차<br/>
@@ -40,20 +47,20 @@ const PrivacyModal = ({ onClose, onAgree }) => {
                     - 전자적 파일형태로 저장된 개인정보는 기록을 재생할 수 없는 기술적 방법을 사용하여 삭제합니다.<br/>
                     <br/>
                     <br/>
-                    제 4 조. 개인정보의 처리위탁<br/>
+                    <h3 className="font-semibold">제 4 조. 개인정보의 처리위탁</h3>
                     회사는 위탁업무 계약서 등을 통해서 개인정보보호 관련 법규의 준수, 개인정보에 관한 비밀 유지, 제3자 제공에 대한 금지, 사고시의 책임 부담, 위탁기간, 처리 종료 후의 개인정보의 파기 의무 등을 규정하고, 이를 준수하도록 관리하고 있습니다.<br/>
                     <br/>
                     <br/>
-                    제 5조. 이용자와 법정대리인의 권리와 그 행사방법<br/>
+                    <h3 className="font-semibold">제 5조. 이용자와 법정대리인의 권리와 그 행사방법</h3>
                     이용자는 언제든지 개인정보를 조회하고 수정할 수 있으며, 개인정보 제공 동의에 관한 철회를 요청할 수 있습니다.<br/>
                     <br/>
                     <br/>
-                    제 6 조. 개인정보 자동수집 장치(쿠키 등)의 설치, 운영 및 그 거부에 관한 사항<br/>
+                    <h3 className="font-semibold">제 6 조. 개인정보 자동수집 장치(쿠키 등)의 설치, 운영 및 그 거부에 관한 사항</h3>
                     회사는 보다 적절하고 유용한 서비스를 제공하기 위하여 이용자의 정보를 수시로 저장하고 불러오는 ‘쿠키(cookie)’를 사용합니다.<br/>
                     이용자는 사용하시는 웹 브라우저의 옵션을 설정함으로써 모든 쿠키를 허용하거나 쿠키를 저장할 때마다 확인을 거치거나, 모든 쿠키의 저장을 거부할 수 있습니다.<br/>
                     <br/>
                     <br/>
-                    제 7 조. 개인정보보호책임자<br/>
+                    <h3 className="font-semibold">제 7 조. 개인정보보호책임자</h3>
                     이용자의 개인정보를 보호하고 개인정보와 관련된 불만 등을 처리하기 위하여 회사는 고객서비스담당 부서 및 개인정보보호책임자를 두고 있습니다.<br/>
                     [개인정보보호책임자]<br/>
                     - 성명 :
@@ -64,7 +71,7 @@ const PrivacyModal = ({ onClose, onAgree }) => {
                     010-4801-8517<br/>
                     <br/>
                     <br/>
-                    제 8 조. 개인정보처리방침의 개정과 그 공지<br/>
+                    <h3 className="font-semibold">제 8 조. 개인정보처리방침의 개정과 그 공지</h3>
                     현 개인정보처리방침이 추가 및 삭제, 수정이 있을 시에는 시행 7일 전에 홈페이지를 통해 사전 공지하며, 사전 공지가 곤란한 경우 지체 없이 공지할 수 있습니다. 이 정책은 아래 시행일자부터 시행됩니다.<br/>
                     <br/>
                     <br/>

@@ -45,10 +45,16 @@ const Setting = ( {onClose} ) => {
     // 회원 탈퇴
     const handleDeleteAccount = () => {
         console.log("회원 탈퇴");
-    }
+    };
+    // 모달창 닫기
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
     return (
-        <div className="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-            <div className="bg-white dark:bg-[#232129] w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
+        <div className="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center" onClick={handleOverlayClick}>
+            <div className="bg-white dark:bg-[#232129] w-100 md:w-[500px] h-[500px] rounded-2xl p-6 relative flex flex-col">
                 {/* 닫기 버튼 */}
                 <button onClick={onClose} className="absolute top-4 right-4 cursor-pointer">
                     <img src={XIcon} />

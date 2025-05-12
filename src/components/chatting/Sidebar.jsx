@@ -275,7 +275,7 @@ const Sidebar = ({ isSidebarVisible }) => {
                 ))}
               </ul>
             </div>
-            <div className="bg-[#A476CC] flex justify-center items-center gap-8 px-6 py-4 mt-2 ">
+            <div className="bg-[#A476CC] flex justify-center items-center gap-8 px-6 py-4 mt-2 rounded-lg">
               {/* 새 채팅 */}
               <Link to="/chat-start" className="p-2">
                 <img src={PenIcon} alt="새 채팅" />
