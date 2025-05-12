@@ -152,7 +152,7 @@ const ChattingPage = () => {
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
-                    <div className="w-full max-w-[900px] h-[600px] overflow-y-auto px-10 py-6 mt-8">
+                    <div className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
                             <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />

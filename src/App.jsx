@@ -30,7 +30,6 @@ function App() {
         <Route path="/guideline" element={<GuidelinePage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/chatting" element={<ChattingPage />} />
-        <Route path="/chatting/:session_id" element={<ChattingPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/topic" element={<AdminTopicManagement/>} />
         <Route path="/admin/language" element={<AdminLanguageManagement />} />
@@ -41,13 +40,13 @@ function App() {
               <ChattingTopicSelectionPage />
             </ProtectedRoute>
           } />
-        {/* <Route 
-          path="/chatting" 
-          element={
-            <ProtectedRoute>
-              <ChattingPage />
-            </ProtectedRoute>
-          } /> */}
+          <Route 
+            path="/chatting/:session_id" 
+            element={
+              <ProtectedRoute>
+                <ChattingPage />
+              </ProtectedRoute>
+          } />
       </Routes>
     </Router>
   )
