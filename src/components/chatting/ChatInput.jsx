@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import ChatInputTooltip from "../modal/ChatInputToolTip";
 import SpeechBubbleIcon from "../../assets/SpeechBubble.png";
 import WebSearchIcon from "../../assets/WebSearchIcon.png";
@@ -11,18 +11,18 @@ import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
 
-const ChatInput = ({ onSendMessage }) => {
+const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef(null);
-
   const [isOptimized, setIsOptimized] = useState(false);
-  const toggleOptimization = () => setIsOptimized(prev => !prev);
-
   const [isWebSearchActive, setIsWebSearchActive] = useState(false);
-  const toggleWebSearch = () => setIsWebSearchActive(prev => !prev);
-
   const [attachedFiles, setAttachedFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const [sendErrorMessage, setSendErrorMessage] = useState(null);
+  const timerRef = useRef(null);
+
+  const toggleOptimization = () => setIsOptimized(prev => !prev); // 최적화하기
+  const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치하기
 
   // 채팅창 높이 제한
   useEffect(() => {
@@ -32,7 +32,14 @@ const ChatInput = ({ onSendMessage }) => {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [message]);
-
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
   // 파일 선택 트리거
   const triggerFileSelect = () => {
     fileInputRef.current.click();
@@ -77,14 +84,35 @@ const ChatInput = ({ onSendMessage }) => {
     });
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
+  const clearSendErrorTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }
+  // ChattingPage에서 호출할 함수를 노출
+  useImperativeHandle(ref, () => ({
+    handleAttemptSend: (isAccepting) => {
+      if (isAccepting) {
+        setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
+        clearSendErrorTimer();
+        timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
+      } else {
+        setSendErrorMessage(null);
+        clearSendErrorTimer();
+      }
+    },
+  }));
   // 메시지 전송
   const handleSend = () => {
-    if (!message.trim() && attachedFiles.length === 0) return;
+    if (isAiAccepting) {
+      setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
+      clearSendErrorTimer();
+      timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
+      return; 
+    }
 
-    console.log("전송 메시지:", message);
-    console.log("최적화 상태", isOptimized);
-    console.log("웹 서치 상태", isWebSearchActive);
-    console.log("첨부 파일: ", attachedFiles);
+    if (!message.trim() && attachedFiles.length === 0) return;
 
     onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized);
     setMessage("");
@@ -190,11 +218,16 @@ const ChatInput = ({ onSendMessage }) => {
           </div>
         </div>
       </div>
+      {sendErrorMessage && (
+        <p className="mt-2 text-center text-xs text-[#ED4545]">
+            {sendErrorMessage}
+        </p>
+      )}
       <p className="mt-2 text-center text-xs text-[#4E4E4E] dark:text-[#BBBBBB]">
           우문현답은 실수할 수 있습니다.
       </p>
     </div>
   );
-};
+});
 
 export default ChatInput;
