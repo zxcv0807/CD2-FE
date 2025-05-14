@@ -17,7 +17,7 @@ const Header = () => {
       {/* 우측 네비게이션 (흰색 배경 적용) */}
       <div className="flex items-center space-x-4 bg-white dark:bg-[#18171C] p-0 md:px-4 md:py-2 rounded-full">
         <Link to="/guideline" className="text-[#1A1A1A] dark:text-white font-semibold">가이드라인</Link>
-        <Link to="/chat-start" className="bg-[#A476CC] text-white font-semibold px-4 py-2 rounded-full">시작하기</Link>
+        <Link to="/topics" className="bg-[#A476CC] text-white font-semibold px-4 py-2 rounded-full">시작하기</Link>
       </div>
     </header>
   );

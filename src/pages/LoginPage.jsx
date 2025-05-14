@@ -68,13 +68,9 @@ const LoginPage = () => {
                 email: formData.email,
                 password: formData.password,
             });
-
             const { access_token, user_id } = response.data;
-            console.log("로그인 성공", response.data);
-
             dispatch(login({token: access_token, userId: user_id}));
-
-            navigate("/chat-start");
+            navigate("/topics");
         } catch (error) {
             console.error("로그인 실패:", error);
             setServerError("이메일 또는 비밀번호가 올바르지 않습니다.");

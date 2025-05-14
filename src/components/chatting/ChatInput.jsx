@@ -5,6 +5,7 @@ import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
 import ClipIcon from "../../assets/ClipIcon.png";
 import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
+import axios from "../../api/axiosInstance";
 
 // 파일 크기 제한
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -76,7 +77,6 @@ const ChatInput = ({ onSendMessage }) => {
     });
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
-
   // 메시지 전송
   const handleSend = () => {
     if (!message.trim() && attachedFiles.length === 0) return;
@@ -86,19 +86,32 @@ const ChatInput = ({ onSendMessage }) => {
     console.log("웹 서치 상태", isWebSearchActive);
     console.log("첨부 파일: ", attachedFiles);
 
-    onSendMessage(message, attachedFiles);
+    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized);
     setMessage("");
     setAttachedFiles([]);
   };
+  // 사용 가능한 모델 목록 불러오기
+  useEffect(() => {
+    const fetchModelList = async () => {
+      try {
+        const response = await axios.get(import.meta.env.VITE_API_AI_URL);
+        console.log("Model List", response.data);
+      } catch (err) {
+        console.error("모델 목록 불러오기 실패", err);
+      }
+    };
+
+    fetchModelList();
+  }, []);
 
   return (
     <div className="w-full max-w-[700px] flex flex-col">
-      <div className="w-full bg-white dark:bg-[#2E2C36] border border-[#4E4E4E] rounded-2xl px-4 py-2">
+      <div className="w-full bg-white dark:bg-[#2E2C36] border border-[#DADADA] shadow rounded-2xl px-4 py-2">
         {/* 첨부파일 미리보기 */}
         {attachedFiles.length > 0 && (
           <div className="mb-2 flex flex-wrap gap-3">
             {attachedFiles.map((file, index) => (
-              <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg shadow-sm">
+              <div key={index} className="flex items-center gap-2 p-2 rounded-lg shadow-sm">
                 {file.type.startsWith("image/") ? (
                   <img
                     src={URL.createObjectURL(file)}

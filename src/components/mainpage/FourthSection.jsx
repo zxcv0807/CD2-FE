@@ -83,7 +83,7 @@ const FourthSection = () => {
                         지금 바로 시작해보세요.
                     </h2>
                     <div className="flex flex-col md:flex-row justify-center items-center gap-4 mt-10">
-                        <Link to="/chat-start" className="px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2 w-fit">
+                        <Link to="/topics" className="px-2 py-2 bg-[#A476CC] rounded-full flex justify-between items-center space-x-2 w-fit">
                             <span className="mx-4">질문 시작하기</span>
                             <img src={QuestionStartIcon2}/>
                         </Link>

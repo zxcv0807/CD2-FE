@@ -9,14 +9,16 @@ import { useParams } from "react-router-dom";
 
 const ChattingPage = () => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false); 
+    const token = useSelector((state) => state.auth.token);
+    const { session_id, } = useParams();
+    const ws = useRef(null);
+    const aiMessageRef = useRef(null);
+
+    // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
-    const token = useSelector((state) => state.auth.token);
-    const { session_id } = useParams();
-
-    // cot 메시지
-    const [cotMessage, setCotMessage] = useState("");
+    const [cotMessage, setCotMessage] = useState(""); // cot 메시지
     // 채팅 메시지
     const [messages, setMessages] = useState([
         { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
@@ -34,10 +36,8 @@ const ChattingPage = () => {
     ]);
 
     // 웹 소켓 연결
-    const ws = useRef(null);
-    const aiMessageRef = useRef(null);
     useEffect(() => {
-        ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`?token=${token}`);
+        ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
 
         ws.current.onopen = () => {
             console.log("WebSocket 연결됨");
@@ -49,42 +49,43 @@ const ChattingPage = () => {
                 const data = JSON.parse(event.data);
                 const { type, text } = data;
 
-                let messageType = null;
-                if (type === "cot") messageType = "cot";
-                else if (type === "hil") messageType = "feedback";
-                else if (type === "result") messageType = "ai";
-                
-                if(messageType === "cot") {
-                    setCotMessage((prev) => prev + text);
-                    return;
-                }
-
-                if (messageType === "ai"){
-                    if(text === "[END]") {
-                        aiMessageRef.current = null;
-                        setCotMessage("");
-                        console.log("답변 끝")
-                        return;
-                    }
-                    
-                    setMessages((prev) => {
-                        if (aiMessageRef.current !== null) {
+                switch(type) {
+                    case "cot":
+                        setCotMessage((prev) => prev + text);
+                        break;
+                    case "hitl":
+                        setMessages((prev) => [...prev, { 
+                            id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
+                            type: "feedback", 
+                            text 
+                        }]);
+                        break;
+                    case "result_start":
+                        // 새로운 AI 메시지 준비
+                        setMessages((prev) => [...prev, { 
+                            id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
+                            type: "ai", 
+                            text: "" 
+                        }]);
+                        aiMessageRef.current = messages.length; // Track the current AI message
+                        break;
+                    case "result":
+                        setMessages((prev) => {
                             const updated = [...prev];
                             updated[updated.length - 1].text += text;
                             return updated;
-                        } else {
-                            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
-                            aiMessageRef.current = newId;
-                            return [...prev, { id: newId, type: "ai", text}];
-                        }
-                    });
-                    return;
+                        });
+                        break;
+                    case "result_end":
+                        aiMessageRef.current = null;
+                        setCotMessage("");
+                        console.log("답변 끝");
+                        break;
+                    case "error":
+                        // Error handling (optional, as you mentioned not to worry about it)
+                        console.error("WebSocket error:", text);
+                        break;
                 }
-                if (messageType === "feedback") {
-                    const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
-                    setMessages((prev) => [...prev, { id: newId, type: "feedback", text}]);
-                }
-
             } catch (err) {
                 console.error("메시지 파싱 실패", err);
             }
@@ -103,7 +104,7 @@ const ChattingPage = () => {
     }, []);
 
     // 메시지 전송(질문하기)
-    const handleSendMessage = async (message, attachedFiles) => {
+    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized) => {
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
 
         const userMsg = { id: newId, type: "user", text: message };
@@ -133,8 +134,15 @@ const ChattingPage = () => {
         // 웹소켓으로 사용자 질문 전송
         if (ws.current?.readyState === WebSocket.OPEN) {
             const payload = JSON.stringify({
-                prompt: message,
+                token: token,
+                message: message,
                 topic: "코딩",
+                option: {
+                    web_search: isWebSearchActive,
+                    file_search: attachedFiles > 0,
+                    optimize: isOptimized,
+                    model: 0,
+                }
             });
             ws.current.send(payload);
         } else {

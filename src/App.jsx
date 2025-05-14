@@ -29,18 +29,11 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/guideline" element={<GuidelinePage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/chatting" element={<ChattingPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/topic" element={<AdminTopicManagement/>} />
         <Route path="/admin/language" element={<AdminLanguageManagement />} />
-        <Route 
-          path="/chat-start" 
-          element={
-            <ProtectedRoute>
-              <ChattingTopicSelectionPage />
-            </ProtectedRoute>
-          } />
-          <Route 
+        <Route path="/topics" element={<ChattingTopicSelectionPage />} />
+          <Route // 로그인
             path="/chatting/:session_id" 
             element={
               <ProtectedRoute>
