@@ -20,10 +20,24 @@ import Setting from "../modal/Setting";
 const Sidebar = ({ isSidebarVisible }) => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
+  const token = useSelector((state) => state.auth.token);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const currentSessionId = location.pathname.split("/chatting/")[1]; // 선택된 세션
+  const [openMenuId, setOpenMenuId] = useState(null); 
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0});
+  const [editSessionId, setEditSessionId] = useState(null);
+  const [chatList, setChatList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
 
-  // 선택된 세션
-  const currentSessionId = location.pathname.split("/chatting/")[1];
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    setIsLoggedIn(!!token);
+  }, [token]);
 
   // 사이드바 열고 닫기
   const handleToggleChatList = () => {
@@ -31,21 +45,12 @@ const Sidebar = ({ isSidebarVisible }) => {
   };
 
   //메뉴 열고 닫기
-  const [openMenuId, setOpenMenuId] = useState(null); 
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0});
   const toggleMenu = (id, e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMenuPosition({ x: rect.right + 10, y: rect.top });
     setOpenMenuId(prev => (prev === id ? null : id));
   }
   
-  // 채팅 목록
-  const [editSessionId, setEditSessionId] = useState(null);
-  const [chatList, setChatList] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const token = useSelector((state) => state.auth.token);
-
   // 대화 세션 전체 목록 불러오기
   useEffect(() => {
     const fetchChatList = async () => {
@@ -77,7 +82,6 @@ const Sidebar = ({ isSidebarVisible }) => {
   }, [token]);
 
   // 채팅 선택
-  const navigate = useNavigate();
   const handleChatClick = (sessionId) => {
     navigate(`/chatting/${sessionId}`)
   }
@@ -134,7 +138,7 @@ const Sidebar = ({ isSidebarVisible }) => {
       setChatList(prev => prev.filter(chat => chat.session_id !== sessionId));
       // 현재 보고 있는 대화 세션을 삭제하면 새 채팅 페이지로 이동동
       if (sessionId.toString() === currentSessionId) {
-        navigate("/chat-start");
+        navigate("/topics");
       }
     } catch (err) {
       console.error(err);
@@ -156,7 +160,6 @@ const Sidebar = ({ isSidebarVisible }) => {
   }, []);
 
   // 채팅 검색 모달
-  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
   const handleOpenChatSearch = () => {
     setIsChatSearchOpen(true);
   }
@@ -165,7 +168,6 @@ const Sidebar = ({ isSidebarVisible }) => {
   }
 
   // 설정 모달
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
   const handleOpenSetting = () => {
     setIsSettingOpen(true);
   }
@@ -183,7 +185,7 @@ const Sidebar = ({ isSidebarVisible }) => {
             <header className="flex justify-between items-center px-6 py-4 mt-10">
               <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold">Message</h2>
               {/* 새 채팅 */}
-              <Link to="/chat-start" className="relative group">
+              <Link to="/topics" className="relative group">
                 <button className="w-[50px] h-[50px] bg-[#A476CC] rounded-full flex justify-center items-center cursor-pointer">
                   <img src={PlusIcon} />
                 </button>
@@ -193,6 +195,7 @@ const Sidebar = ({ isSidebarVisible }) => {
             {/* 채팅 목록 */}
             <div className="flex-grow overflow-auto px-4">
               {loading && <span className="text-[#1A1A1A] dark:text-white">로딩 중...</span>}
+              {!isLoggedIn && <span><Link to="/login" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">로그인</Link> 이후에 더 많은 기능을 사용해보세요.</span>}
               <ul className="flex flex-col divide-y divide-[#999999] dark:divide-[#BBBBBB]">
                 {chatList.map((chat) => (
                   <li
@@ -277,18 +280,14 @@ const Sidebar = ({ isSidebarVisible }) => {
             </div>
             <div className="bg-[#A476CC] flex justify-center items-center gap-8 px-6 py-4 mt-2 rounded-lg">
               {/* 새 채팅 */}
-              <Link to="/chat-start" className="p-2">
+              <Link to="/topics" className="p-2">
                 <img src={PenIcon} alt="새 채팅" />
 
               </Link>
               {/* 채팅 검색 */}
-              <div onClick={handleOpenChatSearch} className="p-2">
-                <img src={SearchIcon} alt="검색" />
-              </div>
+              <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`p-2 ${isLoggedIn ? "" : "opacity-50"}`}/>
               {/* 설정 */}
-              <div onClick={handleOpenSetting} className="p-2">
-                <img src={SettingsIcon} alt="설정" />
-              </div>
+              <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`p-2 ${isLoggedIn ? "" : "opacity-50"}`} />
             </div>
           </div>
       </aside>
@@ -317,7 +316,7 @@ const Sidebar = ({ isSidebarVisible }) => {
                 </div>
               </div>
               {/* 새 채팅 */}
-              <Link to="/chat-start" className="relative group">
+              <Link to="/topics" className="relative group">
                 <img src={PenIcon} className="cursor-pointer" />
                 <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
                   <SidebarToolTip text="새 채팅" />
@@ -325,17 +324,17 @@ const Sidebar = ({ isSidebarVisible }) => {
               </Link>
               {/* 채팅 검색 */}
               <div className="relative group">
-                <img src={SearchIcon} onClick={handleOpenChatSearch} className="cursor-pointer"/>
+                <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
                 <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                  <SidebarToolTip text="채팅 검색" />
+                  <SidebarToolTip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} />
                 </div>
               </div>
             </nav>
             {/* 설정 아이콘 */}
             <div className="relative group">
-              <img src={SettingsIcon} onClick={handleOpenSetting} className="cursor-pointer"/>
+              <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
               <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                <SidebarToolTip text="설정" />
+                <SidebarToolTip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} />
               </div>
             </div>
           </div>
@@ -348,7 +347,7 @@ const Sidebar = ({ isSidebarVisible }) => {
             <header className="flex justify-between items-center my-8">
               <h2 className="text-[#1A1A1A] dark:text-white text-3xl font-semibold">Message</h2>
               {/* 새 채팅 */}
-              <Link to="/chat-start" className="relative group">
+              <Link to="/topics" className="relative group">
                 <button className="w-[50px] h-[50px] bg-[#A476CC] rounded-full flex justify-center items-center cursor-pointer">
                   <img src={PlusIcon} />
                 </button>
@@ -358,6 +357,7 @@ const Sidebar = ({ isSidebarVisible }) => {
             {/* 채팅 목록 */}
             <div className="flex-grow overflow-y-auto">
               {loading && <span className="text-[#1A1A1A] dark:text-white">로딩 중...</span>}
+              {!isLoggedIn && <span><Link to="/login" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">로그인</Link> 이후에 더 많은 기능을 사용해보세요.</span>}
               <ul className="flex flex-col divide-y divide-[#999999] dark:divide-[#BBBBBB]">
                 {chatList.map((chat) => (
                   <li

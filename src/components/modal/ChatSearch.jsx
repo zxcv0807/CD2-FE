@@ -26,7 +26,7 @@ const ChatSearch = ( {onClose} ) => {
     // 새 채팅 시작하기
     const handleNewChatStart = () => {
         onClose();
-        navigate("/chat-start");
+        navigate("/topics");
     };
     // 모달창 닫기
     const handleOverlayClick = (e) => {

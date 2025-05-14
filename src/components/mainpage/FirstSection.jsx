@@ -47,7 +47,7 @@ const FirstSection = () => {
             </p>
 
             {/* 질문 시작하기 버튼 */}
-            <Link to="/chat-start" className="w-[240px] mt-10 px-2 py-1 border border-[#DADADA] rounded-full flex justify-between items-center space-x-2 cursor-pointer z-5">
+            <Link to="/topics" className="w-[240px] mt-10 px-2 py-1 border border-[#DADADA] rounded-full flex justify-between items-center space-x-2 cursor-pointer z-5">
                 <span className="text-[#1A1A1A] dark:text-white ml-4">질문 시작하기</span>
                 <img src={QuestionStartIcon} />
             </Link>
