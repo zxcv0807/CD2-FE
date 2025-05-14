@@ -32,8 +32,8 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/topic" element={<AdminTopicManagement/>} />
         <Route path="/admin/language" element={<AdminLanguageManagement />} />
-        <Route path="/topics" element={<ChattingTopicSelectionPage />} />
-          <Route // 로그인
+        <Route path="/topics" element={<ProtectedRoute><ChattingTopicSelectionPage /></ProtectedRoute>} />
+          <Route
             path="/chatting/:session_id" 
             element={
               <ProtectedRoute>

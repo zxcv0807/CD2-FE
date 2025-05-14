@@ -13,6 +13,19 @@ const ChattingPage = () => {
     const { session_id, } = useParams();
     const ws = useRef(null);
     const aiMessageRef = useRef(null);
+    const [isAiAccepting, setIsAiAccepting] = useState(false);
+    const chatInputRef = useRef(null);
+    const chatContainerRef = useRef(null);
+
+    // 스크롤 아래로 이동
+    const scrollToBottom = () => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    };
+    useEffect(() => {
+        scrollToBottom();   
+    }, []);
 
     // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
@@ -61,13 +74,13 @@ const ChattingPage = () => {
                         }]);
                         break;
                     case "result_start":
-                        // 새로운 AI 메시지 준비
                         setMessages((prev) => [...prev, { 
                             id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
                             type: "ai", 
                             text: "" 
                         }]);
-                        aiMessageRef.current = messages.length; // Track the current AI message
+                        aiMessageRef.current = messages.length; 
+                        setIsAiAccepting(true);
                         break;
                     case "result":
                         setMessages((prev) => {
@@ -79,10 +92,10 @@ const ChattingPage = () => {
                     case "result_end":
                         aiMessageRef.current = null;
                         setCotMessage("");
+                        setIsAiAccepting(false);
                         console.log("답변 끝");
                         break;
                     case "error":
-                        // Error handling (optional, as you mentioned not to worry about it)
                         console.error("WebSocket error:", text);
                         break;
                 }
@@ -105,6 +118,12 @@ const ChattingPage = () => {
 
     // 메시지 전송(질문하기)
     const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized) => {
+        // ai 답변을 받는 중이라면면
+        chatInputRef.current?.handleAttemptSend(isAiAccepting);
+        if (isAiAccepting) {
+            return;
+        }
+
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
 
         const userMsg = { id: newId, type: "user", text: message };
@@ -160,17 +179,21 @@ const ChattingPage = () => {
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
-                    <div className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
+                    <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
                             <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />
                         )}
                         {messages.map((msg) => (
-                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} />
+                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting}/>
                         ))}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">
-                        <ChatInput onSendMessage={handleSendMessage} />
+                        <ChatInput 
+                            onSendMessage={handleSendMessage}
+                            ref={chatInputRef}
+                            isAiAccepting={isAiAccepting}
+                        />
                     </div>
                 </div>
             </div>

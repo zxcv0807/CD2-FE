@@ -57,7 +57,6 @@ const LoginPage = () => {
             email: validateField("email", formData.email),
             password: validateField("password", formData.password),
         };
-
         setErrors(newErrors);
 
         const isValid = Object.values(newErrors).every((err) => err === "");
@@ -79,7 +78,7 @@ const LoginPage = () => {
     // 구글 로그인
     const handleGoogleLogin = async () => {
         try{
-            window.location.href = "https://pbl.kro.kr/api/v1/oauth/google/login"
+            window.location.href = import.meta.env.VITE_API_BASE_URL + "/api/v1/oauth/google/login"
         } catch (error) {
             console.error("구글 로그인 URL 요청 실패:", error);
         }

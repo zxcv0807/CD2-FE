@@ -16,7 +16,6 @@ import TrashCanIcon from "../../assets/TrashcanIcon.png";
 import ChatSearch from "../modal/ChatSearch";
 import Setting from "../modal/Setting";
 
-
 const Sidebar = ({ isSidebarVisible }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -33,7 +32,6 @@ const Sidebar = ({ isSidebarVisible }) => {
   const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
 
-
   // 로그인 상태 확인
   useEffect(() => {
     setIsLoggedIn(!!token);
@@ -49,7 +47,7 @@ const Sidebar = ({ isSidebarVisible }) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMenuPosition({ x: rect.right + 10, y: rect.top });
     setOpenMenuId(prev => (prev === id ? null : id));
-  }
+  };
   
   // 대화 세션 전체 목록 불러오기
   useEffect(() => {
@@ -61,7 +59,6 @@ const Sidebar = ({ isSidebarVisible }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("채팅 목록 불러오기 성공", response.data);
         const chatData = response.data
           .sort((a, b) => new Date(b.modify_at) - new Date(a.modify_at))
           .map(session => ({
@@ -84,20 +81,19 @@ const Sidebar = ({ isSidebarVisible }) => {
   // 채팅 선택
   const handleChatClick = (sessionId) => {
     navigate(`/chatting/${sessionId}`)
-  }
+  };
 
   // 채팅 목록 중 선택하기
   const handleSelectChat = (sessionId) => {
-    console.log(`${sessionId} 번째 채팅 선택`)
     setEditSessionId(sessionId);
     setOpenMenuId(null);
-  }
+  };
   // 제목 바꾸기
   const handleTitleChange = async (sessionId, newTitle) => {
     // 기존 제목 저장
     const oldTitle = chatList.find(chat => chat.session_id === sessionId)?.session_title;
     try {
-      const response = await axios.put(`/api/v1/sessions/${sessionId}`,
+      await axios.put(`/api/v1/sessions/${sessionId}`,
         {title: newTitle},
         {
           headers: {
@@ -105,8 +101,6 @@ const Sidebar = ({ isSidebarVisible }) => {
           },
         }
       );
-      console.log("제목 변경 성공", response.data);
-      console.log(`채팅 ${sessionId} 제목이 ${newTitle}로 변경됨`);
       // UI 상으로는 즉시 반영되도록
       setChatList(prev =>
         prev.map(chat =>
@@ -124,10 +118,9 @@ const Sidebar = ({ isSidebarVisible }) => {
     } finally {
       setEditSessionId(null); // 편집 종료
     }
-  }
+  };
   // 채팅 삭제
   const handleDeleteChatting = async (sessionId) => {
-    console.log(`${sessionId} 번째 채팅 삭제하기`);
     try {
       await axios.delete(`/api/v1/sessions/${sessionId}`, {
         headers: {
@@ -136,14 +129,14 @@ const Sidebar = ({ isSidebarVisible }) => {
       });
       // UI 상으로는 즉시 반영되도록
       setChatList(prev => prev.filter(chat => chat.session_id !== sessionId));
-      // 현재 보고 있는 대화 세션을 삭제하면 새 채팅 페이지로 이동동
+      // 현재 보고 있는 대화 세션을 삭제하면 새 채팅 페이지로 이동
       if (sessionId.toString() === currentSessionId) {
         navigate("/topics");
       }
     } catch (err) {
       console.error(err);
     }
-  }
+  };
   
   // 메뉴 밖을 눌렀을 때 메뉴 창 끄기기
   useEffect(() => {
@@ -162,18 +155,17 @@ const Sidebar = ({ isSidebarVisible }) => {
   // 채팅 검색 모달
   const handleOpenChatSearch = () => {
     setIsChatSearchOpen(true);
-  }
+  };
   const handleCloseChatSearch = () => {
     setIsChatSearchOpen(false);
-  }
-
+  };
   // 설정 모달
   const handleOpenSetting = () => {
     setIsSettingOpen(true);
-  }
+  };
   const handleCloseSetting = () => {
     setIsSettingOpen(false);
-  }
+  };
   
   return (
     <>
