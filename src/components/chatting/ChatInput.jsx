@@ -5,7 +5,7 @@ import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
 import ClipIcon from "../../assets/ClipIcon.png";
 import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
-import axios from "../../api/axiosInstance";
+// import axios from "../../api/axiosInstance";
 
 // 파일 크기 제한
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -91,18 +91,18 @@ const ChatInput = ({ onSendMessage }) => {
     setAttachedFiles([]);
   };
   // 사용 가능한 모델 목록 불러오기
-  useEffect(() => {
-    const fetchModelList = async () => {
-      try {
-        const response = await axios.get(import.meta.env.VITE_API_AI_URL);
-        console.log("Model List", response.data);
-      } catch (err) {
-        console.error("모델 목록 불러오기 실패", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchModelList = async () => {
+  //     try {
+  //       const response = await axios.get(import.meta.env.VITE_API_AI_URL);
+  //       console.log("Model List", response.data);
+  //     } catch (err) {
+  //       console.error("모델 목록 불러오기 실패", err);
+  //     }
+  //   };
 
-    fetchModelList();
-  }, []);
+  //   fetchModelList();
+  // }, []);
 
   return (
     <div className="w-full max-w-[700px] flex flex-col">
