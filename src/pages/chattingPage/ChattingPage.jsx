@@ -135,13 +135,13 @@ const ChattingPage = () => {
         if (ws.current?.readyState === WebSocket.OPEN) {
             const payload = JSON.stringify({
                 token: token,
-                message: message,
+                prompt: message,
                 topic: "코딩",
                 option: {
                     web_search: isWebSearchActive,
                     file_search: attachedFiles > 0,
                     optimize: isOptimized,
-                    model: 0,
+                    model: "gpt-4o-mini",
                 }
             });
             ws.current.send(payload);
