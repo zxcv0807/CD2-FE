@@ -18,7 +18,7 @@ const GoogleCallbackPage = () => {
         const response = await axios.get("/api/v1/oauth/google/callback", {
           params: { code },
         });
-
+        console.log(response.data);
         const { access_token, user_id } = response.data;
         dispatch(login({ token: access_token, userId: user_id}));
 
