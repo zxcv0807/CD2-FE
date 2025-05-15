@@ -17,6 +17,7 @@ const GoogleCallbackPage = () => {
 
       try {
         const response = await axios.get("/api/v1/oauth/google/callback", {
+          withCredentials: true,
           params: { code: code, state: state },
         });
         const { access_token, user_id } = response.data;
@@ -30,7 +31,7 @@ const GoogleCallbackPage = () => {
     };
 
     handleGoogleCallback();
-  }, [code, dispatch, navigate]);
+  }, [code, state, dispatch, navigate]);
 
   return <div>구글 로그인 처리 중입니다...</div>;
 };
