@@ -16,24 +16,8 @@ const ChattingPage = () => {
     const [isAiAccepting, setIsAiAccepting] = useState(false);
     const chatInputRef = useRef(null);
     const chatContainerRef = useRef(null);
-
-    // 스크롤 아래로 이동
-    const scrollToBottom = () => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    };
-    useEffect(() => {
-        scrollToBottom();   
-    }, []);
-
-    // 사이드바 열고 닫기
-    const handleToggleSidebar = () => {
-        setIsSidebarVisible(!isSidebarVisible);
-    };
     const [cotMessage, setCotMessage] = useState(""); // cot 메시지
-    // 채팅 메시지
-    const [messages, setMessages] = useState([
+    const [messages, setMessages] = useState([ // 채팅 메시지
         { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
         { id: 2, type: "feedback", text: "Window, Mac 등 어떤 운영체제를 사용중이신가요?" },
         { id: 3, type: "user", text: "Window 운영체제 사용중이야" },
@@ -48,6 +32,19 @@ const ChattingPage = () => {
         { id: 12, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
     ]);
 
+    // 스크롤 아래로 이동
+    useEffect(() => {
+        const scrollToBottom = () => {
+            if (chatContainerRef.current) {
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            }
+        };
+        scrollToBottom();   
+    }, []);
+    // 사이드바 열고 닫기
+    const handleToggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
     // 웹 소켓 연결
     useEffect(() => {
         ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
@@ -115,7 +112,6 @@ const ChattingPage = () => {
         };
         // eslint-disable-next-line
     }, []);
-
     // 메시지 전송(질문하기)
     const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized) => {
         // ai 답변을 받는 중이라면면
