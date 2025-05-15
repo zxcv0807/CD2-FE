@@ -6,7 +6,7 @@ import { login } from "../../REDUX/auth/authSlice"
 
 const GoogleCallbackPage = () => {
   const [searchParams] = useSearchParams();
-  const code = searchParams.get("access_token");
+  const code = searchParams.get("code");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,7 +18,6 @@ const GoogleCallbackPage = () => {
         const response = await axios.get("/api/v1/oauth/google/callback", {
           params: { code },
         });
-        console.log(response.data);
         const { access_token, user_id } = response.data;
         dispatch(login({ token: access_token, userId: user_id}));
 
