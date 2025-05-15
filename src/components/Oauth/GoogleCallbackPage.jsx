@@ -6,7 +6,7 @@ import { login } from "../../REDUX/auth/authSlice"
 
 const GoogleCallbackPage = () => {
   const [searchParams] = useSearchParams();
-  const code = searchParams.get("code");
+  const code = searchParams.get("access_token");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
