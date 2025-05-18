@@ -30,15 +30,16 @@ const AdminLanguageManagement = () => {
     const handleAddLanguage = async () => {
         if (newLanguage.trim() && !languages.some(l => l.language_name === newLanguage)) {
             try {
-                const response = await axios.post("/api/v1/admin/languages/",{
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                },
-                { language_name: newLanguage },
+                const response = await axios.post("/api/v1/admin/languages/",
+                    { lang_code: newLanguage },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    },  
                 );
                 console.log("언어 추가 성공", response.data);
-                setLanguages([...languages, response.data]);
+                // setLanguages([...languages, response.data]);
                 setNewLanguage("");
             } catch (err) {
                 console.error("언어 추가 실패", err);
@@ -49,15 +50,15 @@ const AdminLanguageManagement = () => {
     // 언어 삭제
     const handleDeleteLanguage = async (language_id) => {
         try {
-        await axios.delete(`/api/v1/admin/languages/${language_id}`, {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        });
-        console.log("언어 삭제 성공");
-        setLanguages(languages.filter((lang) => lang.language_id !== language_id));
+            await axios.delete(`/api/v1/admin/languages/${language_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("언어 삭제 성공");
+            setLanguages(languages.filter((lang) => lang.language_id !== language_id));
         } catch (err) {
-        console.error("언어 삭제 실패", err);
+            console.error("언어 삭제 실패", err);
         }
     };
 

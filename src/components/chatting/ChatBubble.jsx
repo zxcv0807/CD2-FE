@@ -1,15 +1,30 @@
+import { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
 
-const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false }) => {
+const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, session_id }) => {
+  const token = useSelector((state) => state.auth.token);
+  const [thumbsSubmitted, setThumbsSubmitted] = useState(false);
+
   // ai 채팅
-  const handleThumbsUp = () => {
-    console.log(`좋아요 ${id}번째 채팅`);
+  const handleThumbsUpDown = async (recommend) => {
+    try {
+      await axios.post(import.meta.env.VITE_API_AI_URL + `/feedback/${session_id}`,
+        {
+          token: token,
+          message_id: id,
+          recommend: recommend,
+        } 
+      );
+      console.log(`${id}번쨰 채팅 추천/비추천`);
+      setThumbsSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
-  const handleThumbsDown = () => {
-    console.log(`싫어요 ${id}번째 채팅`);
-  }
 
   if (type === "ai") {
     if (isCOT) {
@@ -29,7 +44,7 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false }) =>
           <ReactMarkdown>{text}</ReactMarkdown>
         </div>
 
-        {!isAiAccepting && (
+        {!isAiAccepting && !thumbsSubmitted && (
           <>
             {/* 구분선 */}
             <div className="w-full h-px bg-[#DADADA] my-3"></div>
@@ -38,8 +53,8 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false }) =>
             <div className="w-full flex justify-end items-center gap-2">
               <span className="text-sm text-[#999999]">해당 내용의 적절한 답변이 어땠나요?</span>
               {/* 좋아요, 싫어요 아이콘 */}
-              <img src={ThumbsUp} className="cursor-pointer" onClick={handleThumbsUp}/>
-              <img src={ThumbsDown} className="cursor-pointer" onClick={handleThumbsDown}/>
+              <img src={ThumbsUp} className="cursor-pointer" onClick={() => handleThumbsUpDown(true)}/>
+              <img src={ThumbsDown} className="cursor-pointer" onClick={() => handleThumbsUpDown(false)}/>
             </div>
           </>
         )}
