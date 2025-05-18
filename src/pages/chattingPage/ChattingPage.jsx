@@ -10,13 +10,15 @@ import { useParams } from "react-router-dom";
 const ChattingPage = () => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false); 
     const token = useSelector((state) => state.auth.token);
+    const userId = useSelector((state) => state.auth.userId);
     const { session_id, } = useParams();
     const ws = useRef(null);
     const aiMessageRef = useRef(null);
-    const [isAiAccepting, setIsAiAccepting] = useState(false);
     const chatInputRef = useRef(null);
     const chatContainerRef = useRef(null);
+    const [isAiAccepting, setIsAiAccepting] = useState(false);
     const [cotMessage, setCotMessage] = useState(""); // cot 메시지
+    const [isHitlActive, setIsHitlActive] = useState(false);
     const [messages, setMessages] = useState([ // 채팅 메시지
         { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
         { id: 2, type: "feedback", text: "Window, Mac 등 어떤 운영체제를 사용중이신가요?" },
@@ -45,6 +47,36 @@ const ChattingPage = () => {
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
+    // 대화 목록 불러오기
+    useEffect(() => {
+        const fetchMessageList = async () => {
+            console.log(userId, token);
+            try {
+                const response = await axios.post("/api/v1/faiss/history", 
+                    {
+                        session_id: session_id,
+                        user_id: userId,
+                    }, {   
+                        headers : {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                console.log(response.data);
+                const formattedMessages = response.data.messages.map(msg => ({
+                    id: msg.doc_id,
+                    type: msg.role,
+                    text: msg.page_content,
+                    timestamp: msg.timestamp,
+                }));
+                setMessages(formattedMessages);
+            } catch(err) {
+                console.error("대화 목록 불러오기 실패", err);
+            }
+        }
+
+        fetchMessageList();
+    }, [session_id, token, userId]);
     // 웹 소켓 연결
     useEffect(() => {
         ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
@@ -69,6 +101,7 @@ const ChattingPage = () => {
                             type: "feedback", 
                             text 
                         }]);
+                        setIsHitlActive(true);
                         break;
                     case "result_start":
                         setMessages((prev) => [...prev, { 
@@ -90,6 +123,7 @@ const ChattingPage = () => {
                         aiMessageRef.current = null;
                         setCotMessage("");
                         setIsAiAccepting(false);
+                        setIsHitlActive(false);
                         console.log("답변 끝");
                         break;
                     case "error":
@@ -112,8 +146,8 @@ const ChattingPage = () => {
         };
         // eslint-disable-next-line
     }, []);
-    // 메시지 전송(질문하기)
-    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized) => {
+    // 메시지 전송
+    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized, currentModel) => {
         // ai 답변을 받는 중이라면면
         chatInputRef.current?.handleAttemptSend(isAiAccepting);
         if (isAiAccepting) {
@@ -148,18 +182,23 @@ const ChattingPage = () => {
         };
         // 웹소켓으로 사용자 질문 전송
         if (ws.current?.readyState === WebSocket.OPEN) {
-            const payload = JSON.stringify({
-                token: token,
-                prompt: message,
-                topic: "코딩",
-                option: {
-                    web_search: isWebSearchActive,
-                    file_search: attachedFiles > 0,
-                    optimize: isOptimized,
-                    model: "gpt-4o-mini",
-                }
-            });
-            ws.current.send(payload);
+            if (isHitlActive) {
+                ws.current.send(message);
+            } else {
+                const payload = JSON.stringify({
+                    token: token,
+                    prompt: message,
+                    topic: "코딩",
+                    option: {
+                        web_search: isWebSearchActive,
+                        file_search: attachedFiles.length > 0,
+                        optimize: isOptimized,
+                        model: "gpt-4o-mini",
+                    }
+                });
+                ws.current.send(payload);
+            }
+            
         } else {
             console.warn("WebSocket이 아직 연결되지 않았습니다.");
         }
@@ -181,7 +220,7 @@ const ChattingPage = () => {
                             <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />
                         )}
                         {messages.map((msg) => (
-                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting}/>
+                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting} session_id={session_id}/>
                         ))}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">

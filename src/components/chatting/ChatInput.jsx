@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import ChatInputTooltip from "../modal/ChatInputToolTip";
+import Tooltip from "../modal/Tooltip";
+import ModelMenuModal from "../modal/ModelMenuModal";
 import SpeechBubbleIcon from "../../assets/SpeechBubble.png";
 import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
 import ClipIcon from "../../assets/ClipIcon.png";
 import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
-// import axios from "../../api/axiosInstance";
+import ModelMenuIcon from "../../assets/ModelMenuIcon.png";
 
 // 파일 크기 제한
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -14,15 +15,18 @@ const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
 const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const timerRef = useRef(null);
   const [isOptimized, setIsOptimized] = useState(false);
   const [isWebSearchActive, setIsWebSearchActive] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
-  const fileInputRef = useRef(null);
   const [sendErrorMessage, setSendErrorMessage] = useState(null);
-  const timerRef = useRef(null);
+  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
+  const [currentModel, setCurrentModel] = useState(null);
 
-  const toggleOptimization = () => setIsOptimized(prev => !prev); // 최적화하기
-  const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치하기
+  const toggleOptimization = () => setIsOptimized(prev => !prev); // 최적화하기 ON/OFF
+  const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치 ON/OFF
+  const toggleModelMenu = () => setIsModelMenuOpen(prev => !prev); // 모델 리스트 열기기
 
   // 채팅창 높이 제한
   useEffect(() => {
@@ -84,6 +88,8 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
     });
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
+  
+  // ai 대답중이면 입력 불가
   const clearSendErrorTimer = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -114,23 +120,10 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
 
     if (!message.trim() && attachedFiles.length === 0) return;
 
-    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized);
+    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized, currentModel);
     setMessage("");
     setAttachedFiles([]);
   };
-  // 사용 가능한 모델 목록 불러오기
-  // useEffect(() => {
-  //   const fetchModelList = async () => {
-  //     try {
-  //       const response = await axios.get(import.meta.env.VITE_API_AI_URL);
-  //       console.log("Model List", response.data);
-  //     } catch (err) {
-  //       console.error("모델 목록 불러오기 실패", err);
-  //     }
-  //   };
-
-  //   fetchModelList();
-  // }, []);
 
   return (
     <div className="w-full max-w-[700px] flex flex-col">
@@ -184,18 +177,38 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
             <span className="text-white text-sm">최적화하기</span>
           </button>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 relative">
+            {/* 모델 선택 아이콘 */}
+            <Tooltip text="모델 선택" position="top">
+              <img
+                src={ModelMenuIcon}
+                onClick={toggleModelMenu}
+                className="cursor-pointer"
+              />
+            </Tooltip>
+            {isModelMenuOpen && (
+              <div className="absolute right-24 bottom-full mb-2">
+                <ModelMenuModal
+                  isOpen={isModelMenuOpen}
+                  onModelSelect={(model) => {
+                    setCurrentModel(model);
+                    setIsModelMenuOpen(false);
+                  }}
+                  currentModel={currentModel}
+                />
+              </div>
+            )}
             {/* 웹서치 아이콘 */}
-            <ChatInputTooltip text="웹 검색">
+            <Tooltip text="웹 검색" position="top">
               <img
                 src={isWebSearchActive ? WebSearchIconPurple : WebSearchIcon}
                 onClick={toggleWebSearch}
                 className="w-[24px] h-[24px] cursor-pointer"
               />
-            </ChatInputTooltip>
+            </Tooltip>
 
             {/* 첨부파일 업로드 아이콘 */}
-            <ChatInputTooltip text="파일 첨부">
+            <Tooltip text="파일 첨부" position="top">
               <div className="relative cursor-pointer" onClick={triggerFileSelect}>
                 <img src={ClipIcon} />
                 <input
@@ -207,14 +220,14 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
                   className="hidden"
                 />
               </div>
-            </ChatInputTooltip>
+            </Tooltip>
 
             {/* 전송 버튼 */}
-            <ChatInputTooltip text="메시지 전송">
+            <Tooltip text="메시지 전송" position="top">
               <button onClick={handleSend}>
                 <img src={RightArrowWhiteIcon} className="cursor-pointer" />
               </button>
-            </ChatInputTooltip>
+            </Tooltip>
           </div>
         </div>
       </div>

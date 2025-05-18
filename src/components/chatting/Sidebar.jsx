@@ -3,8 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleChatListVisible } from "../../REDUX/layout/chatListLayoutSlice";
 import axios from "../../api/axiosInstance";
-import MenuPortal from "./MenuPortal";
-import SidebarToolTip from "../modal/SidebarToolTip";
+import Tooltip from "../modal/Tooltip";
 import LogoIconWhite from "../../assets/LogoIconWhite.png";
 import PenIcon from "../../assets/PenIcon.png";
 import NaviIcon from "../../assets/NaviIcon.png";
@@ -301,34 +300,30 @@ const Sidebar = ({ isSidebarVisible }) => {
           <div className="flex flex-col justify-between h-full items-center py-8">
             <nav className="flex flex-col items-center gap-12">
               {/* 사이드바 열고 닫기 */}
-              <div className="relative group">
-                <img src={NaviIcon} onClick={handleToggleChatList} className="cursor-pointer" />
-                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                  <SidebarToolTip text={isChatListVisible ? "사이드바 닫기" : "사이드바 열기"} />
+              <Tooltip text={isChatListVisible ? "사이드바 닫기" : "사이드바 열기"} position="right">
+                <div className="relative group">
+                  <img src={NaviIcon} onClick={handleToggleChatList} className="cursor-pointer" />
                 </div>
-              </div>
+              </Tooltip>
               {/* 새 채팅 */}
-              <Link to="/topics" className="relative group">
-                <img src={PenIcon} className="cursor-pointer" />
-                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                  <SidebarToolTip text="새 채팅" />
-                </div>
-              </Link>
+              <Tooltip text="새 채팅" position="right">
+                <Link to="/topics" className="relative group">
+                  <img src={PenIcon} className="cursor-pointer" />
+                </Link>
+              </Tooltip>
               {/* 채팅 검색 */}
-              <div className="relative group">
-                <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
-                <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                  <SidebarToolTip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} />
+              <Tooltip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} position="right">
+                <div className="relative group">
+                  <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
                 </div>
-              </div>
+              </Tooltip>
             </nav>
             {/* 설정 아이콘 */}
-            <div className="relative group">
-              <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
-              <div className="hidden group-hover:block absolute top-1/2 left-full -translate-y-1/2 ml-2 z-50">
-                <SidebarToolTip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} />
+            <Tooltip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} position="right">
+              <div className="relative group">
+                <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
               </div>
-            </div>
+            </Tooltip>
           </div>
         </div>
 

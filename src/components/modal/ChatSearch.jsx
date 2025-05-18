@@ -5,10 +5,8 @@ import XIcon from "../../assets/XIcon.png";
 
 const ChatSearch = ( {onClose} ) => {
     const navigate = useNavigate();
-    // 검색어 상태
-    const [search, setSearch] = useState("");
-    // 채팅 검색 결과
-    const results = [
+    const [search, setSearch] = useState(""); // 검색어 상태
+    const results = [ // 채팅 검색 결과
         { id: 1, title: "프롬프트 제목1", topic: "주제1" },
         { id: 2, title: "프롬프트 제목2", topic: "주제2" },
         { id: 3, title: "프롬프트 제목1", topic: "주제3" },
