@@ -17,22 +17,10 @@ const ChattingPage = () => {
     const chatInputRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [isAiAccepting, setIsAiAccepting] = useState(false);
-    const [cotMessage, setCotMessage] = useState(""); // cot 메시지
+    const [cotMessage, setCotMessage] = useState("");
     const [isHitlActive, setIsHitlActive] = useState(false);
-    const [messages, setMessages] = useState([ // 채팅 메시지
-        { id: 1, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
-        { id: 2, type: "feedback", text: "Window, Mac 등 어떤 운영체제를 사용중이신가요?" },
-        { id: 3, type: "user", text: "Window 운영체제 사용중이야" },
-        { id: 4, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
-        { id: 5, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
-        { id: 6, type: "feedback", text: "Window 운영체제 사용중이야" },
-        { id: 7, type: "user", text: "Window 운영체제 사용중이야" },
-        { id: 8, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
-        { id: 9, type: "user", text: "visual studio code 편집기를 이용해 docker 설치방법을 알려줘" },
-        { id: 10, type: "feedback", text: "Window 운영체제 사용중이야" },
-        { id: 11, type: "user", text: "Window 운영체제 사용중이야" },
-        { id: 12, type: "ai", text: "Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다.Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치방법은 다음과 같습니다." },
-    ]);
+    const [messages, setMessages] = useState([]);
+    const [topic, setTopic] = useState("");
 
     // 스크롤 아래로 이동
     useEffect(() => {
@@ -42,7 +30,7 @@ const ChattingPage = () => {
             }
         };
         scrollToBottom();   
-    }, []);
+    }, [messages, cotMessage]);
     // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
@@ -50,7 +38,6 @@ const ChattingPage = () => {
     // 대화 목록 불러오기
     useEffect(() => {
         const fetchMessageList = async () => {
-            console.log(userId, token);
             try {
                 const response = await axios.post("/api/v1/faiss/history", 
                     {
@@ -63,6 +50,7 @@ const ChattingPage = () => {
                     }
                 );
                 console.log(response.data);
+                setTopic(response.data.topics[0]);
                 const formattedMessages = response.data.messages.map(msg => ({
                     id: msg.doc_id,
                     type: msg.role,
@@ -77,6 +65,7 @@ const ChattingPage = () => {
 
         fetchMessageList();
     }, [session_id, token, userId]);
+
     // 웹 소켓 연결
     useEffect(() => {
         ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
@@ -93,7 +82,7 @@ const ChattingPage = () => {
 
                 switch(type) {
                     case "cot":
-                        setCotMessage((prev) => prev + text);
+                        setCotMessage(text);
                         break;
                     case "hitl":
                         setMessages((prev) => [...prev, { 
@@ -102,22 +91,40 @@ const ChattingPage = () => {
                             text 
                         }]);
                         setIsHitlActive(true);
+                        setCotMessage("");
                         break;
                     case "result_start":
-                        setMessages((prev) => [...prev, { 
-                            id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
-                            type: "ai", 
-                            text: "" 
-                        }]);
-                        aiMessageRef.current = messages.length; 
+                        setMessages((prev) => { 
+                            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
+                            return [...prev, {
+                                id: newId,
+                                type:"ai",
+                                text: ""
+                            }];
+                        });
                         setIsAiAccepting(true);
                         break;
                     case "result":
                         setMessages((prev) => {
                             const updated = [...prev];
-                            updated[updated.length - 1].text += text;
+                            const lastIndex = updated.length - 1;
+                            
+                            if (updated.length > 0 && updated[lastIndex].type === "ai") {
+                                updated[lastIndex] = {
+                                    ...updated[lastIndex],
+                                    text: updated[lastIndex].text + text
+                                };
+                            } else {
+                                const newId = updated.length > 0 ? updated[updated.length - 1].id + 1 : 1;
+                                updated.push({
+                                    id: newId,
+                                    type: "ai",
+                                    text: text
+                                });
+                            }
                             return updated;
                         });
+                        setCotMessage("");
                         break;
                     case "result_end":
                         aiMessageRef.current = null;
@@ -147,10 +154,10 @@ const ChattingPage = () => {
         // eslint-disable-next-line
     }, []);
     // 메시지 전송
-    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized, currentModel) => {
-        // ai 답변을 받는 중이라면면
-        chatInputRef.current?.handleAttemptSend(isAiAccepting);
-        if (isAiAccepting) {
+    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized, currentModelId) => {
+        // ai 답변을 받는 중이라면
+        chatInputRef.current?.handleAttemptSend(isAiAccepting, isHitlActive);
+        if (isAiAccepting && !isHitlActive) {
             return;
         }
 
@@ -183,17 +190,20 @@ const ChattingPage = () => {
         // 웹소켓으로 사용자 질문 전송
         if (ws.current?.readyState === WebSocket.OPEN) {
             if (isHitlActive) {
-                ws.current.send(message);
+                const feedback = JSON.stringify({
+                    feedback: message
+                })
+                ws.current.send(feedback);
             } else {
                 const payload = JSON.stringify({
                     token: token,
                     prompt: message,
-                    topic: "코딩",
+                    topic: topic,
                     option: {
                         web_search: isWebSearchActive,
-                        file_search: attachedFiles.length > 0,
+                        file: attachedFiles > 0,
                         optimize: isOptimized,
-                        model: "gpt-4o-mini",
+                        model: currentModelId,
                     }
                 });
                 ws.current.send(payload);
@@ -215,19 +225,21 @@ const ChattingPage = () => {
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
+                        {/* 대화 메시지지 */}
+                        {messages.map((msg) => (
+                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting} session_id={session_id} />
+                        ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
                             <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />
                         )}
-                        {messages.map((msg) => (
-                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting} session_id={session_id}/>
-                        ))}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">
                         <ChatInput 
                             onSendMessage={handleSendMessage}
                             ref={chatInputRef}
                             isAiAccepting={isAiAccepting}
+                            isHitlActive={isHitlActive}
                         />
                     </div>
                 </div>

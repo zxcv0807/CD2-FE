@@ -29,7 +29,7 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
   if (type === "ai") {
     if (isCOT) {
       return (
-        <div className="flex flex-col items-start w-full my-4">
+        <div className="flex flex-col items-start w-full">
           <div className="w-full text-sm italic bg-yellow-50 rounded-xl px-4 py-2 animate-pulse">
             <ReactMarkdown>{text}</ReactMarkdown>
           </div>
@@ -37,30 +37,32 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
       );
     };
     
-    return (
-      <div className="flex flex-col items-start w-full my-6">
-        {/* 텍스트 내용 */}
-        <div className="w-full ai-markdown">
-          <ReactMarkdown>{text}</ReactMarkdown>
+    if (text.trim().length > 0 || isAiAccepting) {
+      return (
+        <div className="flex flex-col items-start w-full my-6">
+          {/* 텍스트 내용 */}
+          <div className="w-full ai-markdown">
+            <ReactMarkdown>{text}</ReactMarkdown>
+          </div>
+
+          {!isAiAccepting && !thumbsSubmitted && text.trim().length > 0 && (
+            <>
+              {/* 구분선 */}
+              <div className="w-full h-px bg-[#DADADA] my-3"></div>
+
+              {/* 답변에 대한 피드백 */}
+              <div className="w-full flex justify-end items-center gap-2">
+                <span className="text-sm text-[#999999]">해당 내용의 적절한 답변이 어땠나요?</span>
+                {/* 좋아요, 싫어요 아이콘 */}
+                <img src={ThumbsUp} className="cursor-pointer" onClick={() => handleThumbsUpDown(true)}/>
+                <img src={ThumbsDown} className="cursor-pointer" onClick={() => handleThumbsUpDown(false)}/>
+              </div>
+            </>
+          )}
         </div>
-
-        {!isAiAccepting && !thumbsSubmitted && (
-          <>
-            {/* 구분선 */}
-            <div className="w-full h-px bg-[#DADADA] my-3"></div>
-
-            {/* 답변에 대한 피드백 */}
-            <div className="w-full flex justify-end items-center gap-2">
-              <span className="text-sm text-[#999999]">해당 내용의 적절한 답변이 어땠나요?</span>
-              {/* 좋아요, 싫어요 아이콘 */}
-              <img src={ThumbsUp} className="cursor-pointer" onClick={() => handleThumbsUpDown(true)}/>
-              <img src={ThumbsDown} className="cursor-pointer" onClick={() => handleThumbsUpDown(false)}/>
-            </div>
-          </>
-        )}
-        
-      </div>
-    );
+      );
+    }
+    return null;
   }
 
   // 사용자와, 피드백 채팅

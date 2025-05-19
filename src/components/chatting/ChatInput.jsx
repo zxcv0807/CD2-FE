@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import Tooltip from "../modal/Tooltip";
-import ModelMenuModal from "../modal/ModelMenuModal";
+import ModelListModal from "../modal/ModelListModal";
 import SpeechBubbleIcon from "../../assets/SpeechBubble.png";
 import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
@@ -12,7 +12,7 @@ import ModelMenuIcon from "../../assets/ModelMenuIcon.png";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
 
-const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
+const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, ref) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -22,7 +22,7 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [sendErrorMessage, setSendErrorMessage] = useState(null);
   const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
-  const [currentModel, setCurrentModel] = useState(null);
+  const [currentModelId, setCurrentModelId] = useState(0);
 
   const toggleOptimization = () => setIsOptimized(prev => !prev); // 최적화하기 ON/OFF
   const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치 ON/OFF
@@ -98,8 +98,8 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
   }
   // ChattingPage에서 호출할 함수를 노출
   useImperativeHandle(ref, () => ({
-    handleAttemptSend: (isAccepting) => {
-      if (isAccepting) {
+    handleAttemptSend: (isAccepting, isHitlActive) => {
+      if (isAccepting && !isHitlActive) {
         setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
         clearSendErrorTimer();
         timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
@@ -111,7 +111,7 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
   }));
   // 메시지 전송
   const handleSend = () => {
-    if (isAiAccepting) {
+    if (isAiAccepting && !isHitlActive) {
       setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
       clearSendErrorTimer();
       timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
@@ -120,7 +120,7 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
 
     if (!message.trim() && attachedFiles.length === 0) return;
 
-    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized, currentModel);
+    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized, currentModelId);
     setMessage("");
     setAttachedFiles([]);
   };
@@ -188,13 +188,13 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting }, ref) => {
             </Tooltip>
             {isModelMenuOpen && (
               <div className="absolute right-24 bottom-full mb-2">
-                <ModelMenuModal
+                <ModelListModal
                   isOpen={isModelMenuOpen}
-                  onModelSelect={(model) => {
-                    setCurrentModel(model);
+                  onModelSelect={(modelId) => {
+                    setCurrentModelId(modelId);
                     setIsModelMenuOpen(false);
                   }}
-                  currentModel={currentModel}
+                  currentModelId={currentModelId}
                 />
               </div>
             )}

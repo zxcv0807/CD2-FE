@@ -35,7 +35,7 @@ const AdminDashboard = () => {
     };
 
     fetchVisitorStats();
-  }, []);
+  }, [token]);
 
   return (
     <div className="flex h-screen bg-[#F5F5F5]">

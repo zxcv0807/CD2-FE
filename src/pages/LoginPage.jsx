@@ -63,9 +63,13 @@ const LoginPage = () => {
         if (!isValid) return;
 
         try {
-            const response = await axios.post("/api/v1/user/login", {
-                email: formData.email,
-                password: formData.password,
+            const params = new URLSearchParams();
+            params.append('username', formData.email);
+            params.append('password', formData.password);
+            const response = await axios.post("/api/v1/user/login", params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
             });
             const { access_token, user_id } = response.data;
             dispatch(login({token: access_token, userId: user_id}));
