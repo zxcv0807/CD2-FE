@@ -1,21 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "../../api/axiosInstance";
 import SearchIconGray from "../../assets/SearchIconGray.png";
 import XIcon from "../../assets/XIcon.png";
 
 const ChatSearch = ( {onClose} ) => {
+    const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
-    const [search, setSearch] = useState(""); // 검색어 상태
-    const results = [ // 채팅 검색 결과
-        { id: 1, title: "프롬프트 제목1", topic: "주제1" },
-        { id: 2, title: "프롬프트 제목2", topic: "주제2" },
-        { id: 3, title: "프롬프트 제목1", topic: "주제3" },
-        { id: 4, title: "프롬프트 제목2", topic: "주제4" },
-        { id: 5, title: "프롬프트 제목1", topic: "주제5" },
-        { id: 6, title: "프롬프트 제목2", topic: "주제6" },
-    ];
-    const handleSearch = () => {
-        console.log("채팅 검색입니다.");
+    const [search, setSearch] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+
+    const handleSearch = async () => {
+        try {
+            const response = await axios.post("/api/v1/faiss/search/keyword/sessions", 
+                { keyword: search },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            console.log("검색 결과", response.data);
+            setSearchResults(response.data);
+        } catch (err) {
+            console.error(err);
+            setSearchResults([]);
+        }
     };
     // 대화 세션 클릭
     const handleSessionClick = (session_id) => {
@@ -61,12 +72,16 @@ const ChatSearch = ( {onClose} ) => {
                 </div>
                 {/* 검색 결과 */}
                 <div className="flex flex-col gap-3 overflow-auto">
-                    {results.map((item, idx) => (
-                        <div key={idx} className="bg-[#F5F5F5] dark:bg-[#393646] p-3 mr-1 rounded-lg cursor-pointer hover:bg-[#eaeaea] dark:hover:bg-[#4E4E4E]" onClick={()=>handleSessionClick(item.id)}>
-                            <div className="dark:text-white font-semibold truncate">{item.title}</div>
-                            <div className="dark:text-[#BBBBBB] text-sm text-[#4E4E4E]">{item.topic}</div>
-                        </div>
-                    ))}
+                    {searchResults.length > 0 ? (
+                        searchResults.map((item) => (
+                            <div key={item.session_id} className="bg-[#F5F5F5] dark:bg-[#393646] p-3 mr-1 rounded-lg cursor-pointer hover:bg-[#eaeaea] dark:hover:bg-[#4E4E4E]" onClick={()=>handleSessionClick(item.session_id)}>
+                                <div className="dark:text-white font-semibold truncate">{item.title}</div>
+                                <div className="dark:text-[#BBBBBB] text-sm text-[#4E4E4E]">{item.topics[0]}</div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-center text-[#999999] dark:text-[#BBBBBB]">검색 결과가 없습니다.</div>
+                    )}
                 </div>
                 {/* 새 채팅 시작하기 */}
                 <button className="mt-auto pt-4 text-center text-sm text-[#999999] cursor-pointer" onClick={handleNewChatStart}>

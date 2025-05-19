@@ -12,11 +12,7 @@ const AdminLanguageManagement = () => {
     useEffect(() => {
         const fetchLanguages = async () => {
         try {
-            const response = await axios.get("/api/v1/languages/", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            });
+            const response = await axios.get("/api/v1/language/");
             console.log("언어 목록 불러오기 성공", response.data);
             setLanguages(response.data);
         } catch (err) {
@@ -30,7 +26,7 @@ const AdminLanguageManagement = () => {
     const handleAddLanguage = async () => {
         if (newLanguage.trim() && !languages.some(l => l.language_name === newLanguage)) {
             try {
-                const response = await axios.post("/api/v1/admin/languages/",
+                const response = await axios.post("/api/v1/admin/languages",
                     { lang_code: newLanguage },
                     {
                         headers: {
@@ -39,7 +35,7 @@ const AdminLanguageManagement = () => {
                     },  
                 );
                 console.log("언어 추가 성공", response.data);
-                // setLanguages([...languages, response.data]);
+                setLanguages([...languages, response.data]);
                 setNewLanguage("");
             } catch (err) {
                 console.error("언어 추가 실패", err);
@@ -56,7 +52,7 @@ const AdminLanguageManagement = () => {
                 },
             });
             console.log("언어 삭제 성공");
-            setLanguages(languages.filter((lang) => lang.language_id !== language_id));
+            setLanguages(languages.filter((lang) => lang.lang_id !== language_id));
         } catch (err) {
             console.error("언어 삭제 실패", err);
         }
@@ -89,12 +85,12 @@ const AdminLanguageManagement = () => {
             <ul className="space-y-2">
             {languages.map((lang) => (
                 <li
-                    key={lang.language_id}
+                    key={lang.lang_id}
                     className="flex justify-between items-center p-4 bg-white rounded shadow"
                 >
-                <span>{lang.language_name}</span>
+                <span>{lang.lang_code}</span>
                 <button
-                    onClick={() => handleDeleteLanguage(lang.language_id)}
+                    onClick={() => handleDeleteLanguage(lang.lang_id)}
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
                 >   
                     삭제
