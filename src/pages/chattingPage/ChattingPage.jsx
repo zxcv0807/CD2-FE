@@ -17,10 +17,12 @@ const ChattingPage = () => {
     const chatInputRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [isAiAccepting, setIsAiAccepting] = useState(false);
+    const [isCotLoading, setIsCotLoading] = useState(false);
     const [cotMessage, setCotMessage] = useState("");
     const [isHitlActive, setIsHitlActive] = useState(false);
     const [messages, setMessages] = useState([]);
     const [topic, setTopic] = useState("");
+    
 
     // 스크롤 아래로 이동
     useEffect(() => {
@@ -49,7 +51,6 @@ const ChattingPage = () => {
                         },
                     }
                 );
-                console.log(response.data);
                 setTopic(response.data.topics[0]);
                 const formattedMessages = response.data.messages.map(msg => ({
                     id: msg.doc_id,
@@ -68,91 +69,109 @@ const ChattingPage = () => {
 
     // 웹 소켓 연결
     useEffect(() => {
-        ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
+        const connectWebSocket = () => {
+            ws.current = new WebSocket(import.meta.env.VITE_WEB_SOCKET_URL+`/${session_id}`);
 
-        ws.current.onopen = () => {
-            console.log("WebSocket 연결됨");
-        };
+            ws.current.onopen = () => {
+                console.log("WebSocket 연결됨");
+            };
 
-        ws.current.onmessage = (event) => {
-            console.log("서버로부터 메시지 도착:", event.data);
-            try {
-                const data = JSON.parse(event.data);
-                const { type, text } = data;
+            ws.current.onmessage = (event) => {
+                console.log("서버로부터 메시지 도착:", event.data);
+                try {
+                    const data = JSON.parse(event.data);
+                    const { type, text } = data;
 
-                switch(type) {
-                    case "cot":
-                        setCotMessage(text);
-                        break;
-                    case "hitl":
-                        setMessages((prev) => [...prev, { 
-                            id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
-                            type: "feedback", 
-                            text 
-                        }]);
-                        setIsHitlActive(true);
-                        setCotMessage("");
-                        break;
-                    case "result_start":
-                        setMessages((prev) => { 
-                            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
-                            return [...prev, {
-                                id: newId,
-                                type:"ai",
-                                text: ""
-                            }];
-                        });
-                        setIsAiAccepting(true);
-                        break;
-                    case "result":
-                        setMessages((prev) => {
-                            const updated = [...prev];
-                            const lastIndex = updated.length - 1;
-                            
-                            if (updated.length > 0 && updated[lastIndex].type === "ai") {
-                                updated[lastIndex] = {
-                                    ...updated[lastIndex],
-                                    text: updated[lastIndex].text + text
-                                };
-                            } else {
-                                const newId = updated.length > 0 ? updated[updated.length - 1].id + 1 : 1;
-                                updated.push({
+                    switch(type) {
+                        case "cot":
+                            setCotMessage(text);
+                            setIsCotLoading(true);
+                            break;
+                        case "hitl":
+                            setMessages((prev) => [...prev, { 
+                                id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
+                                type: "feedback", 
+                                text 
+                            }]);
+                            setIsHitlActive(true);
+                            setIsCotLoading(false);
+                            setCotMessage("");
+                            break;
+                        case "hitl_error":
+                            setMessages((prev) => [...prev, { 
+                                id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, 
+                                type: "error", 
+                                text 
+                            }]);
+                            setIsHitlActive(false);
+                            setIsCotLoading(false);
+                            setCotMessage("");
+                            setIsAiAccepting(false);
+                            break;
+                        case "result_start":
+                            setMessages((prev) => { 
+                                const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
+                                return [...prev, {
                                     id: newId,
-                                    type: "ai",
-                                    text: text
-                                });
-                            }
-                            return updated;
-                        });
-                        setCotMessage("");
-                        break;
-                    case "result_end":
-                        aiMessageRef.current = null;
-                        setCotMessage("");
-                        setIsAiAccepting(false);
-                        setIsHitlActive(false);
-                        console.log("답변 끝");
-                        break;
-                    case "error":
-                        console.error("WebSocket error:", text);
-                        break;
+                                    type:"ai",
+                                    text: ""
+                                }];
+                            });
+                            setIsCotLoading(false);
+                            setIsAiAccepting(true);
+                            break;
+                        case "result":
+                            setMessages((prev) => {
+                                const updated = [...prev];
+                                const lastIndex = updated.length - 1;
+                                
+                                if (updated.length > 0 && updated[lastIndex].type === "ai") {
+                                    updated[lastIndex] = {
+                                        ...updated[lastIndex],
+                                        text: updated[lastIndex].text + text
+                                    };
+                                } else {
+                                    const newId = updated.length > 0 ? updated[updated.length - 1].id + 1 : 1;
+                                    updated.push({
+                                        id: newId,
+                                        type: "ai",
+                                        text: text
+                                    });
+                                }
+                                return updated;
+                            });
+                            setCotMessage("");
+                            break;
+                        case "result_end":
+                            aiMessageRef.current = null;
+                            setIsCotLoading(false);
+                            setCotMessage("");
+                            setIsAiAccepting(false);
+                            setIsHitlActive(false);
+                            console.log("답변 끝");
+                            break;
+                        case "error":
+                            console.error("WebSocket error:", text);
+                            break;
+                    }
+                } catch (err) {
+                    console.error("메시지 파싱 실패", err);
                 }
-            } catch (err) {
-                console.error("메시지 파싱 실패", err);
-            }
+            };
+            ws.current.onerror = (error) => {
+                console.error("WebSocket 에러", error);
+            };
+            ws.current.onclose = () => {
+                console.log("WebSocket 종료");
+            };
         };
-        ws.current.onerror = (error) => {
-            console.error("WebSocket 에러", error);
-        };
-        ws.current.onclose = () => {
-            console.log("WebSocket 종료");
-        };
+
+        connectWebSocket(); 
 
         return () => {
             ws.current?.close();
         };
-        // eslint-disable-next-line
-    }, []);
+    }, [session_id]);
     // 메시지 전송
     const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized, currentModelId) => {
         // ai 답변을 받는 중이라면
@@ -194,6 +213,7 @@ const ChattingPage = () => {
                     feedback: message
                 })
                 ws.current.send(feedback);
+                setIsHitlActive(false);
             } else {
                 const payload = JSON.stringify({
                     token: token,
@@ -231,7 +251,7 @@ const ChattingPage = () => {
                         ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
-                            <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} />
+                            <ChatBubble id={"cot"} type="ai" text={cotMessage} isCOT={true} isCotLoading={isCotLoading}/>
                         )}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">

@@ -2,10 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
 
-const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, session_id }) => {
+const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, session_id, isCotLoading }) => {
   const token = useSelector((state) => state.auth.token);
   const [thumbsSubmitted, setThumbsSubmitted] = useState(false);
 
@@ -29,20 +31,73 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
   if (type === "ai") {
     if (isCOT) {
       return (
-        <div className="flex flex-col items-start w-full">
+        <div className="flex items-start w-full">
+          {isCotLoading && (
+            <div className="flex justify-center items-center">
+                <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-[#A476CC]"></div>
+            </div>
+          )}
           <div className="w-full text-sm italic bg-yellow-50 rounded-xl px-4 py-2 animate-pulse">
-            <ReactMarkdown>{text}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                code({node, inline, className, children, ...props}) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={vscDarkPlus}
+                      language={match[1]}
+                      PreTag={"div"}
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+              }}
+            >
+              {text}
+            </ReactMarkdown>
           </div>
         </div>
       );
     };
+    if (text.trim().length === 0 && isAiAccepting) {
+      return null;
+    }
     
     if (text.trim().length > 0 || isAiAccepting) {
       return (
-        <div className="flex flex-col items-start w-full my-6">
+        <div className="flex flex-col items-start w-full my-4">
           {/* 텍스트 내용 */}
           <div className="w-full ai-markdown">
-            <ReactMarkdown>{text}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                code({node, inline, className, children, ...props}) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={vscDarkPlus}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+              }}
+            >
+              {text}
+            </ReactMarkdown>
+            {isAiAccepting && <span className="typing-cursor">|</span>}
           </div>
 
           {!isAiAccepting && !thumbsSubmitted && text.trim().length > 0 && (
@@ -63,7 +118,7 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
       );
     }
     return null;
-  }
+  };
 
   // 사용자와, 피드백 채팅
   const isFeedback = type === "feedback";

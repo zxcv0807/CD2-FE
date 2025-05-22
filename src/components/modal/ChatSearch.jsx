@@ -31,6 +31,8 @@ const ChatSearch = ( {onClose} ) => {
     // 대화 세션 클릭
     const handleSessionClick = (session_id) => {
         console.log(`${session_id}번째 대화 세션 선택`);
+        onClose();
+        navigate(`/chatting/${session_id}`)
     }
     // 새 채팅 시작하기
     const handleNewChatStart = () => {

@@ -9,7 +9,6 @@ const ModelListModal = ({ isOpen, onModelSelect, currentModelId }) => {
         const fetchModelList = async () => {
             try {
                 const response = await axios.get(import.meta.env.VITE_API_AI_URL + "/model/list");
-                console.log(response.data);
                 setAvailableModelList(response.data);
             } catch (err) {
                 console.error(err);
