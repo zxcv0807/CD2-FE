@@ -10,7 +10,7 @@ import ModelMenuIcon from "../../assets/ModelMenuIcon.png";
 
 // 파일 크기 제한
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB
 
 const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, ref) => {
   const [message, setMessage] = useState("");
@@ -127,6 +127,11 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
 
   return (
     <div className="w-full max-w-[700px] flex flex-col">
+      {sendErrorMessage && (
+        <p className="mb-2 text-center text-xs text-[#ED4545]">
+            {sendErrorMessage}
+        </p>
+      )}
       <div className="w-full bg-white dark:bg-[#2E2C36] border border-[#DADADA] shadow rounded-2xl px-4 py-2">
         {/* 첨부파일 미리보기 */}
         {attachedFiles.length > 0 && (
@@ -231,11 +236,6 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
           </div>
         </div>
       </div>
-      {sendErrorMessage && (
-        <p className="mt-2 text-center text-xs text-[#ED4545]">
-            {sendErrorMessage}
-        </p>
-      )}
       <p className="mt-2 text-center text-xs text-[#4E4E4E] dark:text-[#BBBBBB]">
           우문현답은 실수할 수 있습니다.
       </p>

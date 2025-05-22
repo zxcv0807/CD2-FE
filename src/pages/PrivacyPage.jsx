@@ -4,7 +4,7 @@ const PrivacyPage = () => {
     return (
         <div className="min-h-screen flex justify-center dark:bg-[#18171C]">
             <Header/>
-            <p className="md:w-[60%] w-[80%] dark:text-white mt-16 py-16">
+            <div className="md:w-[60%] w-[80%] dark:text-white mt-16 py-16">
                 <span className="font-semibold">우문현답(이하 "회사"라 한다)은 서비스 기획부터 종료까지 개인정보보호법 등 국내의 개인정보 보호 법령을 철저히 준수합니다.</span><br/>
                 <br/>
                 <span className="font-semibold">제 1 조. 개인정보의 수집 및 이용 목적</span><br/>
@@ -70,7 +70,7 @@ const PrivacyPage = () => {
                 <br/>
                 <br/>
                 시행일: 2025년 04월 29일<br/>
-            </p>
+            </div>
         </div>
     );
 };

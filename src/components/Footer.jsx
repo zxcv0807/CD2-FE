@@ -8,7 +8,7 @@ const Footer = () => {
             {/* 요소 */}
             <div className="flex justify-center gap-6 text-sm text-[#DADADA]">
                 <Link to="/privacy" className="hover:text-white">개인정보처리방침</Link>
-                <Link to="/" className="hover:text-white">이용약관</Link>
+                <Link to="/termsofuse" className="hover:text-white">이용약관</Link>
             </div>
         </footer>
     );

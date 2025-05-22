@@ -1,11 +1,13 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../REDUX/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { setTheme } from "../../REDUX/theme/themeSlice";
+import axios from "../../api/axiosInstance";
 import XIcon from "../../assets/XIcon.png";
 import { useState } from "react";
 
 const Setting = ( {onClose} ) => {
+    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -23,9 +25,19 @@ const Setting = ( {onClose} ) => {
     };
 
     // 모든 채팅 삭제
-    const handleDeleteAllChatSession = () => {
-        console.log("모든 대화 내용 삭제");
-    }
+    const handleDeleteAllChatSession =  async () => {
+        try {
+            await axios.delete("/api/v1/sessions/user/all", {
+                headers : {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            onClose();
+            navigate("/topics");
+        } catch (err) {
+            console.error(err);
+        }
+    }   
     // 설정 저장
     const handleSaveSetting = () => {
         console.log("설정 저장하기", settings);

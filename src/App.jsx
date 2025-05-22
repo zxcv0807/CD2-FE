@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ChattingTopicSelectionPage from "./pages/chattingPage/ChattingTopicSelectionPage";
 import ChattingPage from './pages/chattingPage/ChattingPage';
 import PrivacyPage from './pages/PrivacyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTopicManagement from './pages/admin/AdminTopicManagement';
 import AdminLanguageManagement from './pages/admin/AdminLanguageManagement';
@@ -29,6 +30,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/guideline" element={<GuidelinePage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/termsofuse" element={<TermsOfUsePage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/topic" element={<AdminTopicManagement/>} />
         <Route path="/admin/language" element={<AdminLanguageManagement />} />
