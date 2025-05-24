@@ -1,29 +1,81 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../REDUX/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { setTheme } from "../../REDUX/theme/themeSlice";
 import axios from "../../api/axiosInstance";
 import XIcon from "../../assets/XIcon.png";
-import { useState } from "react";
 
 const Setting = ( {onClose} ) => {
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    // 상태 관리
-    const [settings, setSettings] = useState({
-        theme: "화이트",
-        language: "자동탐지",
-        memory: "켜짐",
+    const [settings, setSettings] = useState({ // 상태 관리
+        theme: "",
+        language: "",
+        memory: "",
     })
+    const [availableLanguage, setAvailableLanguage] = useState([]);
+    const languageMap = { // 언어 목록
+        ko: "한국어",
+        en: "영어",
+        ja: "일본어",
+        zh: "중국어",
+        fr: "프랑스어",
+        de: "독일어",
+        vi: "베트남어",
+        ru: "러시아어",
+    }
+
+    // 언어 불러오기
+    useEffect(() => {
+        const fetchLanguages = async () => {
+            try {
+                const response = await axios.get("/api/v1/language/");
+                console.log("언어 목록 불러오기 성공", response.data);
+                setAvailableLanguage([
+                    { lang_code: "auto", language_name: "자동탐지", lang_id: 1 },
+                    ...response.data.map(lang => ({
+                        lang_code: lang.lang_code,
+                        language_name: languageMap[lang.lang_code] || lang.lang_code,
+                        lang_id: lang.lang_id
+                    }))
+                ]);
+            } catch (err) {
+                console.error("언어 불러오기 실패", err);
+            }
+        };
+        fetchLanguages();
+    }, []);
+    // 옵션 불러오기
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const response = await axios.get("/api/v1/settings/", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const { thema, memory, language } = response.data;
+                setSettings((prev) => ({
+                    ...prev,
+                    theme: thema ? "화이트" : "다크",
+                    memory: memory ? "켜짐" : "꺼짐",
+                    language: availableLanguage.find(lang => lang.lang_id === language)?.language_name || "자동탐지", 
+                }));
+            } catch(err) {
+                console.error(err);
+            }
+        };
+        fetchOptions();
+    }, [token, availableLanguage]);
+    // 옵션 선택
     const handleOptionClick = (category, value) => {
         setSettings((prev) => ({
             ...prev,
             [category]: value,
         }));
     };
-
     // 모든 채팅 삭제
     const handleDeleteAllChatSession =  async () => {
         try {
@@ -39,15 +91,28 @@ const Setting = ( {onClose} ) => {
         }
     }   
     // 설정 저장
-    const handleSaveSetting = () => {
-        console.log("설정 저장하기", settings);
-        // 테마 설정
-        if(settings.theme === "화이트") {
-            dispatch(setTheme("light"));
-        } else {
-            dispatch(setTheme("dark"));
+    const handleSaveSetting = async () => {
+        const dataToSave = {
+            thema: settings.theme === "화이트" ? true : false,
+            memory: settings.memory === "켜짐" ? true : false,
+            language: availableLanguage.find(lang => lang.language_name === settings.language)?.lang_id || 1, // 선택된 언어의 lang_id 찾기
+        };
+        try {
+            await axios.put("/api/v1/settings/", dataToSave, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            // 테마 설정 (Redux 상태 업데이트)
+            if(settings.theme === "화이트") {
+                dispatch(setTheme("light"));
+            } else {
+                dispatch(setTheme("dark"));
+            }
+            onClose();
+        } catch (err) {
+            console.error("설정 저장 실패!", err);
         }
-        onClose();
     }
     // 로그아웃
     const handleLogout = () => {
@@ -77,7 +142,7 @@ const Setting = ( {onClose} ) => {
                 <div className="border border-[#DADADA] rounded-xl px-6 py-4 space-y-6 text-sm">
                     {[
                         { label: "테마", options: ["화이트", "다크"], key: "theme" },
-                        { label: "언어", options: ["자동탐지", "한국어", "영어", "일본어", "중국어"], key: "language" },
+                        { label: "언어", options: availableLanguage.map(lang => lang.language_name), key: "language" },
                         { label: "메모리", options: ["켜짐", "꺼짐"], key: "memory" },
                     ].map(({ label, options, key }, idx) => (
                         <div key={idx} className="flex items-center space-x-4">
