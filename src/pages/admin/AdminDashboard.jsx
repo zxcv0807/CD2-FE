@@ -8,11 +8,11 @@ const AdminDashboard = () => {
   const token = useSelector((state) => state.auth.token);
 
   const [dailyVisitors, setDailyVisitors] = useState([
-    { time: "00:00", count: 120 },
-    { time: "06:00", count: 240 },
-    { time: "12:00", count: 520 },
-    { time: "18:00", count: 680 },
-    { time: "21:00", count: 300 },
+    { time: "00:00", count: 0 },
+    { time: "06:00", count: 2 },
+    { time: "12:00", count: 2 },
+    { time: "18:00", count: 4 },
+    { time: "24:00", count: 2 },
   ]);
 
   useEffect(() => {
@@ -50,11 +50,11 @@ const AdminDashboard = () => {
         <div className="flex gap-4 mb-6">
           <div className="flex-1 bg-white p-4 rounded shadow text-center">
             <p className="text-sm text-gray-500">활동 유저 수</p>
-            <p className="text-xl font-bold text-gray-800">19명</p>
+            <p className="text-xl font-bold text-gray-800">1명</p>
           </div>
           <div className="flex-1 bg-white p-4 rounded shadow text-center">
             <p className="text-sm text-gray-500">총 방문자 수</p>
-            <p className="text-xl font-bold text-gray-800">3,621명</p>
+            <p className="text-xl font-bold text-gray-800">10명</p>
           </div>
         </div>
 

@@ -14,6 +14,7 @@ import PencilIcon from "../../assets/PencilIcon.png";
 import TrashCanIcon from "../../assets/TrashcanIcon.png";
 import ChatSearch from "../modal/ChatSearch";
 import Setting from "../modal/Setting";
+import MenuPortal from "../modal/MenuPortal";
 
 const Sidebar = ({ isSidebarVisible }) => {
   const dispatch = useDispatch();

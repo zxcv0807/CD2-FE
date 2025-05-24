@@ -7,6 +7,16 @@ const AdminLanguageManagement = () => {
     const token = useSelector((state) => state.auth.token);
     const [languages, setLanguages] = useState([]);
     const [newLanguage, setNewLanguage] = useState("");
+    const languageMap = { // 언어 목록
+        ko: "한국어",
+        en: "영어",
+        ja: "일본어",
+        zh: "중국어",
+        fr: "프랑스어",
+        de: "독일어",
+        vi: "베트남어",
+        ru: "러시아어",
+    }
 
     // 언어 목록 불러오기
     useEffect(() => {
@@ -20,7 +30,7 @@ const AdminLanguageManagement = () => {
         }
         };
         fetchLanguages();
-    }, [token]);
+    }, []);
 
     // 언어 추가
     const handleAddLanguage = async () => {
@@ -88,7 +98,7 @@ const AdminLanguageManagement = () => {
                     key={lang.lang_id}
                     className="flex justify-between items-center p-4 bg-white rounded shadow"
                 >
-                <span>{lang.lang_code}</span>
+                <span>{languageMap[lang.lang_code] || lang.lang_code}</span>
                 <button
                     onClick={() => handleDeleteLanguage(lang.lang_id)}
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
