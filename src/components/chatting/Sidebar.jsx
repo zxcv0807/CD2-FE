@@ -320,7 +320,7 @@ const Sidebar = ({ isSidebarVisible }) => {
               </Tooltip>
             </nav>
             {/* 설정 아이콘 */}
-            <Tooltip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} position="right">
+            <Tooltip text={`${isLoggedIn ? "설정" : "로그인 후 사용가능합니다."}`} position="right">
               <div className="relative group">
                 <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
               </div>
