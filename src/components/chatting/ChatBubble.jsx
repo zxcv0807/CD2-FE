@@ -12,20 +12,20 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
   const [thumbsSubmitted, setThumbsSubmitted] = useState(false);
 
   // ai 채팅
-  const handleThumbsUpDown = async (recommend) => {
-    try {
-      await axios.post(import.meta.env.VITE_API_AI_URL + `/feedback/${session_id}`,
-        {
-          token: token,
-          message_id: id,
-          recommend: recommend,
-        } 
-      );
+  const handleThumbsUpDown =  (recommend) => {
+    // try {
+    //   await axios.post(import.meta.env.VITE_API_AI_URL + `/feedback/${session_id}`,
+    //     {
+    //       token: token,
+    //       message_id: id,
+    //       recommend: recommend,
+    //     } 
+    //   );
       console.log(`${id}번쨰 채팅 추천/비추천`);
-      setThumbsSubmitted(true);
-    } catch (err) {
-      console.error(err);
-    }
+    //   setThumbsSubmitted(true);
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
 
   if (type === "ai") {
@@ -122,11 +122,14 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
 
   // 사용자와, 피드백 채팅
   const isFeedback = type === "feedback";
+  const isOptimize = type === "optimize";
+  const isLeftAligned = isFeedback || isOptimize;
+
   return (
-    <div className={`flex ${isFeedback ? "justify-start" : "justify-end"} mb-4`}>
+    <div className={`flex ${isLeftAligned ? "justify-start" : "justify-end"} mb-4`}>
       <div
         className={`px-4 py-2 rounded-xl max-w-[60%] text-sm whitespace-pre-wrap
-          ${isFeedback ? "bg-[#A476CC] text-white" : "bg-[#E7E7E7] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white"}`}
+          ${isLeftAligned ? "bg-[#A476CC] text-white" : "bg-[#E7E7E7] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white"}`}
       >
         {text}
       </div>

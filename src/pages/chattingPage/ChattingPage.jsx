@@ -51,6 +51,7 @@ const ChattingPage = () => {
                         },
                     }
                 );
+                console.log(response.data);
                 setTopic(response.data.topics[0]);
                 const formattedMessages = response.data.messages.map(msg => ({
                     id: msg.doc_id,
@@ -120,6 +121,29 @@ const ChattingPage = () => {
                             setIsCotLoading(false);
                             setIsAiAccepting(true);
                             break;
+                        case "optimize":
+                            setMessages((prev) => {
+                                const updated = [...prev];
+                                const lastIndex = updated.length - 1;
+                                
+                                // 마지막 메시지가 optimize 타입이면 텍스트를 누적
+                                if (updated.length > 0 && updated[lastIndex].type === "optimize") {
+                                    updated[lastIndex] = {
+                                        ...updated[lastIndex],
+                                        text: updated[lastIndex].text + text
+                                    };
+                                } else {
+                                    // 새로운 optimize 메시지 시작
+                                    const newId = updated.length > 0 ? updated[updated.length - 1].id + 1 : 1;
+                                    updated.push({
+                                        id: newId,
+                                        type: "optimize",
+                                        text: text
+                                    });
+                                }
+                                return updated;
+                            });
+                            break;
                         case "result":
                             setMessages((prev) => {
                                 const updated = [...prev];
@@ -161,15 +185,27 @@ const ChattingPage = () => {
             ws.current.onerror = (error) => {
                 console.error("WebSocket 에러", error);
             };
-            ws.current.onclose = () => {
-                console.log("WebSocket 종료");
+            ws.current.onclose = (event) => {
+                console.log("WebSocket 종료", event.code, event.reason);
+                // 컴포넌트가 언마운트되는 경우가 아니라면 재연결
+                // (reason이 "Component unmounting"이 아닌 경우)
+                if (event.reason !== "Component unmounting") {
+                    console.log("서버에서 연결 종료됨, 재연결 시도...");
+                    setTimeout(() => {
+                        if (ws.current?.readyState === WebSocket.CLOSED) {
+                            connectWebSocket();
+                        }
+                    }, 1000); // 1초 후 재연결
+                }
             };
         };
 
         connectWebSocket(); 
 
         return () => {
-            ws.current?.close();
+            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+                ws.current.close(1000, "Component unmounting");
+            }
         };
     }, [session_id]);
     // 메시지 전송
@@ -245,7 +281,7 @@ const ChattingPage = () => {
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
-                        {/* 대화 메시지지 */}
+                        {/* 대화 메시지 */}
                         {messages.map((msg) => (
                             <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isAiAccepting={msg.type === "ai" && isAiAccepting} session_id={session_id} />
                         ))}
