@@ -22,17 +22,39 @@ const ChattingPage = () => {
     const [isHitlActive, setIsHitlActive] = useState(false);
     const [messages, setMessages] = useState([]);
     const [topic, setTopic] = useState("");
+    const [isUserScrolling, setIsUserScrolling] = useState(false);
     
 
+    // 스크롤 이벤트 핸들러 추가
+    const handleScroll = () => {
+        if (chatContainerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px 여유
+            
+            if (!isAtBottom) {
+                setIsUserScrolling(true);
+            } else {
+                setIsUserScrolling(false);
+            }
+        }
+    };
+    // 스크롤 이벤트 리스너 등록
+    useEffect(() => {
+        const chatContainer = chatContainerRef.current;
+        if (chatContainer) {
+            chatContainer.addEventListener('scroll', handleScroll);
+            return () => chatContainer.removeEventListener('scroll', handleScroll);
+        }
+    }, []);
     // 스크롤 아래로 이동
     useEffect(() => {
         const scrollToBottom = () => {
-            if (chatContainerRef.current) {
+            if (chatContainerRef.current && !isUserScrolling) {
                 chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
             }
         };
         scrollToBottom();   
-    }, [messages, cotMessage]);
+    }, [messages, cotMessage, isUserScrolling]);
     // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
