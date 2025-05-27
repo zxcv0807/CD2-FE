@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ThumbsUp from "../../assets/ThumbsUp.png";
@@ -39,6 +40,7 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
           )}
           <div className="w-full text-sm italic bg-yellow-50 rounded-xl px-4 py-2 animate-pulse">
             <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
               components={{
                 code({node, inline, className, children, ...props}) {
                   const match = /language-(\w+)/.exec(className || '');
@@ -75,6 +77,7 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
           {/* 텍스트 내용 */}
           <div className="w-full ai-markdown">
             <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
               components={{
                 code({node, inline, className, children, ...props}) {
                   const match = /language-(\w+)/.exec(className || '');
