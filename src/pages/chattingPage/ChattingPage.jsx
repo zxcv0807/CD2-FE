@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "../../api/axiosInstance";
 import Sidebar from "../../components/chatting/Sidebar";
 import ChatHeader from "../../components/header/ChatHeader";
 import ChatBubble from "../../components/chatting/ChatBubble";
 import CoTBubble from "../../components/chatting/CoTBubble";
 import ChatInput from "../../components/chatting/ChatInput";
-import { useParams } from "react-router-dom";
 
 const ChattingPage = () => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false); 
@@ -22,7 +22,6 @@ const ChattingPage = () => {
     const [cotMessage, setCotMessage] = useState("");
     const [isHitlActive, setIsHitlActive] = useState(false);
     const [messages, setMessages] = useState([]);
-    const [currentSessionMessages, setCurrentSessionMessages] = useState([]); // 현재 웹소켓 세션의 메시지 추적
     const [topic, setTopic] = useState("");
     const [isUserScrolling, setIsUserScrolling] = useState(false);
     
@@ -73,8 +72,9 @@ const ChattingPage = () => {
                 );
                 console.log(response.data);
                 setTopic(response.data.topics[0]);
-                const formattedMessages = response.data.messages.map(msg => ({
-                    id: msg.doc_id,
+                const formattedMessages = response.data.messages.map((msg, index) => ({
+                    id: index,
+                    message_id: msg.doc_id,
                     type: msg.role,
                     text: msg.page_content,
                     timestamp: msg.timestamp,
@@ -86,7 +86,7 @@ const ChattingPage = () => {
         }
 
         fetchMessageList();
-    }, [session_id, token, userId]);
+    }, [session_id, userId]);
     // 웹 소켓 연결
     useEffect(() => {
         const connectWebSocket = () => {
@@ -113,10 +113,6 @@ const ChattingPage = () => {
                                 type: "hitl_ai", 
                                 text 
                             }]);
-                            setCurrentSessionMessages((prev) => [...prev, { 
-                                tempId: messages.length > 0 ? messages[messages.length - 1].id + 1 : 1, 
-                                type: "hitl_ai" 
-                            }]);    
                             setIsHitlActive(true);
                             setIsCotLoading(false);
                             setCotMessage("");
@@ -135,7 +131,6 @@ const ChattingPage = () => {
                         case "result_start":
                             setMessages((prev) => { 
                                 const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
-                                setCurrentSessionMessages((prevSession) => [...prevSession, { tempId: newId, type: "report" }]); // 현재 세션 메시지에 추가
                                 return [...prev, {
                                     id: newId,
                                     type:"report",
@@ -158,7 +153,6 @@ const ChattingPage = () => {
                                 } else {
                                     // 새로운 optimize 메시지 시작
                                     const newId = updated.length > 0 ? updated[updated.length - 1].id + 1 : 1;
-                                    setCurrentSessionMessages((prevSession) => [...prevSession, { tempId: newId, type: "optimize" }]);
                                     updated.push({
                                         id: newId,
                                         type: "optimize",
@@ -190,32 +184,32 @@ const ChattingPage = () => {
                             });
                             setCotMessage("");
                             break;
-                        case "result_end":
-                            // 서버 ID로 메시지 업데이트
-                            if (data.message_ids) {
+                        case "result_end": {
+                            const saved_message_ids = data.saved_message_ids;
+
+                            if (saved_message_ids) {
                                 setMessages((prev) => {
                                     return prev.map((message) => {
-                                        // 현재 세션의 메시지인지 확인
-                                        const sessionMessage = currentSessionMessages.find(sm => sm.tempId === message.id);
-                                        if (sessionMessage) {
-                                            const serverMessageId = data.message_ids[sessionMessage.type];
-                                            if (serverMessageId) {
-                                                return { ...message, id: serverMessageId };
-                                            }
+                                        // message_id가 없고, 해당 type에 대해 서버에서 ID를 줬다면 업데이트
+                                        if (!message.message_id && saved_message_ids[message.type]) {
+                                            return {
+                                                ...message,
+                                                message_id: saved_message_ids[message.type],
+                                            };
                                         }
                                         return message;
                                     });
                                 });
-                                
-                                setCurrentSessionMessages([]);  // 현재 세션 메시지 초기화
+                            } else {
+                                console.warn("result_end: saved_message_ids 없음");
                             }
                             aiMessageRef.current = null;
                             setIsCotLoading(false);
                             setCotMessage("");
                             setIsReportTyping(false);
                             setIsHitlActive(false);
-                            console.log("답변 끝");
                             break;
+                        }
                         case "error":
                             console.error("WebSocket error:", text);
                             break;
@@ -254,8 +248,6 @@ const ChattingPage = () => {
             text: message 
         };
         setMessages((prev) => [...prev, userMsg]);
-
-        setCurrentSessionMessages((prev) => [...prev, { tempId: newId, type: userMsg.type }]); // 현재 세션 메시지에 추가
 
         // 첨부파일 전송
         if (attachedFiles.length > 0) {
@@ -313,8 +305,8 @@ const ChattingPage = () => {
                 <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* 대화 메시지 */}
-                        {messages.map((msg) => (
-                            <ChatBubble key={msg.id} id={msg.id} type={msg.type} text={msg.text} isTyping={msg.type === "report" && isReportTyping} session_id={session_id} />
+                        {messages.map((msg) => (    
+                            <ChatBubble key={msg.id} type={msg.type} text={msg.text} isTyping={msg.type === "report" && isReportTyping} session_id={session_id} message_id={msg.message_id}/>
                         ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
