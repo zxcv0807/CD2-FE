@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import axios from "../../api/axiosInstance";
 import SearchIconGray from "../../assets/SearchIconGray.png";
 import XIcon from "../../assets/XIcon.png";
 
 const ChatSearch = ( {onClose} ) => {
-    const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -15,11 +13,6 @@ const ChatSearch = ( {onClose} ) => {
         try {
             const response = await axios.post("/api/v1/faiss/search/keyword/sessions", 
                 { keyword: search },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
             );
             console.log("검색 결과", response.data);
             setSearchResults(response.data);

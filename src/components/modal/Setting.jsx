@@ -32,7 +32,6 @@ const Setting = ( {onClose} ) => {
         const fetchLanguages = async () => {
             try {
                 const response = await axios.get("/api/v1/language/");
-                console.log("언어 목록 불러오기 성공", response.data);
                 setAvailableLanguage([
                     { lang_code: "auto", language_name: "자동탐지", lang_id: 1 },
                     ...response.data.map(lang => ({
@@ -51,11 +50,7 @@ const Setting = ( {onClose} ) => {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const response = await axios.get("/api/v1/settings/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                const response = await axios.get("/api/v1/settings/");
                 const { thema, memory, language } = response.data;
                 setSettings((prev) => ({
                     ...prev,
@@ -79,11 +74,7 @@ const Setting = ( {onClose} ) => {
     // 모든 채팅 삭제
     const handleDeleteAllChatSession =  async () => {
         try {
-            await axios.delete("/api/v1/sessions/user/all", {
-                headers : {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            await axios.delete("/api/v1/sessions/user/all");
             onClose();
             navigate("/topics");
         } catch (err) {
@@ -98,11 +89,7 @@ const Setting = ( {onClose} ) => {
             language: availableLanguage.find(lang => lang.language_name === settings.language)?.lang_id || 1, // 선택된 언어의 lang_id 찾기
         };
         try {
-            await axios.put("/api/v1/settings/", dataToSave, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await axios.put("/api/v1/settings/", dataToSave);
             // 테마 설정 (Redux 상태 업데이트)
             if(settings.theme === "화이트") {
                 dispatch(setTheme("light"));

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import axios from "../../api/axiosInstance";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 
 const AdminTopicManagement = () => {
-    const token = useSelector((state) => state.auth.token);
     const [topics, setTopics] = useState([]);
     const [newTopic, setNewTopic] = useState("");
 
@@ -12,11 +10,7 @@ const AdminTopicManagement = () => {
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await axios.get("/api/v1/topics/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await axios.get("/api/v1/topics/");
                 console.log("주제 요청 성공", response.data);
                 setTopics(response.data);
             } catch (err) {
@@ -24,7 +18,7 @@ const AdminTopicManagement = () => {
             }
         };
         fetchTopics();
-    }, [token]);
+    }, []);
 
     // 주제 추가
     const handleAddTopic = async () => {
@@ -32,11 +26,6 @@ const AdminTopicManagement = () => {
             try{
                 const response = await axios.post("/api/v1/admin/topics",
                     { topic_name: newTopic}, 
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        },
-                    }, 
                 );
                 const createdTopic = response.data;
                 setTopics([...topics, createdTopic]);
@@ -50,11 +39,7 @@ const AdminTopicManagement = () => {
     // 주제 삭제
     const handleDeleteTopic = async (topic_id) => {
         try {
-            const response = await axios.delete(`/api/v1/admin/topics/${topic_id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await axios.delete(`/api/v1/admin/topics/${topic_id}`);
             console.log("주제 삭제 성공", response.data);
             setTopics(topics.filter((topic) => topic.topic_id !== topic_id));
 

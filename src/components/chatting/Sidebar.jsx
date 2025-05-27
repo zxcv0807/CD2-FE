@@ -54,11 +54,7 @@ const Sidebar = ({ isSidebarVisible }) => {
     const fetchChatList = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("/api/v1/sessions/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get("/api/v1/sessions/");
         const chatData = response.data
           .sort((a, b) => new Date(b.modify_at) - new Date(a.modify_at))
           .map(session => ({
@@ -95,11 +91,6 @@ const Sidebar = ({ isSidebarVisible }) => {
     try {
       await axios.put(`/api/v1/sessions/${sessionId}`,
         {title: newTitle},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       // UI 상으로는 즉시 반영되도록
       setChatList(prev =>
@@ -122,11 +113,7 @@ const Sidebar = ({ isSidebarVisible }) => {
   // 채팅 삭제
   const handleDeleteChatting = async (sessionId) => {
     try {
-      await axios.delete(`/api/v1/sessions/${sessionId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(`/api/v1/sessions/${sessionId}`);
       // UI 상으로는 즉시 반영되도록
       setChatList(prev => prev.filter(chat => chat.session_id !== sessionId));
       // 현재 보고 있는 대화 세션을 삭제하면 새 채팅 페이지로 이동

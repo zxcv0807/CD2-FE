@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import axios from "../../api/axiosInstance";
 
 const AdminLanguageManagement = () => {
-    const token = useSelector((state) => state.auth.token);
     const [languages, setLanguages] = useState([]);
     const [newLanguage, setNewLanguage] = useState("");
     const languageMap = { // 언어 목록
@@ -38,11 +36,6 @@ const AdminLanguageManagement = () => {
             try {
                 const response = await axios.post("/api/v1/admin/languages",
                     { lang_code: newLanguage },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    },  
                 );
                 console.log("언어 추가 성공", response.data);
                 setLanguages([...languages, response.data]);
@@ -56,11 +49,7 @@ const AdminLanguageManagement = () => {
     // 언어 삭제
     const handleDeleteLanguage = async (language_id) => {
         try {
-            await axios.delete(`/api/v1/admin/languages/${language_id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await axios.delete(`/api/v1/admin/languages/${language_id}`);
             console.log("언어 삭제 성공");
             setLanguages(languages.filter((lang) => lang.lang_id !== language_id));
         } catch (err) {
