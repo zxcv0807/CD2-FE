@@ -22,9 +22,9 @@ const SecondSection = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} className="md:w-[60%] w-[80%] flex flex-col items-center text-center mt-32">
+        <section ref={sectionRef} className="md:w-[60%] w-[80%] flex flex-col items-center mt-32">
             <h4 className="text-2xl text-[#A476CC] font-semibold mb-4">개인 맞춤형 최적화</h4>
-            <h2 className="text-3xl text-[#1A1A1A] dark:text-white font-semibold mb-6">
+            <h2 className="text-3xl text-[#1A1A1A] dark:text-white text-center font-semibold mb-6">
                 더 스마트한 대화로 이끄는 AI,<br />
                 최적화된 질문이 더 정확한 답을 만듭니다.
             </h2>
@@ -47,19 +47,21 @@ const SecondSection = () => {
             <div className="flex flex-col gap-4 w-full">
                 {/* 사용자 질문 */}
                 <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
-                    visual studio code 편집기를 이용해 docker 설치방법을 알려줘
+                    tailwindcss v4에 대해서 알려줘
                 </div>
                 {/* AI 질문 */}
                 <div className={`self-start bg-[#A476CC] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-200 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
-                    Window, Mac 중 어떤 운영체제를 사용하고 계신가요?
+                    tailwindcss v4에 대한 어떤 정보가 필요하신가요? 예를 들어, 설치 방법이나 새로운 기능에 대해 알고 싶으신가요?
                 </div>
                 {/* 사용자 답변 */}
                 <div className={`self-end bg-[#F5F5F5] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl p-3 w-fit max-w-[70%] transform transition-all duration-700 ease-out delay-400 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
-                    Window 운영체제 사용중이야
+                   기존에 v3를 사용하던 개발자들이 알아야할 업데이트 사항
                 </div>
                 {/* 최적화된 질문 */}
-                <div className={`self-start text-[#1A1A1A] dark:text-white bg-white dark:bg-[#18171C] rounded-xl p-3 transform transition-all duration-700 ease-out delay-600 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
-                    Windows 운영체제에서 visual studio code 편집기를 이용해 docker 설치하는 방법
+                <div className={`self-start text-[#1A1A1A] dark:text-white bg-white dark:bg-[#18171C] rounded-xl w-fit transform transition-all duration-700 ease-out delay-600 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-5 scale-95'}`}>
+                    Tailwind CSS v4에 대해 자세히 설명해 주세요. 
+                    주요 기능과 이전 버전 대비 개선 사항을 포함하고, 사용자 피드백을 바탕으로 한 업데이트 사항도 언급해 주세요. 
+                    또한, 다양한 프로젝트에서 유틸리티 클래스를 사용하는 방법에 대한 실용적인 예시를 제공해 주시고, 개인적으로 유용했던 기능이나 특정 사용 사례에 대한 경험도 공유해 주세요.
                 </div>
                 {/* 구분선 */}
                 <hr className={`flex-1 border-[#DADADA] transition-opacity duration-700 delay-800 ${isVisible ? 'opacity-100' : 'opacity-0'}`} />

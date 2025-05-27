@@ -120,16 +120,40 @@ const ChatBubble = ({ id, type, text, isCOT = false, isAiAccepting = false, sess
     return null;
   };
 
+if (type === "optimize") {
+  return (
+    <div className="flex justify-start mb-4">
+      <div className="max-w-[80%]">
+        {/* 헤더 */}
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+          <span className="text-xs font-medium text-[#1A1A1A] dark:text-white uppercase tracking-wide">
+            최적화된 프롬프트
+          </span>
+        </div>
+        
+        {/* 메시지 내용 */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 
+                        rounded-r-xl rounded-tl-xl px-4 py-3 
+                        shadow-sm relative overflow-hidden">
+          {/* 텍스트 */}
+          <div className="relative text-sm text-[#1A1A1A] dark:text-white leading-relaxed whitespace-pre-wrap">
+            {text}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
   // 사용자와, 피드백 채팅
   const isFeedback = type === "feedback";
-  const isOptimize = type === "optimize";
-  const isLeftAligned = isFeedback || isOptimize;
 
   return (
-    <div className={`flex ${isLeftAligned ? "justify-start" : "justify-end"} mb-4`}>
+    <div className={`flex ${isFeedback ? "justify-start" : "justify-end"} mb-4`}>
       <div
         className={`px-4 py-2 rounded-xl max-w-[60%] text-sm whitespace-pre-wrap
-          ${isLeftAligned ? "bg-[#A476CC] text-white" : "bg-[#E7E7E7] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white"}`}
+          ${isFeedback ? "bg-[#A476CC] text-white" : "bg-[#E7E7E7] dark:bg-[#4E4E4E] text-[#1A1A1A] dark:text-white"}`}
       >
         {text}
       </div>

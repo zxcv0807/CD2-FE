@@ -7,6 +7,7 @@ import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
 import ClipIcon from "../../assets/ClipIcon.png";
 import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
 import ModelMenuIcon from "../../assets/ModelMenuIcon.png";
+import ReportIcon from "../../assets/reportIcon.png";
 
 // 파일 크기 제한
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -17,14 +18,14 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const timerRef = useRef(null);
-  const [isOptimized, setIsOptimized] = useState(false);
+  const [isReportActive, setIsReportActive] = useState(false);
   const [isWebSearchActive, setIsWebSearchActive] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [sendErrorMessage, setSendErrorMessage] = useState(null);
   const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
   const [currentModelId, setCurrentModelId] = useState(0);
 
-  const toggleOptimization = () => setIsOptimized(prev => !prev); // 최적화하기 ON/OFF
+  const toggleOptimization = () => setIsReportActive(prev => !prev); // 최적화하기 ON/OFF
   const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치 ON/OFF
   const toggleModelMenu = () => setIsModelMenuOpen(prev => !prev); // 모델 리스트 열기기
 
@@ -120,7 +121,7 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
 
     if (!message.trim() && attachedFiles.length === 0) return;
 
-    onSendMessage(message, attachedFiles, isWebSearchActive, isOptimized, currentModelId);
+    onSendMessage(message, attachedFiles, isWebSearchActive, isReportActive, currentModelId);
     setMessage("");
     setAttachedFiles([]);
   };
@@ -172,14 +173,14 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
         />
 
         <div className="flex justify-between items-center mt-2">
-          {/* 최적화하기 버튼 */}
+          {/* 보고서 생성 버튼 */}
           <button
             className="flex gap-2 px-4 py-2 rounded-lg cursor-pointer"
-            style={{ backgroundColor: isOptimized ? "#C3C3C3" : "#A476CC" }}
+            style={{ backgroundColor: isReportActive ? "#A476CC" : "#C3C3C3" }}
             onClick={toggleOptimization}
           >
-            <img src={SpeechBubbleIcon} className="h-[18px]" />
-            <span className="text-white text-sm">최적화하기</span>
+            <img src={ReportIcon} />
+            <span className="text-white">보고서 생성</span>
           </button>
 
           <div className="flex items-center space-x-3 relative">

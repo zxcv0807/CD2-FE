@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "../../api/axiosInstance";
 import {LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer} from "recharts";
 import AdminSidebar from "../../components/admin/AdminSidebar";
-import { useSelector } from "react-redux";
 
 const AdminDashboard = () => {
-  const token = useSelector((state) => state.auth.token);
 
   const [dailyVisitors, setDailyVisitors] = useState([
     { time: "00:00", count: 0 },
@@ -18,11 +16,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchVisitorStats = async () => {
       try {
-        const response = await axios.get("/api/v1/admin/stats/visits", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get("/api/v1/admin/stats/visits");
         console.log("방문자 통계 불러오기 성공", response.data);
         const data = response.data.map(item => ({
           time: `${item.hour.toString().padStart(2, "0")}:00`,
@@ -35,7 +29,7 @@ const AdminDashboard = () => {
     };
 
     fetchVisitorStats();
-  }, [token]);
+  }, []);
 
   return (
     <div className="flex h-screen bg-[#F5F5F5]">

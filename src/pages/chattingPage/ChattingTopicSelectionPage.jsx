@@ -34,11 +34,6 @@ const ChattingTopicSelectionPage = () => {
     try {
       const response = await axios.post("/api/v1/sessions/", 
         { topic_id: topic.topic_id }, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        }
       );
       const newSessionId = response.data.session_id;
       navigate(`/chatting/${newSessionId}`)
@@ -51,11 +46,7 @@ const ChattingTopicSelectionPage = () => {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await axios.get("/api/v1/topics/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get("/api/v1/topics/");
         setTopics(response.data);
       } catch (err) {
         console.log(err);

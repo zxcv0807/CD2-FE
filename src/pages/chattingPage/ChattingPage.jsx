@@ -45,10 +45,6 @@ const ChattingPage = () => {
                     {
                         session_id: session_id,
                         user_id: userId,
-                    }, {   
-                        headers : {
-                            Authorization: `Bearer ${token}`,
-                        },
                     }
                 );
                 console.log(response.data);
@@ -185,27 +181,15 @@ const ChattingPage = () => {
             ws.current.onerror = (error) => {
                 console.error("WebSocket 에러", error);
             };
-            ws.current.onclose = (event) => {
-                console.log("WebSocket 종료", event.code, event.reason);
-                // 컴포넌트가 언마운트되는 경우가 아니라면 재연결
-                // (reason이 "Component unmounting"이 아닌 경우)
-                if (event.reason !== "Component unmounting") {
-                    console.log("서버에서 연결 종료됨, 재연결 시도...");
-                    setTimeout(() => {
-                        if (ws.current?.readyState === WebSocket.CLOSED) {
-                            connectWebSocket();
-                        }
-                    }, 1000); // 1초 후 재연결
-                }
+            ws.current.onclose = () => {
+                console.log("WebSocket 종료");
             };
         };
 
         connectWebSocket(); 
 
         return () => {
-            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-                ws.current.close(1000, "Component unmounting");
-            }
+            ws.current?.close();
         };
     }, [session_id]);
     // 메시지 전송
@@ -231,11 +215,6 @@ const ChattingPage = () => {
 
                 const response = await axios.post(`/api/v1/files/${session_id}/files`,
                     formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    }
                 );
                 console.log("파일 업로드 성공", response.data);
             } catch (err) {
