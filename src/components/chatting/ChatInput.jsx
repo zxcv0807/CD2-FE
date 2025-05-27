@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import Tooltip from "../modal/Tooltip";
 import ModelListModal from "../modal/ModelListModal";
-import SpeechBubbleIcon from "../../assets/SpeechBubble.png";
 import WebSearchIcon from "../../assets/WebSearchIcon.png";
 import WebSearchIconPurple from "../../assets/WebSearchIconPurple.png";
 import ClipIcon from "../../assets/ClipIcon.png";
@@ -13,7 +12,7 @@ import ReportIcon from "../../assets/reportIcon.png";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB
 
-const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, ref) => {
+const ChatInput = forwardRef (({ onSendMessage, isReportTyping, isHitlActive }, ref) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -99,8 +98,8 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
   }
   // ChattingPage에서 호출할 함수를 노출
   useImperativeHandle(ref, () => ({
-    handleAttemptSend: (isAccepting, isHitlActive) => {
-      if (isAccepting && !isHitlActive) {
+    handleAttemptSend: (isTyping, isHitlActive) => {
+      if (isTyping && !isHitlActive) {
         setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
         clearSendErrorTimer();
         timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
@@ -112,7 +111,7 @@ const ChatInput = forwardRef (({ onSendMessage, isAiAccepting, isHitlActive }, r
   }));
   // 메시지 전송
   const handleSend = () => {
-    if (isAiAccepting && !isHitlActive) {
+    if (isReportTyping && !isHitlActive) {
       setSendErrorMessage("AI 응답 중입니다. 잠시만 기다려주세요.");
       clearSendErrorTimer();
       timerRef.current = setTimeout(() => setSendErrorMessage(null), 3000);
