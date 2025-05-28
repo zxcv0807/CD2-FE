@@ -61,14 +61,14 @@ const ChattingTopicSelectionPage = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#18171C]">
       <Sidebar isSidebarVisible={isSidebarVisible} />
       <ChatHeader onToggleSidebar={handleToggleSidebar} />
       <div
         className="transition-all duration-300 mt-16 md:mt-0 w-full md:w-auto"
         style={{ width: `100%`, marginLeft: 0, flexGrow: 1, marginRight: 0 }}
       >
-        <div className="flex justify-center items-center bg-[#FAFAFA] dark:bg-[#18171C] px-4 h-full">
+        <div className="flex justify-center items-center px-4 h-full">
           <div className="text-center w-full max-w-[1400px] h-[80%] p-10 bg-white dark:bg-[#232129] rounded-2xl shadow-sm flex flex-col justify-center items-center">
             {/* 상단 텍스트 */}
             <h2 className="text-[#A476CC] text-xl font-semibold mb-4">새 채팅 시작</h2>
