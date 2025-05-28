@@ -62,7 +62,7 @@ axiosInstance.interceptors.response.use(
             try {
                 // refresh token으로 새로운 access token 요청 (refresh token은 HTTP Only 쿠키로 자동 전송될 것임)
 
-                const response = await axios.post(import.meta.env.VITE_API_BASE_URL + '/api/v1/user/refresh-token', {
+                const response = await axios.post(import.meta.env.VITE_API_BASE_URL + '/api/v1/user/refresh-token', {}, {
                     withCredentials: true,
                 });
                 console.log("refresh_token 성공");
