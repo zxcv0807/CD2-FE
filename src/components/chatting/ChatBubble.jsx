@@ -145,7 +145,6 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id }) =>
     }
     return null;
   }
-
   // 알 수 없는 타입인 경우
   return null;
 };

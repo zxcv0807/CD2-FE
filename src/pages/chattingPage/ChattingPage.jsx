@@ -70,9 +70,12 @@ const ChattingPage = () => {
                         user_id: userId,
                     }
                 );
-                console.log(response.data);
                 setTopic(response.data.topics[0]);
-                const formattedMessages = response.data.messages.map((msg, index) => ({
+                // timestamp 기준으로 정렬
+                const sortedMessages = response.data.messages.sort((a, b) => 
+                    new Date(a.timestamp) - new Date(b.timestamp)    
+                )
+                const formattedMessages = sortedMessages.map((msg, index) => ({
                     id: index,
                     message_id: msg.doc_id,
                     type: msg.role,
@@ -294,7 +297,7 @@ const ChattingPage = () => {
     };
     
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#18171C]">
             <Sidebar isSidebarVisible={isSidebarVisible}/>
             <ChatHeader onToggleSidebar={handleToggleSidebar}/>
             <div
@@ -302,7 +305,7 @@ const ChattingPage = () => {
                 style={{ width: `100%`, marginLeft: 0, flexGrow: 1, marginRight: 0 }}
             >
                 {/* 채팅 + 입력창 포함된 컨테이너 */}
-                <div className="h-full flex flex-col bg-[#FAFAFA] dark:bg-[#18171C] items-center px-2 relative">
+                <div className="h-full flex flex-col items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* 대화 메시지 */}
                         {messages.map((msg) => (    
