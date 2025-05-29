@@ -26,6 +26,7 @@ const ChattingPage = () => {
     const [topic, setTopic] = useState("");
     const [isUserScrolling, setIsUserScrolling] = useState(false);
     const [isCurrentConversationEnded, setIsCurrentConversationEnded] = useState(false);
+    const [completedMessages, setCompletedMessages] = useState(new Set());
     
 
     // 스크롤 이벤트 핸들러 추가
@@ -67,10 +68,21 @@ const ChattingPage = () => {
         if (message.type !== 'optimize' && message.type !== 'report') {
             return false;
         }
-        // 현재 진행중인 대화에서 result_end를 받은 경우
-        if (isCurrentConversationEnded) {
+
+        // message_id가 있고 completedMessages Set에 포함되어 있으면 완료된 것
+        if (message.message_id && completedMessages.has(message.message_id)) {
             return true;
         }
+
+        // message_id가 없는 경우 (현재 진행중인 대화)
+        if (!message.message_id) {
+            // 현재 진행중인 대화에서 result_end를 받은 경우
+            if (isCurrentConversationEnded) {
+                return true;
+            }
+            return false;
+        }
+
         // 기존 대화(히스토리)의 경우: 해당 메시지가 마지막 AI 응답인지 확인
         // 해당 메시지 이후에 user 메시지가 있다면 완료된 것으로 간주
         for (let i = messageIndex + 1; i < allMessages.length; i++) {
@@ -78,6 +90,7 @@ const ChattingPage = () => {
                 return true; // 이후에 사용자 메시지가 있으면 완료된 것
             }
         }
+
         // 전체 메시지 중 마지막 메시지이고 AI 메시지라면 완료된 것으로 간주
         // (단, 현재 타이핑 중이 아닐 때)
         if (messageIndex === allMessages.length - 1 && !isReportTyping) {
@@ -108,6 +121,12 @@ const ChattingPage = () => {
                     text: msg.page_content,
                     timestamp: msg.timestamp,
                 }));
+                // 기존 메시지들의 message_id를 completedMessages에 추가
+                const existingMessageIds = formattedMessages
+                    .filter(msg => msg.message_id && (msg.type === 'optimize' || msg.type === 'report'))
+                    .map(msg => msg.message_id);
+                setCompletedMessages(new Set(existingMessageIds));
+
                 setMessages(formattedMessages);
             } catch(err) {
                 console.error("대화 목록 불러오기 실패", err);
@@ -219,6 +238,8 @@ const ChattingPage = () => {
                                     return prev.map((message) => {
                                         // message_id가 없고, 해당 type에 대해 서버에서 ID를 줬다면 업데이트
                                         if (!message.message_id && saved_message_ids[message.type]) {
+                                            const newMessageId = saved_message_ids[message.type];
+                                            setCompletedMessages(prevCompleted => new Set([...prevCompleted, newMessageId]));
                                             return {
                                                 ...message,
                                                 message_id: saved_message_ids[message.type],
@@ -260,7 +281,7 @@ const ChattingPage = () => {
         };
     }, [session_id]);
     // 메시지 전송
-    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isOptimized, currentModelId) => {
+    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, mode, currentModelId) => {
         // ai 답변을 받는 중이라면
         chatInputRef.current?.handleAttemptSend(isReportTyping, isHitlActive);
         if (isReportTyping && !isHitlActive) {
@@ -314,10 +335,11 @@ const ChattingPage = () => {
                     option: {
                         web_search: isWebSearchActive,
                         file: attachedFiles > 0,
-                        optimize: isOptimized,
+                        mode: mode,
                         model: currentModelId,
                     }
                 });
+                console.log(payload)
                 ws.current.send(payload);
             }
             

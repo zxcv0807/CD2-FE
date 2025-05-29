@@ -120,7 +120,9 @@ const ChatInput = forwardRef (({ onSendMessage, isReportTyping, isHitlActive }, 
 
     if (!message.trim() && attachedFiles.length === 0) return;
 
-    onSendMessage(message, attachedFiles, isWebSearchActive, isReportActive, currentModelId);
+    const mode = isReportActive ? "report" : "optimize";
+
+    onSendMessage(message, attachedFiles, isWebSearchActive, mode, currentModelId);
     setMessage("");
     setAttachedFiles([]);
   };
