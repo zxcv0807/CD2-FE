@@ -25,6 +25,7 @@ const ChattingPage = () => {
     const [messages, setMessages] = useState([]);
     const [topic, setTopic] = useState("");
     const [isUserScrolling, setIsUserScrolling] = useState(false);
+    const [isCurrentConversationEnded, setIsCurrentConversationEnded] = useState(false);
     
 
     // 스크롤 이벤트 핸들러 추가
@@ -60,6 +61,30 @@ const ChattingPage = () => {
     // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+    const isMessageCompleted = (message, messageIndex, allMessages) => {
+        // optimize나 report 타입이 아니면 피드백 UI 안보임
+        if (message.type !== 'optimize' && message.type !== 'report') {
+            return false;
+        }
+        // 현재 진행중인 대화에서 result_end를 받은 경우
+        if (isCurrentConversationEnded) {
+            return true;
+        }
+        // 기존 대화(히스토리)의 경우: 해당 메시지가 마지막 AI 응답인지 확인
+        // 해당 메시지 이후에 user 메시지가 있다면 완료된 것으로 간주
+        for (let i = messageIndex + 1; i < allMessages.length; i++) {
+            if (allMessages[i].type === 'user' || allMessages[i].type === 'hitl_user') {
+                return true; // 이후에 사용자 메시지가 있으면 완료된 것
+            }
+        }
+        // 전체 메시지 중 마지막 메시지이고 AI 메시지라면 완료된 것으로 간주
+        // (단, 현재 타이핑 중이 아닐 때)
+        if (messageIndex === allMessages.length - 1 && !isReportTyping) {
+            return true;
+        }
+
+        return false;
     };
     // 대화 목록 불러오기
     useEffect(() => {
@@ -209,6 +234,7 @@ const ChattingPage = () => {
                             setIsCotLoading(false);
                             setIsReportTyping(false);
                             setIsHitlActive(false);
+                            setIsCurrentConversationEnded(true);
                             break;
                         }
                         case "error":
@@ -244,6 +270,7 @@ const ChattingPage = () => {
         if (!isHitlActive) {
             setCotMessage("");
             setCotHistory([]);
+            setIsCurrentConversationEnded(false);
         }
 
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
@@ -311,8 +338,8 @@ const ChattingPage = () => {
                 <div className="h-full flex flex-col items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* 대화 메시지 */}
-                        {messages.map((msg) => (    
-                            <ChatBubble key={msg.id} type={msg.type} text={msg.text} isTyping={msg.type === "report" && isReportTyping} session_id={session_id} message_id={msg.message_id}/>
+                        {messages.map((msg, index) => (    
+                            <ChatBubble key={msg.id} type={msg.type} text={msg.text} isTyping={msg.type === "report" && isReportTyping} session_id={session_id} message_id={msg.message_id} isCompleted={isMessageCompleted(msg, index, messages)}/>
                         ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
