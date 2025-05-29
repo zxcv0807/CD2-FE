@@ -20,6 +20,7 @@ const ChattingPage = () => {
     const [isReportTyping, setIsReportTyping] = useState(false);
     const [isCotLoading, setIsCotLoading] = useState(false);
     const [cotMessage, setCotMessage] = useState("");
+    const [cotHistory, setCotHistory] = useState([]);
     const [isHitlActive, setIsHitlActive] = useState(false);
     const [messages, setMessages] = useState([]);
     const [topic, setTopic] = useState("");
@@ -108,6 +109,7 @@ const ChattingPage = () => {
                     switch(type) {
                         case "cot":
                             setCotMessage(text);
+                            setCotHistory(prev => [...prev, text]); 
                             setIsCotLoading(true);
                             break;
                         case "hitl":
@@ -118,7 +120,6 @@ const ChattingPage = () => {
                             }]);
                             setIsHitlActive(true);
                             setIsCotLoading(false);
-                            setCotMessage("");
                             break;
                         case "hitl_error":
                             setMessages((prev) => [...prev, { 
@@ -128,7 +129,6 @@ const ChattingPage = () => {
                             }]);
                             setIsHitlActive(false);
                             setIsCotLoading(false);
-                            setCotMessage("");
                             setIsReportTyping(false);
                             break;
                         case "result_start":
@@ -185,7 +185,6 @@ const ChattingPage = () => {
                                 }
                                 return updated;
                             });
-                            setCotMessage("");
                             break;
                         case "result_end": {
                             const saved_message_ids = data.saved_message_ids;
@@ -208,7 +207,6 @@ const ChattingPage = () => {
                             }
                             aiMessageRef.current = null;
                             setIsCotLoading(false);
-                            setCotMessage("");
                             setIsReportTyping(false);
                             setIsHitlActive(false);
                             break;
@@ -241,6 +239,11 @@ const ChattingPage = () => {
         chatInputRef.current?.handleAttemptSend(isReportTyping, isHitlActive);
         if (isReportTyping && !isHitlActive) {
             return;
+        }
+
+        if (!isHitlActive) {
+            setCotMessage("");
+            setCotHistory([]);
         }
 
         const newId = messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
@@ -313,7 +316,7 @@ const ChattingPage = () => {
                         ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (
-                            <CoTBubble text={cotMessage} isLoading={isCotLoading} />
+                            <CoTBubble currentText={cotMessage} isLoading={isCotLoading} history={cotHistory}/>
                         )}
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center to-transparent">

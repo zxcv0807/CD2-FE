@@ -61,11 +61,9 @@ axiosInstance.interceptors.response.use(
 
             try {
                 // refresh token으로 새로운 access token 요청 (refresh token은 HTTP Only 쿠키로 자동 전송될 것임)
-
                 const response = await axios.post(import.meta.env.VITE_API_BASE_URL + '/api/v1/user/refresh-token', {}, {
                     withCredentials: true,
                 });
-                console.log("refresh_token 성공");
                 const { access_token, user_id } = response.data;
 
                 store.dispatch(login({ token: access_token, userId: user_id }));
@@ -77,6 +75,7 @@ axiosInstance.interceptors.response.use(
                 console.log(refreshError);
                 store.dispatch(logout()); // refresh token이 유효하지 않거나 만료된 경우
                 processQueue(refreshError, null); // 대기 중인 요청들 에러 처리
+                window.location.href = '/login';
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;
