@@ -89,7 +89,6 @@ const ChattingPage = () => {
                     }
                 );
                 setTopic(response.data.topics[0]);
-                console.log(response.data);
                 // timestamp 기준으로 정렬
                 const sortedMessages = response.data.messages.sort((a, b) => 
                     new Date(a.timestamp) - new Date(b.timestamp)    
@@ -126,7 +125,6 @@ const ChattingPage = () => {
             };
 
             ws.current.onmessage = (event) => {
-                console.log("서버로부터 메시지 도착:", event.data);
                 try {
                     const data = JSON.parse(event.data);
                     const { type, text } = data;
