@@ -27,7 +27,6 @@ const ChattingPage = () => {
     const [isUserScrolling, setIsUserScrolling] = useState(false);
     const [isCurrentConversationEnded, setIsCurrentConversationEnded] = useState(false);
     const [completedMessages, setCompletedMessages] = useState(new Set());
-    
 
     // 스크롤 이벤트 핸들러 추가
     const handleScroll = () => {
@@ -63,40 +62,20 @@ const ChattingPage = () => {
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
-    const isMessageCompleted = (message, messageIndex, allMessages) => {
+    // 웹소켓 대화 완료
+    const isMessageCompleted = (message) => {
         // optimize나 report 타입이 아니면 피드백 UI 안보임
         if (message.type !== 'optimize' && message.type !== 'report') {
             return false;
         }
-
-        // message_id가 있고 completedMessages Set에 포함되어 있으면 완료된 것
+        // message_id가 있고 completedMessages에 포함되어 있으면 완료
         if (message.message_id && completedMessages.has(message.message_id)) {
             return true;
         }
-
-        // message_id가 없는 경우 (현재 진행중인 대화)
+        // message_id가 없는 현재 진행중인 대화는 result_end 받았을 때만 완료
         if (!message.message_id) {
-            // 현재 진행중인 대화에서 result_end를 받은 경우
-            if (isCurrentConversationEnded) {
-                return true;
-            }
-            return false;
+            return isCurrentConversationEnded && !isReportTyping;
         }
-
-        // 기존 대화(히스토리)의 경우: 해당 메시지가 마지막 AI 응답인지 확인
-        // 해당 메시지 이후에 user 메시지가 있다면 완료된 것으로 간주
-        for (let i = messageIndex + 1; i < allMessages.length; i++) {
-            if (allMessages[i].type === 'user' || allMessages[i].type === 'hitl_user') {
-                return true; // 이후에 사용자 메시지가 있으면 완료된 것
-            }
-        }
-
-        // 전체 메시지 중 마지막 메시지이고 AI 메시지라면 완료된 것으로 간주
-        // (단, 현재 타이핑 중이 아닐 때)
-        if (messageIndex === allMessages.length - 1 && !isReportTyping) {
-            return true;
-        }
-
         return false;
     };
     // 대화 목록 불러오기
@@ -110,16 +89,18 @@ const ChattingPage = () => {
                     }
                 );
                 setTopic(response.data.topics[0]);
+                console.log(response.data);
                 // timestamp 기준으로 정렬
                 const sortedMessages = response.data.messages.sort((a, b) => 
                     new Date(a.timestamp) - new Date(b.timestamp)    
                 )
                 const formattedMessages = sortedMessages.map((msg, index) => ({
                     id: index,
-                    message_id: msg.doc_id,
+                    message_id: msg.message_id,
                     type: msg.role,
                     text: msg.page_content,
                     timestamp: msg.timestamp,
+                    recommendation_status: msg.recommendation_status,
                 }));
                 // 기존 메시지들의 message_id를 completedMessages에 추가
                 const existingMessageIds = formattedMessages
@@ -281,7 +262,7 @@ const ChattingPage = () => {
         };
     }, [session_id]);
     // 메시지 전송
-    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, mode, currentModelId) => {
+    const handleSendMessage = async (message, attachedFiles, isWebSearchActive, isReportActive, currentModelId) => {
         // ai 답변을 받는 중이라면
         chatInputRef.current?.handleAttemptSend(isReportTyping, isHitlActive);
         if (isReportTyping && !isHitlActive) {
@@ -335,11 +316,10 @@ const ChattingPage = () => {
                     option: {
                         web_search: isWebSearchActive,
                         file: attachedFiles > 0,
-                        mode: mode,
+                        optimize: isReportActive,
                         model: currentModelId,
                     }
                 });
-                console.log(payload)
                 ws.current.send(payload);
             }
             
@@ -360,8 +340,17 @@ const ChattingPage = () => {
                 <div className="h-full flex flex-col items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* 대화 메시지 */}
-                        {messages.map((msg, index) => (    
-                            <ChatBubble key={msg.id} type={msg.type} text={msg.text} isTyping={msg.type === "report" && isReportTyping} session_id={session_id} message_id={msg.message_id} isCompleted={isMessageCompleted(msg, index, messages)}/>
+                        {messages.map((msg) => (    
+                            <ChatBubble 
+                                key={msg.id} 
+                                type={msg.type} 
+                                text={msg.text} 
+                                isTyping={msg.type === "report" && isReportTyping} 
+                                session_id={session_id} 
+                                message_id={msg.message_id} 
+                                isCompleted={isMessageCompleted(msg)}
+                                recommendation_status={msg.recommendation_status}
+                            />
                         ))}
                         {/* Chain Of Thought UI 표시 */}
                         {cotMessage && (

@@ -5,7 +5,7 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import FeedbackUI from "./FeedbackUI";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 
-const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCompleted = false }) => {
+const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCompleted = false, recommendation_status }) => {
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
   // 피드백 UI 보여주기
@@ -97,7 +97,7 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCo
             </div>
           </div>
           {/* 피드백 UI */}
-          {shouldShowFeedback() && <FeedbackUI session_id={session_id} message_id={message_id} messageText={text}/>}
+          {shouldShowFeedback() && <FeedbackUI session_id={session_id} message_id={message_id} messageText={text} recommendation_status={recommendation_status}/>}
         </div>
       </div>
     );
@@ -181,7 +181,7 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCo
             {isTyping && <span className="typing-cursor">|</span>}
           </div>
 
-          {shouldShowFeedback() && <FeedbackUI session_id={session_id} message_id={message_id} messageText={text} />}
+          {shouldShowFeedback() && <FeedbackUI session_id={session_id} message_id={message_id} messageText={text} recommendation_status={recommendation_status}/>}
         </div>
       );
     }

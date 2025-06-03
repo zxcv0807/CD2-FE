@@ -1,16 +1,42 @@
 import { useState } from "react";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
+import axios from "../../api/axiosInstance";
+import Tooltip from "../modal/Tooltip";
 import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
+import ThumbsUpPurple from "../../assets/ThumbsUpPurple.png";
+import ThumbsDownGrey from "../../assets/ThumbsDownGrey.png";
 
-const FeedbackUI = ({ session_id, message_id, messageText }) => {
+
+const FeedbackUI = ({ session_id, message_id, messageText, recommendation_status }) => {
     const [thumbsSubmitted, setThumbsSubmitted] = useState(false);
+    const [feedbackType, setFeedbackType] = useState(recommendation_status);
     const { copyToClipboard, isCopied } = useCopyToClipboard();
 
     // 좋아요, 싫어요
-    const handleThumbsUpDown = () => {
-        console.log(`${message_id}번째 채팅 추천/비추천`);
+    // const handleThumbsUpDown = async (rating) => {
+    //     if (feedbackType === rating) {
+    //         return; // 이미 선택된 상태면 아무것도 하지 않음
+    //     }
+
+    //     try {
+    //         const response = await axios.post('/api/v1/preference/submit', {
+    //             message_id: message_id,
+    //             session_id: session_id,
+    //             rating: rating
+    //         });
+    //         console.log(response.data);
+    //         setFeedbackType(rating);
+    //         setThumbsSubmitted(true);
+    //     } catch (err) {
+    //         console.error("피드백 전송 실패:", err);
+    //     }
+    // };
+    const handleThumbsUpDown = (rating) => {
+        console.log(`추천/비추천 ${rating}`);
+        setFeedbackType(rating);
     }
+
 
     return (
         <>
@@ -45,8 +71,38 @@ const FeedbackUI = ({ session_id, message_id, messageText }) => {
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-[#999999]">해당 내용의 적절한 답변이 어땠나요?</span>
                     {/* 좋아요, 싫어요 아이콘 */}
-                    <img src={ThumbsUp} className="cursor-pointer" onClick={() => handleThumbsUpDown(true)}/>
-                    <img src={ThumbsDown} className="cursor-pointer" onClick={() => handleThumbsUpDown(false)}/>
+                    {feedbackType === 'like' ? (
+                        <Tooltip text="추천" position="top">
+                            <img 
+                                src={ThumbsUpPurple} 
+                                className="cursor-default"
+                            />
+                        </Tooltip>
+                    ) : feedbackType === 'dislike' ? (
+                        <Tooltip text="비추천" position="top">
+                            <img 
+                                src={ThumbsDownGrey} 
+                                className="cursor-default"
+                            />
+                        </Tooltip>
+                    ) : (
+                        <>
+                            <Tooltip text="추천" position="top">
+                                <img 
+                                    src={feedbackType === 'like' ? ThumbsUpPurple : ThumbsUp} 
+                                    className={`cursor-pointer ${feedbackType === 'like' ? 'cursor-default' : 'hover:opacity-70'}`}
+                                    onClick={() => handleThumbsUpDown("like")}
+                                />
+                            </Tooltip>
+                            <Tooltip text="비추천" position="top">
+                                <img 
+                                    src={feedbackType === 'dislike' ? ThumbsDownGrey : ThumbsDown} 
+                                    className={`cursor-pointer ${feedbackType === 'dislike' ? 'cursor-default' : 'hover:opacity-70'}`}
+                                    onClick={() => handleThumbsUpDown("dislike")}
+                                />
+                            </Tooltip>
+                        </>
+                    )}
                 </div>
             </div>
         </>
