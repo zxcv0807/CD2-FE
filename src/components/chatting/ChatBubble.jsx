@@ -120,7 +120,7 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCo
                   const match = /language-(\w+)/.exec(className || '');
                   const codeString = String(children).replace(/\n$/, '');
                   // 고유한 코드 블록 ID 생성 (메시지ID + 코드 내용 해시)
-                  const codeId = `${message_id}-${btoa(codeString.slice(0, 50)).replace(/[^a-zA-Z0-9]/g, '')}`;
+                  const codeId = `${message_id}-${Math.random().toString(36).substr(2, 9)}`;
                   
                   return !inline && match ? (
                     <div className="relative my-4">
