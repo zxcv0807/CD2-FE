@@ -68,7 +68,7 @@ const ChatInput = forwardRef (({ onSendMessage, isReportTyping, isHitlActive }, 
       }
 
       if (totalSize + file.size > MAX_TOTAL_SIZE) {
-        alert("전체 첨부파일은 총 20MB를 넘을 수 없습니다.");
+        alert("전체 첨부파일은 총 10MB를 넘을 수 없습니다.");
         break;
       }
 
