@@ -9,33 +9,32 @@ import ThumbsDownGrey from "../../assets/ThumbsDownGrey.png";
 
 
 const FeedbackUI = ({ session_id, message_id, messageText, recommendation_status }) => {
-    const [thumbsSubmitted, setThumbsSubmitted] = useState(false);
     const [feedbackType, setFeedbackType] = useState(recommendation_status);
     const { copyToClipboard, isCopied } = useCopyToClipboard();
 
     // 좋아요, 싫어요
-    // const handleThumbsUpDown = async (rating) => {
-    //     if (feedbackType === rating) {
-    //         return; // 이미 선택된 상태면 아무것도 하지 않음
-    //     }
-
-    //     try {
-    //         const response = await axios.post('/api/v1/preference/submit', {
-    //             message_id: message_id,
-    //             session_id: session_id,
-    //             rating: rating
-    //         });
-    //         console.log(response.data);
-    //         setFeedbackType(rating);
-    //         setThumbsSubmitted(true);
-    //     } catch (err) {
-    //         console.error("피드백 전송 실패:", err);
-    //     }
-    // };
-    const handleThumbsUpDown = (rating) => {
-        console.log(`추천/비추천 ${rating}`);
-        setFeedbackType(rating);
-    }
+    const handleThumbsUpDown = async (rating) => {
+        // 이미 선택된 상태면 아무것도 하지 않음
+        if (feedbackType === rating) {
+            return;
+        }
+        
+        try {
+            const response = await axios.post('/api/v1/preference/submit', {
+                message_id: message_id,
+                rating: rating,
+                session_id: session_id,
+            });
+            console.log(response.data);
+            setFeedbackType(rating);
+        } catch (err) {
+            console.error("피드백 전송 실패:", err);
+        }
+    };
+    // const handleThumbsUpDown = (rating) => {
+    //     console.log(`추천/비추천 ${rating}`);
+    //     setFeedbackType(rating);
+    // }
 
 
     return (
