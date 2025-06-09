@@ -31,11 +31,6 @@ const FeedbackUI = ({ session_id, message_id, messageText, recommendation_status
             console.error("피드백 전송 실패:", err);
         }
     };
-    // const handleThumbsUpDown = (rating) => {
-    //     console.log(`추천/비추천 ${rating}`);
-    //     setFeedbackType(rating);
-    // }
-
 
     return (
         <>

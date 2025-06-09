@@ -5,14 +5,24 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import FeedbackUI from "./FeedbackUI";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 
-const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCompleted = false, recommendation_status }) => {
+const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCompleted = false, recommendation_status, messages, currentIndex }) => {
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
   // 피드백 UI 보여주기
   const shouldShowFeedback = () => {
-    return !isTyping && 
-          text.trim().length > 0 && 
-          isCompleted; 
+    if (isTyping || text.trim().length === 0 || !isCompleted) {
+      return false;
+    }
+    
+    // optimize 타입인 경우, 다음 메시지가 report면 피드백 UI 숨김
+    if (type === 'optimize') {
+      const nextMessage = messages && currentIndex !== undefined ? messages[currentIndex + 1] : null;
+      if (nextMessage && nextMessage.type === 'report') {
+        return false;
+      }
+    }
+    
+    return true;
   };
 
   // user 타입 
