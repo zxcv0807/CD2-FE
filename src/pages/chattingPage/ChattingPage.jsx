@@ -338,7 +338,7 @@ const ChattingPage = () => {
                 <div className="h-full flex flex-col items-center px-2 relative">
                     <div ref={chatContainerRef} className="w-full max-w-[900px] md:h-[80%] h-[85%] overflow-y-auto px-10 py-6 md:mt-8">
                         {/* 대화 메시지 */}
-                        {messages.map((msg) => (    
+                        {messages.map((msg, index) => (    
                             <ChatBubble 
                                 key={msg.id} 
                                 type={msg.type} 
@@ -348,6 +348,8 @@ const ChattingPage = () => {
                                 message_id={msg.message_id} 
                                 isCompleted={isMessageCompleted(msg)}
                                 recommendation_status={msg.recommendation_status}
+                                messages={messages}
+                                currentIndex={index}
                             />
                         ))}
                         {/* Chain Of Thought UI 표시 */}
