@@ -266,7 +266,7 @@ const ChattingPage = () => {
         if (isReportTyping && !isHitlActive) {
             return;
         }
-
+        
         if (!isHitlActive) {
             setCotMessage("");
             setCotHistory([]);
