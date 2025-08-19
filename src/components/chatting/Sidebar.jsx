@@ -305,7 +305,7 @@ const Sidebar = ({ isSidebarVisible }) => {
               </Tooltip>
             </nav>
             {/* 설정 아이콘 */}
-            <Tooltip text="채팅 검색" position="right">
+            <Tooltip text="설정" position="right">
               <div className="relative group">
                 <img src={SettingsIcon} onClick={handleOpenSetting} className="cursor-pointer"/>
               </div>
