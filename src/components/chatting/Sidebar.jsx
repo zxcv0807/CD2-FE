@@ -1,3 +1,5 @@
+// 채팅페이지에서 좌측에 있는 사이드바 컴포넌트
+
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,27 +24,23 @@ const Sidebar = ({ isSidebarVisible }) => {
   const navigate = useNavigate();
   const isChatListVisible = useSelector((state) => state.chatListLayout.isChatListVisible);
   const token = useSelector((state) => state.auth.token);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const currentSessionId = location.pathname.split("/chatting/")[1]; // 선택된 세션
+  // 대화 세션 메뉴(⋯) 열림 여부
   const [openMenuId, setOpenMenuId] = useState(null); 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0});
-  const [editSessionId, setEditSessionId] = useState(null);
-  const [chatList, setChatList] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
 
-  // 로그인 상태 확인
-  useEffect(() => {
-    setIsLoggedIn(!!token);
-  }, [token]);
+  const [editSessionId, setEditSessionId] = useState(null); // 세션 제목 수정 중인 ID
+  const [chatList, setChatList] = useState([]); // 전체 대화 세션 목록
+  const [loading, setLoading] = useState(false); // 로딩 상태
+  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false); // 채팅 검색 모달 열림 여부
+  const [isSettingOpen, setIsSettingOpen] = useState(false); // 설정 모달 열림 여부
 
   // 사이드바 열고 닫기
   const handleToggleChatList = () => {
     dispatch(toggleChatListVisible());
   };
 
-  //메뉴 열고 닫기
+  //대화 세션 메뉴(⋯) 열고 닫기
   const toggleMenu = (id, e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMenuPosition({ x: rect.right + 10, y: rect.top });
@@ -146,6 +144,7 @@ const Sidebar = ({ isSidebarVisible }) => {
   const handleCloseChatSearch = () => {
     setIsChatSearchOpen(false);
   };
+  
   // 설정 모달
   const handleOpenSetting = () => {
     setIsSettingOpen(true);
@@ -174,7 +173,6 @@ const Sidebar = ({ isSidebarVisible }) => {
             {/* 채팅 목록 */}
             <div className="flex-grow overflow-auto px-4">
               {loading && <span className="text-[#1A1A1A] dark:text-white">로딩 중...</span>}
-              {!isLoggedIn && <span><Link to="/login" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">로그인</Link> 이후에 더 많은 기능을 사용해보세요.</span>}
               <ul className="flex flex-col divide-y divide-[#999999] dark:divide-[#BBBBBB]">
                 {chatList.map((chat) => (
                   <li
@@ -264,9 +262,9 @@ const Sidebar = ({ isSidebarVisible }) => {
 
               </Link>
               {/* 채팅 검색 */}
-              <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`p-2 ${isLoggedIn ? "" : "opacity-50"}`}/>
+              <img src={SearchIcon} onClick={handleOpenChatSearch} className="p-2"/>
               {/* 설정 */}
-              <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`p-2 ${isLoggedIn ? "" : "opacity-50"}`} />
+              <img src={SettingsIcon} onClick={handleOpenSetting} className="p-2" />
             </div>
           </div>
       </aside>
@@ -300,16 +298,16 @@ const Sidebar = ({ isSidebarVisible }) => {
                 </Link>
               </Tooltip>
               {/* 채팅 검색 */}
-              <Tooltip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} position="right">
+              <Tooltip text="채팅 검색" position="right">
                 <div className="relative group">
-                  <img src={SearchIcon} onClick={isLoggedIn ? handleOpenChatSearch : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
+                  <img src={SearchIcon} onClick={handleOpenChatSearch} className="cursor-pointer"/>
                 </div>
               </Tooltip>
             </nav>
             {/* 설정 아이콘 */}
-            <Tooltip text={`${isLoggedIn ? "채팅 검색" : "로그인 후 사용가능합니다."}`} position="right">
+            <Tooltip text="채팅 검색" position="right">
               <div className="relative group">
-                <img src={SettingsIcon} onClick={isLoggedIn ? handleOpenSetting : () => {}} className={`cursor-pointer ${isLoggedIn ? "" : "opacity-50"}`}/>
+                <img src={SettingsIcon} onClick={handleOpenSetting} className="cursor-pointer"/>
               </div>
             </Tooltip>
           </div>
@@ -332,7 +330,6 @@ const Sidebar = ({ isSidebarVisible }) => {
             {/* 채팅 목록 */}
             <div className="flex-grow overflow-y-auto">
               {loading && <span className="text-[#1A1A1A] dark:text-white">로딩 중...</span>}
-              {!isLoggedIn && <span><Link to="/login" className="text-[#A476CC] hover:text-[#6A4B85] dark:hover:text-[#C0A3E6]">로그인</Link> 이후에 더 많은 기능을 사용해보세요.</span>}
               <ul className="flex flex-col divide-y divide-[#999999] dark:divide-[#BBBBBB]">
                 {chatList.map((chat) => (
                   <li

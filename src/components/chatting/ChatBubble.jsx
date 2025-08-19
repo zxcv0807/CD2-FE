@@ -1,3 +1,5 @@
+// 채팅에서 사용될 4개의 메시지 타입에 대한 컴포넌트
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -8,7 +10,7 @@ import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCompleted = false, recommendation_status, messages, currentIndex }) => {
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
-  // 피드백 UI 보여주기
+  // 피드백 UI(추천/비추천) 표시 여부 결정
   const shouldShowFeedback = () => {
     if (isTyping || text.trim().length === 0 || !isCompleted) {
       return false;
@@ -45,7 +47,7 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCo
       </div>
     );
   }
-  // hitl_user 타입
+  // hitl_user 타입 human in the loop에 대한 사용자의 답변
   if (type === "hitl_user") {
     return (
       <div className="flex justify-end mb-4">
@@ -126,7 +128,7 @@ const ChatBubble = ({ type, text, isTyping = false, session_id, message_id, isCo
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                code({node, inline, className, children, ...props}) {
+                code({inline, className, children, ...props}) {
                   const match = /language-(\w+)/.exec(className || '');
                   const codeString = String(children).replace(/\n$/, '');
                   // 고유한 코드 블록 ID 생성 (메시지ID + 코드 내용 해시)

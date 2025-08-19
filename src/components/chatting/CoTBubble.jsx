@@ -1,8 +1,11 @@
+// ai로부터 Chain of Thought 메시지를 표시하는 컴포넌트
+
 import { useState } from "react";
 
 const CoTBubble = ({ currentText, isLoading, history }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true); // 접기 상태 관리
 
+  // 접기/펼치기 토글 함수
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };

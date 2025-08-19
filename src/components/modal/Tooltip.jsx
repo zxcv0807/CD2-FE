@@ -1,3 +1,5 @@
+// 툴팁 컴포넌트
+
 import { useState } from "react";
 
 const Tooltip = ({ children, text, position = null }) => {

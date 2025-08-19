@@ -1,3 +1,5 @@
+// 다크모드를 적용하기 위한 커스텀 훅
+
 import { useEffect } from "react";
 
 export default function useDarkMode(theme) {

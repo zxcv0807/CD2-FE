@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
 import SpeechBubble from "../../assets/SpeechBubble.png";
 
 const ThirdSection = () => {
-    const [activeIndex, setActiveIndex] = useState(-1);
+    const [activeIndex, setActiveIndex] = useState(-1); // -1은 아직 시작 안됨.
     const sectionRef = useRef(null);
-    const topics = ["코딩", "여행", "영화", "게임", "교육"];
+    const topics = useMemo(() => ["코딩", "여행", "영화", "게임", "교육"], []);
 
     // 스크롤 감지
     useEffect(() => {

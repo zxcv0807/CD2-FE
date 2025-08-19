@@ -1,3 +1,5 @@
+// 로그인 여부를 확인하고, 로그인 안 된 경우 로그인 페이지로 리다이렉트하는 컴포넌트
+
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 

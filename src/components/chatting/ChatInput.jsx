@@ -1,3 +1,5 @@
+// 채팅 입력 컴포넌트
+
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import Tooltip from "../modal/Tooltip";
 import ModelListModal from "../modal/ModelListModal";
@@ -8,25 +10,25 @@ import RightArrowWhiteIcon from "../../assets/RightArrowWhiteIcon.png";
 import ModelMenuIcon from "../../assets/ModelMenuIcon.png";
 import ReportIcon from "../../assets/reportIcon.png";
 
-// 파일 크기 제한
+// 파일 크기 제한 (백엔드와 동일하게 설정)
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB
 
 const ChatInput = forwardRef (({ onSendMessage, isReportTyping, isHitlActive }, ref) => {
-  const [message, setMessage] = useState("");
-  const textareaRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const timerRef = useRef(null);
-  const [isReportActive, setIsReportActive] = useState(false);
-  const [isWebSearchActive, setIsWebSearchActive] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState([]);
-  const [sendErrorMessage, setSendErrorMessage] = useState(null);
-  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
-  const [currentModelId, setCurrentModelId] = useState(0);
+  const [message, setMessage] = useState(""); // 입력 메시지 상태
+  const textareaRef = useRef(null); // 입력창 참조
+  const fileInputRef = useRef(null); // 파일 입력 참조
+  const timerRef = useRef(null); // 타이머 참조
+  const [isReportActive, setIsReportActive] = useState(false); // 보고서 생성 활성화 상태
+  const [isWebSearchActive, setIsWebSearchActive] = useState(false); // 웹 서치 활성화 상태
+  const [attachedFiles, setAttachedFiles] = useState([]); // 첨부파일 상태
+  const [sendErrorMessage, setSendErrorMessage] = useState(null); // 전송 오류 메시지 상태
+  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false); // 모델 선택 메뉴 열림 상태
+  const [currentModelId, setCurrentModelId] = useState(0); // 현재 선택된 모델 ID
 
   const toggleOptimization = () => setIsReportActive(prev => !prev); // 최적화하기 ON/OFF
   const toggleWebSearch = () => setIsWebSearchActive(prev => !prev); //웹 서치 ON/OFF
-  const toggleModelMenu = () => setIsModelMenuOpen(prev => !prev); // 모델 리스트 열기기
+  const toggleModelMenu = () => setIsModelMenuOpen(prev => !prev); // 모델 리스트 열기
 
   // 채팅창 높이 제한
   useEffect(() => {
@@ -89,14 +91,14 @@ const ChatInput = forwardRef (({ onSendMessage, isReportTyping, isHitlActive }, 
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
   
-  // ai 대답중이면 입력 불가
+  // 에러 메시지 타이머 초기화
   const clearSendErrorTimer = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
   }
-  // ChattingPage에서 호출할 함수를 노출
+  // ai로부터 답변을 받는 중일 때 메시지 전송 시도
   useImperativeHandle(ref, () => ({
     handleAttemptSend: (isTyping, isHitlActive) => {
       if (isTyping && !isHitlActive) {

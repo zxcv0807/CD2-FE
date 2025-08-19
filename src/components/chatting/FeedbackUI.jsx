@@ -1,3 +1,5 @@
+// 한 번의 대화 싸이클 종료 후에 대화에 대한 추천/비추천 피드백을 제공하는 UI 컴포넌트
+
 import { useState } from "react";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import axios from "../../api/axiosInstance";
@@ -9,8 +11,8 @@ import ThumbsDownGrey from "../../assets/ThumbsDownGrey.png";
 
 
 const FeedbackUI = ({ session_id, message_id, messageText, recommendation_status }) => {
-    const [feedbackType, setFeedbackType] = useState(recommendation_status);
-    const { copyToClipboard, isCopied } = useCopyToClipboard();
+    const [feedbackType, setFeedbackType] = useState(recommendation_status); // 초기 피드백 상태를 props로 받음
+    const { copyToClipboard, isCopied } = useCopyToClipboard(); // 커스텀 훅을 사용하여 클립보드 복사 기능 구현
 
     // 좋아요, 싫어요
     const handleThumbsUpDown = async (rating) => {

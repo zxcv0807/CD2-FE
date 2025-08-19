@@ -1,3 +1,5 @@
+// 사이드바에서 설정 버튼을 클릭했을 때 나타나는 모달창 컴포넌트
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../REDUX/auth/authSlice";

@@ -1,3 +1,5 @@
+// 홈페이지 컴포넌트
+
 import Header from "../components/header/Header";
 import FirstSection from "../components/mainpage/FirstSection";
 import SecondSection from "../components/mainpage/SecondSection";

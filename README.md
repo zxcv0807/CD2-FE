@@ -55,6 +55,15 @@ Vercel을 통해 배포함.
 프론트엔드 관련 문의는 'pg8221@naver.com' 으로 연락 바랍니다.
 
 ## trouble shooting
+- useState, useMemo, useRef, useEffect의 정리
+useState: 컴포넌트 내부에서 상태를 관리하기 위한 훅. 상태가 바뀌면 컴포넌트가 리렌더링 됨.
+useMemo: 값을 캐싱(메모이제이션) 하는 훅. 의존성 배열 값이 바뀌지 않으면, 이전에 사용한 값을 재사용. 불필요한 연산이나 렌더링 방지
+=> 복잡한 계산이나 동일한 배열/객체를 반복해서 재생성하는 것을 방지
+useRef: 값이나 DOM 요소를 기억하는 훅. 값이 바뀌어도 리렌더링이 일어나지 않음.
+=> ref.current를 통해 저장된 값에 접근 가능. 컴포넌트가 리렌더링 되어도 같은 ref 객체가 유지됨.
+useEffect: 렌더링 후 실행되는 사이드 이펙트 관리 훅. 데이터 fetching, DOM조작, 이벤트 리스너 등록/해제 등에 사용됨.
+=> dependency 배열에 따라 실행조건이 다름. []는 최초 마운트시, [value]는 value가 바뀔떄마다 실행.
+
 - 백엔드와 refresh token을 연동하다가 생긴 문제:
 ```javascript
 await axios.post(URL, {
@@ -78,3 +87,37 @@ Git 대소문자 구분 활성화
 git config core.ignorecase false
 ```
 이 명령어는 현재 로컬 저장소에서 Git이 파일명/폴더명의 대소문자 변경을 무시하지 않도록 설정합니다.
+
+-axios를 통해 백엔드와 api연동을 할때, response를 변수로 받는 방법 vs response.data를 바로 체이닝 하는 패턴
+response를 변수로 받는 방법
+```javascript
+const response = await axios.post('api주소', {body});
+```
+이때, 
+response.data에는 서버 본문, 
+response.status에는 http 상태 코드,
+response.headers에는 응답 헤더,
+response.config에는 요청 설정
+을 사용할 수 있다.
+
+디버깅과 분기를 활용할때는 굉장히 편리한 방법이지만,
+data만 필요할때는 쓸데없이 장황하다.
+
+언제 쓰냐면, 성공/실패를 상태 코드로 분기해야할 때, 문제가 생겼을 때, 디버깅이 필요할 때.
+
+response.data만 바로 쓰는 방법
+```javascript
+const list = await axios.post('api주소', {body}).data
+    .sort((a, b) => +new Date(b.modify_at) - +new Date(a.modify_at))
+    .map(({ session_id, title, topics }) => ({
+        session_id,
+        session_title: title,
+        topicId: topics[0].topic_id,
+        topic: topics[0].topic_name,
+    }));
+```
+간결하고 쉽지만,
+상태코드/헤더가 필요해지면 코드 수정이 필요하다. 
+
+언제쓰냐면, UI 전처리(map/sort/filter) 위주의 화면 데이터 가공
+상태/헤더가 필요없는 단순한 CRUD 응답 처리
