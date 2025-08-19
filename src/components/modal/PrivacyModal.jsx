@@ -1,3 +1,5 @@
+// 개인정보 이용 동의 모달 컴포넌트
+
 const PrivacyModal = ({ onClose, onAgree }) => {
     // 모달창 닫기
     const handleOverlayClick = (e) => {

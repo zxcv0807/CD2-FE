@@ -1,3 +1,5 @@
+// 사이드바에서 채팅 검색 모달 컴포넌트
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../api/axiosInstance";
@@ -9,6 +11,7 @@ const ChatSearch = ( {onClose} ) => {
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
 
+    // 대화 세션 검색
     const handleSearch = async () => {
         try {
             const response = await axios.post("/api/v1/faiss/search/keyword/sessions", 

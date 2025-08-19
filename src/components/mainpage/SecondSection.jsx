@@ -3,9 +3,10 @@ import ThumbsUp from "../../assets/ThumbsUp.png";
 import ThumbsDown from "../../assets/ThumbsDown.png";
 
 const SecondSection = () => {
-    const sectionRef = useRef(null);
+    const sectionRef = useRef(null); // 섹션 dom 요소를 참조하기 위한 ref
     const [isVisible, setIsVisible] = useState(false);
 
+    // intersection observer를 사용하여 섹션이 화면에 보일 때 상태 변경
     useEffect(() => {
         const target = sectionRef.current;
         const observer = new IntersectionObserver(
@@ -14,7 +15,7 @@ const SecondSection = () => {
                     setIsVisible(true);
                 }
             },
-            { threshold: 0.8 }
+            { threshold: 0.8 } // 80% 이상 보일 때 트리거
         );
 
         if (target) observer.observe(target);  

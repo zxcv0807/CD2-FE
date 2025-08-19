@@ -1,3 +1,5 @@
+// 구글 로그인을 처리하는 페이지 컴포넌트
+
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

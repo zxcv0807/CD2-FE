@@ -1,3 +1,5 @@
+// 요소가 뷰포트에 있는지 확인하는 커스텀 훅
+
 import { useState, useEffect } from "react";
 
 const useIsInView = (ref, threshold) => {

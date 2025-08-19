@@ -1,3 +1,5 @@
+// 회원가입 페이지 컴포넌트
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axiosInstance";
@@ -68,6 +70,7 @@ const SignupPage = () => {
         }
     };
 
+    // 백엔드로 회원가입 요청 보내기
     const handleSubmit = async (e) => {
         e.preventDefault();
 

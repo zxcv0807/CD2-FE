@@ -14,6 +14,7 @@ const AdminDashboard = () => {
   ]);
 
   useEffect(() => {
+    // 방문자 통계 불러오기
     const fetchVisitorStats = async () => {
       try {
         const response = await axios.get("/api/v1/admin/stats/visits");

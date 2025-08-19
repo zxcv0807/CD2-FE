@@ -1,5 +1,8 @@
+// 로그인 상태를 관리하는 Redux Slice
+
 import { createSlice } from "@reduxjs/toolkit";
 
+// 초기 상태 정의
 const initialState = {
     isLoggedIn: false,
     token: null,
@@ -10,12 +13,13 @@ const initialState = {
 const savedToken = localStorage.getItem("token");
 const savedUserId = localStorage.getItem("userId");
 
+// localStorage에 저장된 값이 있다면 초기 상태 업데이트
 if (savedToken && savedUserId) {
     initialState.isLoggedIn = true;
     initialState.token = savedToken;
     initialState.userId = savedUserId;
 }
-
+// Redux Slice 생성
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -34,7 +38,6 @@ const authSlice = createSlice({
             state.token = null;
             state.userId = null;
 
-            // localStorage에서 제거
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
         },

@@ -1,15 +1,21 @@
+// axios 인스턴스를 생성하고, 요청/응답 인터셉터를 설정하여
+// 인증 토큰을 자동으로 헤더에 추가하고, 만료 시 자동으로 재발급 받는 기능을 담당한다.
+
 import axios from 'axios'
 import store from '../REDUX/store';
 import { login, logout } from "../REDUX/auth/authSlice";
 
+// axios 인스턴스 생성
+// 기본 URL은 환경 변수에서 가져오고, 쿠키를 자동으로 전송하도록 설정
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
 });
 
-let isRefreshing = false;
-let failedQueue = [];
+let isRefreshing = false;  // 현재 refresh token 요청 중인지 여부
+let failedQueue = []; // refresh 중 발생한 요청들을 대기열에 저장
 
+// 대기 중인 요청들을 처리하는 함수
 const processQueue = (error, token = null) => {
     failedQueue.forEach(prom => {
         if (error) {
@@ -21,6 +27,7 @@ const processQueue = (error, token = null) => {
     failedQueue = [];
 };
 
+// request 인터셉터 - 요청 전에 실행
 axiosInstance.interceptors.request.use(
     (config) => {
         const state = store.getState();
@@ -35,6 +42,7 @@ axiosInstance.interceptors.request.use(
     }
 );
 
+// response 인터셉터 - 응답 후 실행
 axiosInstance.interceptors.response.use(
     (response) => {
         return response;
@@ -59,8 +67,7 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true; // 재시도 플래그 설정
             isRefreshing = true;
 
-            try {
-                // refresh token으로 새로운 access token 요청 (refresh token은 HTTP Only 쿠키로 자동 전송될 것임)
+            try {  // refresh token으로 새로운 access token 요청 (refresh token은 HTTP Only 쿠키로 자동 전송될 것임)
                 const response = await axios.post(import.meta.env.VITE_API_BASE_URL + '/api/v1/user/refresh-token', {}, {
                     withCredentials: true,
                 });

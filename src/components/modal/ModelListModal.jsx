@@ -1,3 +1,5 @@
+// 채팅 입력 컴포넌트에서 사용할 모델리스트 모달 컴포넌트
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 

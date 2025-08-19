@@ -1,3 +1,5 @@
+// ai 답변 복사를 위한 커스텀 훅
+
 import { useState } from 'react';
 
 export const useCopyToClipboard = () => {

@@ -1,3 +1,5 @@
+// 채팅 주제를 선택하는 페이지 컴포넌트
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "../../api/axiosInstance";
@@ -13,24 +15,11 @@ const ChattingTopicSelectionPage = () => {
   // 주제 선택
   const [topics, setTopics] = useState([]);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // 토큰 여부로 로그인 확인
-  useEffect(() => {
-    setIsLoggedIn(!!token);
-  }, [token]);
 
   // 주제를 선택하여 새로운 대화 세션 생성
   const handleClick = async (topic) => {
     setSelectedTopicId(topic.topic_id);
 
-    // 비로그인
-    if (!isLoggedIn) {
-      navigate(`/chatting/topics/${topic.topic_name}`);
-      return;
-    }
-
-    // 로그인
     try {
       const response = await axios.post("/api/v1/sessions/", 
         { topic_id: topic.topic_id }, 

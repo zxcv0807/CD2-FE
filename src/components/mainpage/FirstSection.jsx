@@ -4,11 +4,11 @@ import MainPageLaptop from "../../assets/MainPageLapTop.png";
 import QuestionStartIcon from "../../assets/QuestionStartIcon.png";
 
 const FirstSection = () => {
-    const texts = useMemo(() => ["당신의 질문", "당신의 궁금증", "당신의 생각"], []);
+    const texts = useMemo(() => ["당신의 질문", "당신의 궁금증", "당신의 생각"], []); // 변하지 않는 텍스트 배열을 메모이제이션
     const [currentText, setCurrentText] = useState(texts[0]);
     const [fade, setFade] = useState(true); // 페이드 애니메이션 상태
 
-    // 제목 텍스트 변경경
+    // 제목 텍스트 변경
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false); // 먼저 투명하게 만들기

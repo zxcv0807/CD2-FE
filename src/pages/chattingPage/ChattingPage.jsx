@@ -1,3 +1,5 @@
+// ai와 채팅 페이지
+
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,24 +11,26 @@ import CoTBubble from "../../components/chatting/CoTBubble";
 import ChatInput from "../../components/chatting/ChatInput";
 
 const ChattingPage = () => {
-    const [isSidebarVisible, setIsSidebarVisible] = useState(false); 
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false); // 사이드바 상태
     const token = useSelector((state) => state.auth.token);
     const userId = useSelector((state) => state.auth.userId);
-    const { session_id, } = useParams();
-    const ws = useRef(null);
-    const aiMessageRef = useRef(null);
-    const chatInputRef = useRef(null);
-    const chatContainerRef = useRef(null);
-    const [isReportTyping, setIsReportTyping] = useState(false);
-    const [isCotLoading, setIsCotLoading] = useState(false);
-    const [cotMessage, setCotMessage] = useState("");
-    const [cotHistory, setCotHistory] = useState([]);
-    const [isHitlActive, setIsHitlActive] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [topic, setTopic] = useState("");
-    const [isUserScrolling, setIsUserScrolling] = useState(false);
-    const [isCurrentConversationEnded, setIsCurrentConversationEnded] = useState(false);
-    const [completedMessages, setCompletedMessages] = useState(new Set());
+    const { session_id, } = useParams(); // URL 파라미터에서 session_id 추출
+
+    const ws = useRef(null); // 웹소켓 참조
+    const aiMessageRef = useRef(null); // ai 메시지 참조
+    const chatInputRef = useRef(null); // 채팅 입력창 참조
+    const chatContainerRef = useRef(null); // 채팅 컨테이너 참조
+
+    const [isReportTyping, setIsReportTyping] = useState(false); // 리포트 작성 중 여부
+    const [isCotLoading, setIsCotLoading] = useState(false); // Chain of Thought 로딩 여부
+    const [cotMessage, setCotMessage] = useState(""); // Chain of Thought 메시지
+    const [cotHistory, setCotHistory] = useState([]); // Chain of Thought 히스토리
+    const [isHitlActive, setIsHitlActive] = useState(false); // HITL 모드 활성화 여부
+    const [messages, setMessages] = useState([]); // 대화 메시지 목록
+    const [topic, setTopic] = useState(""); // 대화 주제
+    const [isUserScrolling, setIsUserScrolling] = useState(false); // 사용자 스크롤 여부
+    const [isCurrentConversationEnded, setIsCurrentConversationEnded] = useState(false); // 현재 대화가 끝났는지 여부
+    const [completedMessages, setCompletedMessages] = useState(new Set()); // 완료된 메시지 ID 집합
 
     // 스크롤 이벤트 핸들러 추가
     const handleScroll = () => {
@@ -58,10 +62,12 @@ const ChattingPage = () => {
         };
         scrollToBottom();   
     }, [messages, cotMessage, isUserScrolling]);
+
     // 사이드바 열고 닫기
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
+
     // 웹소켓 대화 완료
     const isMessageCompleted = (message) => {
         // optimize나 report 타입이 아니면 피드백 UI 안보임
@@ -78,6 +84,7 @@ const ChattingPage = () => {
         }
         return false;
     };
+
     // 대화 목록 불러오기
     useEffect(() => {
         const fetchMessageList = async () => {
@@ -115,6 +122,7 @@ const ChattingPage = () => {
 
         fetchMessageList();
     }, [session_id, userId]);
+    
     // 웹 소켓 연결
     useEffect(() => {
         const connectWebSocket = () => {
